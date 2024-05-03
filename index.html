@@ -1,2 +1,80 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .container {
+            background-color: #495057;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .row {
+            border-bottom: 1px solid #dee2e6;
+            padding: 10px 0;
+        }
+
+        .data:hover .col {
+            background-color: #6c757d;
+        }
+
+        .col {
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5" id="page"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="page.js"></script>
+</body>
+
 </html>
+<script>
+    $(_ => {
+
+        let container = ""
+        PAGES.forEach(list => {
+            container += `
+            <div class="row data">
+                <div class="col">${list[0]}</div>
+                <div class="col">${list[1]}</div>
+                <div class="col"><a href="${list[0]}.html" class="btn btn-primary">Go To</a></div>
+            </div>
+            `
+        })
+        $("#page").html(`<h2>My Pages</h2>
+            <div class="row" id="page">
+            <div class="col">Page</div>
+            <div class="col">Description</div>
+            <div class="col">goto</div>
+        </div>`+ container)
+    })
+</script>
