@@ -3,851 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./js/jq.js"></script>
-    <script src="./prts_info.js"></script>
     <title>new DAR</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.css">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+        #unSetUp {
+            margin-top: 20px;
+            color: #6ddc35;
+        }
+        label {
+            padding-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <textarea name="" id="prts" cols="90" rows="10"></textarea>
-    <button id="check">New DAR</button><button id="med">Med</button><button id="reset">clear</button><br>
-    <textarea id="result" style="width:100%;height:100px"></textarea>
-    <div id="unSetUp"></div>
-    
+    <div class="container">
+        <h2 class="text-center">New DAR</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="prts">Original</label>
+                <textarea class="form-control" id="prts" rows="10"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label for="result">Create Code</label>
+                <textarea class="form-control" id="result" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <button id="check" class="btn btn-primary mr-2">New DAR</button>
+                <button id="med" class="btn btn-secondary mr-2">Med</button>
+                <button id="reset" class="btn btn-danger">Clear</button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="unSetUp"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="js/jq.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="./prts_info.js"></script>
+    <script>
+        $(document).ready(function() {
+            let obj=getForDAR();
+            let str="";
+            let unde=[];
+            
+            $("#check").click(function(){
+                // Clear previous results and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#unSetUp").html("");
+                
+                let tempPrtArr = [];
+                let isNeedTranspo = true;
+                prtsArr = $("#prts").val().split("\n");
+                
+                for(let i = 0; i < prtsArr.length; i++) {
+                    let prts = prtsArr[i].split("\t")[1] + "";
+                    if(prts.indexOf("DOB") > -1) {
+                        prts = prts.split(" DOB")[0];
+                    }
+                    isNeedTranspo = prtsArr[i].split("\t")[0] === "Y" ? true : false;
+                    if(isNeedTranspo) {
+                        let prtID = obj[prts.toUpperCase()];
+                        if(prtID === undefined) {
+                            if(unde.indexOf(prts) < 0) {
+                                unde.push(prts);
+                            }
+                        } else {
+                            if(tempPrtArr.indexOf(prts) < 0) {
+                                tempPrtArr.push(prts);
+                            } else {
+                                continue;
+                            }
+                            str += prtID + "\t\t1000\t" + prtID + "\t490078\tCenter Attendance\n";
+                            str += prtID + "\t1530\t\t490078\t" + prtID + "\tBack Home\n";
+                        }
+                    }
+                }
+                $("#result").val(str);
+                for(let i = 0; i < unde.length; i++) {
+                    $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
+                }
+            });
+
+            $("#med").click(function(){
+                // Clear previous results and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#unSetUp").html("");
+                
+                let isNeedTranspo = true;
+                prtsArr = $("#prts").val().split("\n");
+                
+                for(let i = 0; i < prtsArr.length; i++) {
+                    let prts = prtsArr[i].split("\t")[1];
+                    if(prts.indexOf("DOB") > -1) {
+                        prts = prts.split(" DOB")[0];
+                    }
+                    isNeedTranspo = prtsArr[i].split("\t")[0] === "Y" ? true : false;
+                    if(isNeedTranspo) {
+                        let prtID = obj[prts.toUpperCase()];
+                        if(prtID === undefined) {
+                            unde.push(prts);
+                        } else {
+                            str += prtID + "\t1529\t490078\t" + prtID + "\tMedication\t80\n";
+                        }
+                    }
+                }
+                $("#result").val(str);
+                for(let i = 0; i < unde.length; i++) {
+                    $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
+                }
+            });
+
+            // Reset button
+            $("#reset").click(function(){
+                // Clear all values and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#prts").val("");
+                $("#unSetUp").html("");
+            });
+        });
+    </script>
 </body>
 </html>
-
-<script>
-
-$(document).ready(function() {
-    let obj=getForDAR();
-/*
-    let obj={"ABELE, ARIJA":"189059",
-    "ABELE, ARIJA":"189059",
-    "ABESAMIS, PURIFICACION":"PC4665",
-    "ABESAMIS, PURIFICACION K":"PC10990",
-    "AGEMSO, WOUBISHET":"490099",
-    "AGEMSO, WOUBISHET":"490099",
-    "AKICHIKA, ROWENA":"693456",
-    "AKICHIKA, ROWENA":"693456",
-    "ALDANA, EUGENIA":"490014",
-    "ALDANA, EUGENIA":"490014",
-    "ANIES, CRISTETA":"693470",
-    "ANIES, CRISTETA":"693470",
-    "ARIAS, LYDIA":"664978",
-    "ARIAS, LYDIA":"664978",
-    "AUBREY, CORRINE":"PC24904",             
-    "AUBREY, CORRINE":"PC24904",
-    "BAJJALIEH, LAILA":"536349",
-    "BAJJALIEH, LAILA":"536349",
-    "BARROW, JOSEPH":"172980",
-    "BARROW, JOSEPH":"172980",
-    "BECK, ORA":"632940",
-    "BECK, ORA":"632940",
-    "BELLO, CHRISTOPHER":"693509",
-    "BELLO, CHRISTOPHER":"693509",
-    "BIAN, JOHN":"645728",
-    "BIAN, JOHN":"645728",
-    "BISHOP ROBINSON, JACQUELINE":"173290",
-    "BISHOP ROBINSON, JACQUELINE":"173290",
-    "BLAKE, DERA":"693517",
-    "BLAKE, DERA":"693517",
-    "BOLDEN, JOSEPH":"534373",
-    "BOLDEN, JOSEPH":"534373",
-    "BONILLA, YOLANDA":"188622",
-    "BONILLA, YOLANDA":"188622",
-    "BONNER, PATRICIA":"PC7598",
-    "BONNER, PATRICIA":"PC7598",
-    "BRIGGS, SHARON":"490028",
-    "BRIGGS, SHARON":"490028",
-    "BURR, SANDRA JEANNE":"693544",
-    "BURR, SANDRA":"693544",
-    "CABRERA DE INTERIANO, ELVA":"693551",
-    "CABRERA DE INTERIANO, ELVA":"693551",
-    "CAMPBELL, STEPHAN":"PC7599",
-    "CAMPBELL, STEPHAN":"PC7599",
-    "CANIZALEZ, GRACIELA":"173296",
-    "CANIZALEZ, GRACIELA":"173296",
-    "CAO, WAN RAN":"195159",
-    "CAO, WAN RAN":"195159",
-    "CARLSSON, SALLY":"PC8659",
-    "CARLSSON, SALLY S":"PC8659",
-    "CARROLL-ITURRALDE, RUTH":"490043",
-    "CARROLL-ITURRALDE, RUTH":"490043",
-    "CARROLL, ROBERT":"PC7600",
-    "CARROLL, ROBERT A":"PC11081",
-    "CASSIDY, BETTY":"693572",
-    "CASSIDY, BETTY":"693572",
-    "CHAE, DONG":"632943",
-    "CHAE, DONG":"632943",
-    "CHAMBERLIN":"PC8563",
-    "CHAMBERLIN, C":"PC8563",
-    "CHAN":"PC8564",
-    "CHAN, ALBERT N":"PC25868",
-    "CHAN, ALBERT N":"PC27355",
-    "CHAN, CHUNG WING":"501606",
-    "CHAN, CHUNG WING":"501606",
-    "CHAN, DAVID":"PC4428",
-    "CHAN, DAVID":"PC11090",
-    "CHAN, DAVID L":"693589",
-    "CHAN, DAVID L":"693589",
-    "CHAN, KWAI HIN":"181932",
-    "CHAN, KWAI-HIN":"181932",
-    "CHAN, KWAN HAR":"501011",
-    "CHAN, KWAN HAR":"501011",
-    "CHAN, PATRICIA":"180900",
-    "CHAN, PATRICIA":"180900",
-    "CHAN, PHILLIP":"180886",
-    "CHAN, PHILLIP":"180886",
-    "CHAN, SHIRLENA":"193244",
-    "CHAN, SHIRLENA":"193244",
-    "CHAN, SOOK WAH":"173301",
-    "CHAN, SOOK WAH":"173301",
-    "CHAN, SUK CHING":"PC8544",
-    "CHAN, SYLVIA":"693593",
-    "CHAN, SYLVIA":"693593",
-    "CHAN, SYLVIA W":"PC11099",
-    "CHAN, WAI HING":"693594",
-    "CHANG, JUDY":"PC7569",
-    "CHANG, JUDY":"PC7569",
-    "CHAO, KWOH CHIN":"693601",
-    "CHAO, KWOH CHIN":"693601",
-    "CHAU, POLO":"633043",
-    "CHAU, POLO":"633043",
-    "CHAU, SIMON":"PC8459",
-    "CHAU, SIMON":"PC8459",
-    "CHAVEZ LOPEZ, HUMBERTO":"490079",
-    "CHAVEZ LOPEZ, HUMBERTO":"490079",
-    "CHEN, ANNIE":"PC21267",
-    "CHEN, ANNIE":"PC21267",
-    "CHEN, BUOY LAN":"PC8509",
-    "CHEN, BUOY LAN":"PC8509",
-    "CHEN, SHUN HUI":"490081",
-    "CHEN, SHUN HUI":"490081",
-    "CHEN, YAN FANG":"181660",
-    "CHEN, YAN FANG":"181660",
-    "CHEN, YIQUN":"PC11141",
-    "CHEN, YIQUN":"PC11141",
-    "CHEN, ZUO REN":"PC8510",
-    "CHEN, ZUO REN":"PC8510",
-    "CHENG, GUANG SHUN":"693611",
-    "CHENG, GUANG SHUN":"PC11147",
-    "CHENG, JAMES":"PC8986",
-    "CHENG, JAMES":"PC8986",
-    "CHEUNG, WILLIAM":"633044",
-    "CHEUNG, WILLIAM":"633044",
-    "CHIANG, KUO HSIUN":"PC27880",
-    "CHIANG, KUO HSIUN":"PC27880",
-    "CHIN, ANG LIN":"PC8511",
-    "CHIN, ANG LIN":"PC8511",
-    "CHIN, ANITA":"PC14702",
-    "CHIN, ANITA":"PC14702",
-    "CHOU, SIO CHEONG":"PC8512",
-    "CHOU, SIO CHEONG":"PC8512",
-    "CHOW, YAU S":"PC8513",
-    "CHOW, YAU SOONG":"PC11182",
-    "CHOW, YU LIANG":"693621",
-    "CHOW, YULIANG":"PC11183",
-    "CHOY, PUI":"PC16213",
-    "CHRYST, GENN":"PC10374",
-    "CHRYST, GENN":"PC14279",
-    "CHU, CHEN XIAO":"490373",
-    "CHU, CHEN XIAO":"490373",
-    "CHU, CLYDE Y":"693624",
-    "CHU, CLYDE":"693624",
-    "CHU, KAN":"173304",
-    "CHU, KAN":"173304",
-    "CHU, KENNETH K":"633045",
-    "CHU, KENNETH":"633045",
-    "CHU, KWAI LAN":"501607",
-    "CHU, KWAI LAN":"501607",
-    "CHU, PAK":"PC8499",
-    "CHU, PAK C.":"PC11186",
-    "CHU, YIN":"693625",
-    "CHU, YIN":"693625",
-    "CHUNG, ANN":"645941",
-    "CHUNG, ANN":"645941",
-    "CHUNG, ISAAC I":"PC11196",
-    "CHUNG, ISAAK":"PC8514",
-    "CHUNG, SUK W":"PC8515",
-    "CHUNG, SUK W":"PC11198",
-    "CORDOVA, JULIA":"PC14280",
-    "CORNEL, REBECCA":"490378",
-    "CORNEL, REBECCA":"490378",
-    "CRUZ, RUBEN":"PC10019",
-    "CRUZ, RUBEN D":"PC11212",
-    "CURRY, JAMES":"693660",
-    "DAM, LISA":"PC13422",
-    "DAM, LYNN":"PC13423",
-    "DANG, LY K":"597823",
-    "DANG, TONY":"693664",
-    "DANG, TONY":"693664",
-    "DAO, NGOC TU":"693665",
-    "DAO, NGOC TU":"693665",
-    "DAO, TRAN TU":"693666",
-    "DAO, TRAN TU":"693666",
-    "DAVIS, PATRICIA A":"PC33541",
-    "DEGUZMAN, EVANGELINA":"693680",
-    "DEGUZMAN, EVANGELINA":"693680",
-    "DIAZ, HUMBERTO":"187920",
-    "DIAZ, HUMBERTO":"187920",
-    "DIXON, MILES":"693694",
-    "DIXON, MYLES E":"PC11260",
-    "DOKKO, DANIEL":"PC26392",
-    "DOKKO, DANIEL":"PC26392",
-    "DOKKO, KYUNGWON":"PC19092",
-    "DOKKO, KYUNGWON":"PC19092",
-    "DOYLE, TOM":"693698",
-    "DOYLE, THOMAS":"693698",
-    "DUONG, BAN":"693703",
-    "DUONG, BAN":"693703",
-    "FAN, HONGYU":"693731",
-    "FAN, HONGYU":"693731",
-    "FANG, YUE H":"PC8517",
-    "FANG, YUE HUA":"PC8517",
-    "FANG, YUE HUA":"PC11294",
-    "FERRELL, WANDA":"693735",
-    "FERRELL, WANDA":"693735",
-    "FISCHER, FELIZITAS M":"693736",
-    "FISCHER, FELIZITAS":"693736",
-    "FUNG, LAI KING":"693757",
-    "FUNG, LAI KING":"693757",
-    "FUNG, YUK LEUNG":"693758",
-    "FUNG, YUK LEUNG":"PC11312",
-    "FURLOUGH, LOYCE":"PC13387",
-    "GAO, YI REN":"PC10682",
-    "GAO, YI REN":"PC10682",
-    "GARCIA MALDONADO, AURELIA":"PC11330",
-    "GARCIA-MALDONADO, AURELIA":"693773",
-    "GARCIA, AGUSTIN":"693766",
-    "GARCIA, AGUSTIN":"693766",
-    "GARCIA, DORA":"173312",
-    "GARCIA, DORA":"173312",
-    "GODINEZ, LUIS":"490397",
-    "GODINEZ, LUIS":"490397",
-    "GORMALLY, MARY":"PC11347",
-    "GORMALLY, MARY SR.":"PC8518",
-    "GRANT, TERI":"173313",
-    "GRANT, TERI":"173313",
-    "GROSSMAN, MURRAY":"693808",
-    "GROSSMAN, MURRAY":"490400",
-    "GU, GUAN QUN":"194426",
-    "GU, GUAN QUN":"194426",
-    "GUANG, GUAN":"PC13164",
-    "GUERRA AYALA, ALMA":"490404",
-    "GUERRA AYALA, ALMA":"490404",
-    "GUEVARA, JUDITH TERESA":"490406",
-    "GUEVARA, JUDITH":"490406",
-    "HANG, MAI SU":"PC23147",
-    "HARPER, LINDA":"PC27638",
-    "HARRIS, JANET":"693837",
-    "HARRIS, JANET":"693837",
-    "HE, TING GUI":"693841",
-    "HE, TING GUI":"693841",
-    "HE, YU":"693842",
-    "HE, YU":"693842",
-    "HEAD, SHERRIE":"173019",
-    "HEAD, SHERRIE":"173019",
-    "HELLAM, RUBEN A":"PC11389",
-    "HELLAM. RUBEN":"693846",
-    "HELLAM. RUBEN, RUBEN":"693846",
-    "HERNANDEZ, MARCIA":"PC8519",
-    "HERNANDEZ, MARCIA":"PC8519",
-    "HERNANDEZ, VICTORIA":"491464",
-    "HERNANDEZ, VICTORIA":"491464",
-    "HO, KIM":"PC8520",
-    "HO, KIM":"PC8520",
-    "HO, KIM YEE":"PC11401",
-    "HORNE, RONALD W":"693877",
-    "HORNE, RONALD W":"693877",
-    "HUANG TAM, GUI YING":"PC8500",
-    "HUANG TAM, GUI YING":"PC8500",
-    "HUANG, CHIEN CHIEN":"PC23529",
-    "HUANG, CHIEN":"PC23529",
-    "HUANG, JING H":"PC8521",
-    "HUANG, JING HUA":"PC11441",
-    "HUANG, SHAO MING":"492775",
-    "HUANG, SHAO MING":"492775",
-    "HUANG, SHU FEN F":"492789",
-    "HUANG, SHU FEN":"492789",
-    "HUANG, WEI LIANG":"PC27228",
-    "HUANG, WEI LIANG":"PC27228",
-    "HUANG, ZHAO HUAN":"693887",
-    "HUANG, ZHAO HUAN":"PC11458",
-    "HUBBARD, CHARLOTTE":"PC28246",
-    "HUBBARD, CHARLOTTE":"PC30590",
-    "HUI, WAI CHAN NGAI":"PC8522",
-    "HUI, WAI CHAN NGAI":"PC8522",
-    "HUNG, MEI SHEUNG":"PC11463",
-    "HUNG, MEI SHUANG":"PC8523",
-    "HUNG, MEI SHUENG":"PC8523",
-    "HUYNH, HI":"PC8524",
-    "HUYNH, HI":"PC8524",
-    "HWANG, SOON":"PC11053",
-    "HWANG, SOON":"PC11053",
-    "IOA, SPECIAL ORDER":"PC20160",
-    "JACKSON, KEVIN":"693904",
-    "JACKSON, KEVIN":"693904",
-    "JAMES, ANNIE":"693907",
-    "JAMES, ANNIE":"693907",
-    "JESSE, PENA":"PC9200",
-    "JIMINEZ, GLORIA":"PC13144",
-    "JIN, XUE LIAN":"693917",
-    "JIN, XUE LIAN":"693917",
-    "JOHNSON, WILLIE":"PC8525",
-    "JOHNSON, WILLIE":"PC8525",
-    "JONES, ELAINE":"693920",
-    "JONES, ELAINE":"693920",
-    "KELLY, DOROTHY JANE":"PC8526",
-    "KELLY, DOROTHY JANE":"PC11509",
-    "KELLY, DOROTHY JANE":"PC8526",
-    "KERFOOT, LORI":"693939",
-    "KERFOOT, LORI J":"PC11511",
-    "KEUNG, PING W":"PC8527",
-    "KEUNG, PING WAN":"PC11514",
-    "KIM, HO":"PC26734",
-    "KIM, HONG":"177377",
-    "KIM, HONG":"177377",
-    "KIM, LILY":"501613",
-    "KIM, LILY":"501613",
-    "KONG, FUNG KUEN":"173352",
-    "KONG, FUNG KUEN":"173352",
-    "KOVALEVA, IRINA":"PC25309",
-    "KOVALEVA, IRINA S":"PC27361",
-    "KUKOL, JOANNE":"PC30908",
-    "KWAN, PEO L":"PC8528",
-    "KWAN, PEO L":"PC8528",
-    "KWAN, PEO LINE":"PC11540",
-    "KWOCK, YING BING":"PC11543",
-    "KWOCK, YING BING":"PC11543",
-    "KWOK, LULU":"PC9617",
-    "KWONG CHANG, LIN HING":"PC11548",
-    "KWONG, CHANG LIN":"693958",
-    "KWONG, CHANG LIN":"693958",
-    "KWONG, CHI MIN":"555550",
-    "KWONG, CHI MIN":"555550",
-    "KYANG, WON DOKKO":"PC26392",
-    "LAM, PHI CHIU":"PC11565",
-    "LAM, THOMAS":"PC8530",
-    "LAM, THOMAS":"PC8530",
-    "LAU, CHENG KUN":"PC30593",
-    "LAU, KITWAN":"PC8531",
-    "LAU, KITWAN (WENDY)":"PC8531",
-    "LAU, YUK YU":"PC20377",
-    "LAU, YUK YU":"PC20377",
-    "LEA, LAI":"173387",
-    "LEA, LAI CHUEN":"173387",
-    "LEE, ALYDIA":"PC16549",
-    "LEE, ALYDIA":"PC16549",
-    "LEE, BETTY LAN-YUEN":"693977",
-    "LEE, BETTY LAN-YUEN":"693977",
-    "LEE, CHOI KUEN":"PC8532",
-    "LEE, CHOI KUEN":"PC8532",
-    "LEE, FUNG":"173155",
-    "LEE, FUNG":"173155",
-    "LEE, GERTRUDE":"PC15238",
-    "LEE, GERTRUDE":"PC13594",
-    "LEE, GERTRUDE":"PC15238",
-    "LEE, HAR":"536566",
-    "LEE, HAR TAM":"536566",
-    "LEE, LAI YEE":"693985",
-    "LEE, LAI YEE":"693985",
-    "LEE, LAP CHOW":"693986",
-    "LEE, LAP CHOW":"693986",
-    "LEE, LARRY":"693987",
-    "LEE, LARRY":"693987",
-    "LEE, MAY JEAN":"PC8533",
-    "LEE, MAY JEAN J":"PC11607",
-    "LEE, MUI CHUN":"173319",
-    "LEE, MUI CHUN":"173319",
-    "LEE, NGAN CHU":"693990",
-    "LEE, NGAN CHU":"693990",
-    "LEE, SHUK F LEE":"PC8534",
-    "LEE, SHUK F LEE":"PC8534",
-    "LEE, SOOJA":"693992",
-    "LEE, SOOJA":"693992",
-    "LEI, HON WAN":"597823",
-    "LEI, HON WAN":"PC11623",
-    "LEONG, STEVEN":"173320",
-    "LEONG, STEVEN":"173320",
-    "LEUNG, FRANK":"501122",
-    "LEUNG, FRANK F":"PC11631",
-    "LEUNG, HOI MAN":"694002",
-    "LEUNG, HOI MAN":"PC11632",
-    "LEUNG, HUNG CHUN":"PC29600",
-    "LEUNG, KWONG FAT":"491474",
-    "LEUNG, KWONG FAT":"491474",
-    "LEUNG, LEISLY":"501124",
-    "LEUNG, LEISLY L":"PC11634",
-    "LEUNG, RICKY":"694004",
-    "LEUNG, RICKY H":"PC11637",
-    "LEUNG, TING SEE":"188077",
-    "LEUNG, WING KWAI":"694006",
-    "LEUNG, WING KWAI":"694006",
-    "LEUNG, WING SANG":"188075",
-    "LI, KEWU":"PC30036",
-    "LI, WENPING":"694010",
-    "LI, WENPING":"694010",
-    "LI, YAN ZHI":"PC23066",
-    "LI, YAN ZHI":"PC23066",
-    "LI, YONGFU":"694012",
-    "LI, YONGFU":"694012",
-    "LIANG, GUO ZHI":"PC9633",
-    "LIANG, GUO ZHI":"PC11677",
-    "LIANG, HUAN MEI":"PC8535",
-    "LIANG, HUAN MEI":"PC8535",
-    "LIANG, MINAN":"501143",
-    "LIANG, MINAN":"501143",
-    "LIANG, SAI HUAN":"694014",
-    "LIANG, SAI HUAN":"694014",
-    "LIN, CHAO PING":"173321",
-    "LIN, CHAO PING":"173321",
-    "LIPINSKI, ANDRJEZ":"PC8536",
-    "LIPINSKI, ANDRZEJ RICHARD":"PC11708",
-    "LIU, CAN YAO":"694023",
-    "LIU, CAN YAO":"694023",
-    "LIU, HAO":"PC26224",
-    "LLERENA, SYLVIA":"PC25007",
-    "LLERENA, SYLVIA":"PC25007",
-    "LOGAN, VENITTA":"PC13057",
-    "LOGAN, VENITTA":"PC13057",
-    "LU, LINDA":"694043",
-    "LU, LINDA":"694043",
-    "LU, XIONG":"694045",
-    "LU, XIONG":"694045",
-    "LUCAS, VIVIAN":"694046",
-    "LUCAS, VIVIAN":"694046",
-    "LUEVANO, MEGAN":"PC9615",
-    "LUK CHIU, FUNG HIN":"694049",
-    "LUK CHIU, FUNG HIN":"PC11763",
-    "LUO, HUI WEI":"501602",
-    "LUO, HUI WEI":"501602",
-    "LUO, MAHJER":"PC23618",
-    "LUONG, VU":"694050",
-    "LUONG, VU QUAN Q":"PC11772",
-    "LUU, MUOI":"PC8537",
-    "LUU, MUOI":"PC8537",
-    "LUU, TO":"491467",
-    "LUU, TO":"491467",
-    "LY, HA BICH":"555882",
-    "LY, HA BICH":"PC11776",
-    "LY, KHA CHAY":"PC26647",
-    "LY, KHA CHAY":"PC26647",
-    "LY, MUI":"694052",
-    "LY, MUI":"694052",
-    "LY, TRUNG":"PC7572",
-    "LY, TRUNG":"PC7572",
-    "LYONS, GREGORY":"694053",
-    "LYONS, GREGORY B. BRENT":"PC11780",
-    "MA, CUI HUA":"PC14948",
-    "MA, CUI HUA":"PC14948",
-    "MA, HELEN":"PC17163",
-    "MA, HELEN":"PC17163",
-    "MA, KWAN SHOU":"694054",
-    "MA, KWAN SHOU":"694054",
-    "MA, RONGAN":"694055",
-    "MA, RONGAN":"694055",
-    "MAC, TAM":"PC8538",
-    "MAC, TAMMY THUY":"PC25540",
-    "MACDONALD, CHRISTOPHER":"PC21137",
-    "MACDONALD, CHRISTOPHER":"PC21137",
-    "MAJHER, JOHN":"694066",
-    "MAJHER, JOHN":"694066",
-    "MALEK, HOSSEIN":"650270",
-    "MALEK, HOSSEIN":"650270",
-    "MANILLA, DANILO":"PC27356",
-    "MANILLA, DANILO":"PC27356",
-    "MAO, LAO":"173392",
-    "MAO, LAO L":"PC11803",
-    "MARTINEZ, ANTOINETTE I":"PC23199",
-    "MARTINEZ, ANTOINETTE":"PC23199",
-    "MARTINEZ, BENEDICT":"PC14432",
-    //"MARTINEZ, LAWRENCE BENEDICT":"694085",
-    "MARTINEZ, LAWRENCE":"694085",
-    "MATOSICH, HELEN":"694091",
-    "MATOSICH, HELEN":"694091",
-    "MATSUO, EMIKO":"694092",
-    "MATSUO, EMIKO":"694092",
-    "MCCARTHY, STEVEN":"PC15386",
-    "MCCARTHY, STEVEN":"PC14800",
-    "MCKEAN, ROSEMARY":"536353",
-    "MCKEAN, ROSEMARY":"536353",
-    "MEDEROS, AQUILEO":"PC10934",
-    "MEDEROS, AQUILEO":"PC10934",
-    "MENGESHA, HIWAN":"694118",
-    "MENGESHA, HIWAN":"694118",
-    "MIAO, BAO FEI":"PC19628",
-    "MIAO, BAO FEI":"PC24047",
-    "MILLER, MARVIN":"694124",
-    "MILLER, MARVIN":"694124",
-    "MILLER, THOMAS":"PC8457",
-    "MILLER, THOMAS":"PC8457",
-    "MOK, NAI TIN":"PC33115",
-    "MONROY, ALMA":"PC9616",
-    "MONTOYA, LUIS":"694138",
-    "MONTOYA, LUIS ALONZO":"PC11846",
-    "MOORE ERNESTINE":"192111",
-    "MOORE, ERNESTINE":"192111",
-    "MORLEY, MARILYN":"694154",
-    "MORLEY, MARILYN":"694154",
-    "MORLEY, MARILYN":"PC11851",
-    "MOSKVYCHOV, SVYATOSLAV G":"PC29006",
-    "MUI, MEE THLU":"PC4645",
-    "MUI, MEE THLU":"PC4645",
-    "MUI, SO SHUNG":"694158",
-    "MUI, SO SHUNG":"694158",
-    "NEEDES, NORMAN":"PC12578",
-    "NG, KWAI":"694172",
-    "NG, KWAI":"694172",
-    "NG, PING":"694173",
-    "NG, PING":"694173",
-    "NG, PING JAN":"694174",
-    "NG, PING JAN":"694174",
-    "NG, PO SAN":"694175",
-    "NG, PO SAN":"694175",
-    "NG, SAI MUN":"646480",
-    "NG, SAI MUN":"646480",
-    "NG, SIU H YU":"PC11869",
-    "NG, SIU HAR YU":"PC8539",
-    "NG, SIU HAR YU":"PC8539",
-    "NGUYEN, KIMTUYEN":"PC8540",
-    "NGUYEN, KIMTUYEN":"PC8540",
-    "NGUYEN, LAP HOANG":"PC14281",
-    "NGUYEN, NHANH THI":"PC14282",
-    "NUDELMAN, IRINA":"694190",
-    "NUDELMAN, IRINA":"694190",
-    "NUNN, SUE TSIN":"694192",
-    "NUNN, SUE TSIN":"694192",
-    "ORNANO-LOPEZ, MARIA DEL PILAR":"PC8542",
-    "ORNANO-LOPEZ, MARIA DEL PILAR":"PC11922",
-    "ORNANO-LOPEZ, MARIA DEL PILAR":"PC8542",
-    "ORNANO, JULIA":"597822",
-    "ORNANO, JULIA":"597822",
-    "PAL, GARY":"PC14034",
-    "PAL, GARY":"PC14034",
-    "PAN, WILEY":"501151",
-    "PAN, WILEY":"501151",
-    "PASCAL, FABIAN":"694228",
-    "PASCAL, FABIAN":"694228",
-    "PASCUAL, COROZAN":"PC10922",
-    "PASCUAL, COROZAN":"PC10922",
-    "PEED, LEATRICE":"694236",
-    "PEED, LEATRICE":"694236",
-    "PEGUEROS, SANDRA":"534380",
-    "PEGUEROS, SANDRA FRANCES":"PC11955",
-    "PENRY, PAUL":"694240",
-    "PENRY, PAUL":"694240",
-    "PENRY, PAUL E":"PC11962",
-    "PERKINS, MICHAEL C":"694243",
-    "PERKINS, MICHAEL":"694243",
-    "PERRY, STEPHEN":"PC21872",
-    "PETERSON, SAMUEL":"694245",
-    "PETERSON, SAMUEL":"694245",
-    "PHO, LINA":"PC8543",
-    "PHO, LINA":"PC8543",
-    "PIZZORNO, MARY":"537567",
-    "PIZZORNO, MARY C CHRISTINA":"PC11985",
-    "PORTER, GREGORY":"694260",
-    "PORTER, GREGORY":"694260",
-    "PUGH, MICHAEL":"PC18970",
-    "PUGH, MICHAEL":"PC18970",
-    "QUACH, MILES":"694264",
-    "QUACH, MILES":"694264",
-    "RAMOS, GLADYS":"694275",
-    "RAMOS, GLADYS":"694275",
-    "RANDLESTON, EDWARD C":"694276",
-    "RANDLESTON, EDWARD C.":"694276",
-    "RANDLESTON, EDWARD":"694276",
-    "RAPISURA, HERMINIA":"694280",
-    "RAPISURA, HERMINIA":"694280",
-    "RICH-FRENCH, JENNYLYNN":"PC27362",
-    "RICHARDSON, MARK L":"694295",
-    "RICHARDSON, MARK":"694295",
-    "RODRIGUEZ, CARMELO":"PC22474",
-    "RODRIGUEZ, CARMELO S":"PC30589",
-    "ROMERO, JUDITH":"694318",
-    "ROMERO, JUDITH":"694318",
-    "SALUNGA, MARISSA":"PC10280",
-    "SALUNGA, MARISSA":"PC12868",
-    "SCOTT, SHARON":"PC28672",
-    "SEYMOUR, MARY":"501474",
-    "SEYMOUR, MARY":"501474",
-    "SEYMOUR, MARY":"PC12063",
-    "SHEN, CHANG RONG":"694359",
-    "SHEN, CHANG RONG":"694359",
-    "SHERMAN, DORIS":"PC21988",
-    "SIU, WAH BIK":"PC12100",
-    "SIU, WAH BIK B":"PC12100",
-    "SMILEY, PATRICIA":"597820",
-    "SMILEY, PATRICIA":"597820",
-    "SPECIAL TRIP, READ NOTE":"PC25157",
-    "STAMPS, IVORY":"694391",
-    "STAMPS, IVORY":"191703",
-    "STERN, MARK":"694394",
-    "STERN, MARK":"694394",
-    "STEVEN, MACARTHY":"PC15386",
-    "SU HANG, MAI":"PC24048",
-    "SUN, RUILIAN":"173331",
-    "SUN, RUILIAN":"173331",
-    "SWIMMER, JOHN":"PC9620",
-    "SWIMMER, JOHN":"PC9620",
-    "TAKIKAWA, NORIKO":"PC19110",
-    "TAKIKAWA, NORIKO":"PC19110",
-    "TAM, WAI KEN":"490313",
-    "TAM, WAI KEN":"490313",
-    "TAN, EILEEN":"PC8545",
-    "TAN, EILEEN":"PC8545",
-    "TAN, RAYMOND":"694409",
-    "TAN, RAYMOND":"694409",
-    "TAN, ROBERT":"PC21037",
-    "TANG, ALICE":"694410",
-    "TANG, ALICE":"694410",
-    "TANG, ANN":"PC13421",
-    "TANG, KOK FANG":"490311",
-    "TANG, KOK FANG":"490311",
-    "TANG, NIEN":"490310",
-    "TANG, NIEN":"490310",
-    "TAUSSIG, MARIE":"173333",
-    "TAUSSIG, MARIE":"173333",
-    "TAVAKOLI MALEK, ZAHRA":"PC8546",
-    "TAVAKOLI MALEK, ZAHRA":"PC8546",
-    "TAYLOR, PEGGY":"694416",
-    "TAYLOR, PEGGY":"694416",
-    "THE, SIANG HOEI":"PC8547",
-    "THE, SIANG HOEI":"PC12157",
-    "TIEU, MINH":"694428",
-    "TIEU, MINH":"694428",
-    "TODD, TERRANCE":"PC8548",
-    "TODD, TERRENCE DONALD":"PC12160",
-    "TONG, KAM SIU":"PC8549",
-    "TONG, KAM SIU":"PC8549",
-    "TRAN, ANH":"PC8453",
-    "TRAN, ANH":"PC8453",
-    "TRAN, HONG":"PC8550",
-    "TRAN, HONG THU":"PC12174",
-    "TRAN, LIEN T":"PC24413",
-    "TRAN, LIEN T":"PC27359",
-    "TRAN, PHOUC":"PC8551",
-    "TRAN, PHUOC":"PC12182",
-    "TU, DAVID":"490307",
-    "TU, DAVID":"490307",
-    "TURNER, ROBERT":"PC26226",
-    "UMEUKEJE, ALICE":"635789",
-    "UMEUKEJE, ALICE":"635789",
-    "UMEUKEJE, TIMOTHY":"PC8552",
-    "UMEUKEJE, TIMOTHY":"PC8552",
-    "URRUTIA, MARTA LILIA":"PC20378",
-    "VACCARI, VIVIAN":"694444",
-    "VACCARI, VIVIAN":"694444",
-    "VASQUEZ, LETICIA":"663298",
-    "VASQUEZ, LETICIA":"663298",
-    "VASS, TATIANA":"173339",
-    "VASS, TATIANA":"173339",
-    "WAN, LAI YIN":"490300",
-    "WAN, LAI YIN":"PC12239",
-    "WAN, SEEYEN":"PC30702",
-    "WANG, CAISHAO":"PC8553",
-    "WANG, CAISHAO":"PC8553",
-    "WANG, CHUN LING":"490299",
-    "WANG, CHUN LING":"490299",
-    "WANG, DAO GANG":"195604",
-    "WANG, DAO GANG":"195604",
-    "WANG, JUDY":"694478",
-    "WANG, JUDY":"694478",
-    "WANG, JUDY W":"PC12251",
-    "WANG, YOU LAN":"694480",
-    "WANG, YOU LAN":"694480",
-    "WASHINGTON, BETTY":"694487",
-    "WASHINGTON, BETTY":"694487",
-    "WASHINGTON, VIRGINIA":"PC13233",
-    "WATERS, RENO":"PC26517",
-    "WEBSTER, MARGARET":"PC12270",
-    "WEBSTER, SR. MARGARET":"PC8554",
-    "WEBSTER, SR. MARGARET":"PC8554",
-    "WHITE, DALE":"PC24282",
-    "WILLIAMS, MICHAEL":"694511",
-    "WILLIAMS, MICHAEL":"PC12279",
-    "WILSON, CREGG":"PC8479",
-    "WILSON, CREGG":"PC8479",
-    "WILTON, DONALD":"PC13708",
-    "WILTON, DONALD R":"PC14415",
-    "WONG, BILL KWOK":"PC8555",
-    "WONG, BILL KWOK":"PC8555",
-    "WONG, FUNG YING":"694519",
-    "WONG, FUNG YING":"694519",
-    "WONG, GAM FEE":"PC8456",
-    "WONG, GAM FEE":"PC8456",
-    "WONG, HENRY":"PC14144",
-    "WONG, HENRY H":"PC16301",
-    "WONG, IRIS":"694520",
-    "WONG, IRIS":"694520",
-    "WONG, JOHN":"694521",
-    "WONG, JOHN":"694521",
-    "WONG, KAM SAU":"645710",
-    "WONG, KAM SAU":"PC12292",
-    "WONG, LAN YING":"PC24363",
-    "WONG, LAN YING":"PC27358",
-    "WONG, MAY OI":"694522",
-    "WONG, MAY OI":"694522",
-    "WONG, MAY SEUNG":"PC29479",
-    "WONG, PO KUN":"490289",
-    "WONG, PO KUN":"490289",
-    "WONG, SHOU CHU":"648560",
-    "WONG, SHOU CHU":"648560",
-    "WONG, WAI C":"PC8556",
-    "WONG, WAI C":"PC8556",
-    "WONG, YUE YAO":"PC25144",
-    "WOO, MAY":"195073",
-    "WOO, MAY":"195073",
-    "WOO, MU JIE X":"PC8557",
-    "WOO, MU JIE XIE":"PC12313",
-    "WOODARD, LARRY":"173341",
-    "WOODARD, LARRY":"173341",
-    "WOODS, RENITA":"694528",
-    "WOODS, RENITA":"694528",
-    "WU, GAN":"694532",
-    "WU, GAN":"694532",
-    "XU, ANNE":"490281",
-    "XU, ANNE":"490281",
-    "XU, GEN SU":"694535",
-    "XU, GEN SU":"694535",
-    "XU, GUANG":"PC27495",
-    "XU, ZIYIN":"694537",
-    "XU, ZIYIN":"694537",
-    "YADAMBAT, BAATAR":"694538",
-    "YAN, XIN FA":"PC30591",
-    "YAN,XIN FA":"185592",
-    "YANCEY, NORBERT":"694540",
-    "YANCEY, NORBERT":"694540",
-    "YANG, FENG LAN":"PC9634",
-    "YANG, FENG LAN":"PC12366",
-    "YANG, FENG LAN":"PC9634",
-    "YE, HUI JUAN":"PC23067",
-    "YE, HUI JUAN":"PC23067",
-    "YE, WEI HUA":"694546",
-    "YE, WEI HUA":"694546",
-    "YE, YI BIN":"694547",
-    "YE, YIBIN":"PC12385",
-    "YEARWOOD, ELOISA":"PC13918",
-    "YEOH, KHIAN HENG":"PC8558",
-    "YEOH, KHIAN HENG":"PC12390",
-    "YEUNG, LINYING":"534369",
-    "YEUNG, LINYING L":"PC12391",
-    "YIM, WAI HING":"694549",
-    "YIM, WAI HING":"694549",
-    "YIN, SHAN":"PC15863",
-    "YIN, SHAN":"PC15863",
-    "YOUNG, JOHN":"PC30592",
-    "YU, BIRUI":"694550",
-    "YU, BIRUI":"694550",
-    "YU, HUA":"PC8560",
-    "YU, HUA SHENG":"PC12413",
-    "YU, HUA SHENG":"PC12413",
-    "YU, KWAI HA":"694552",
-    "YU, KWAI HA":"PC12414",
-    "YU, THOMAS":"195228",
-    "YU, THOMAS":"PC23505",
-    "YU, YI JUN":"PC14750",
-    "YU, YONG DONG":"PC27360",
-    "YUAN, FU":"PC8561",
-    "YUAN, FU MEI":"PC12426",
-    "YUAN, SHUN":"694555",
-    "YUAN, SHUN":"694555",
-    "YUNDEN, TSOGTCHIMEG":"694557",
-    "ZALKUS, DAVID":"490271",
-    "ZALKUS, DAVID":"490271",
-    "ZAVALETA, DORA":"694563",
-    "ZAVALETA, DORA":"PC12433",
-    "ZENG, HANYING":"694564",
-    "ZENG, HANYING":"694564",
-    "ZHANG JIN QUAN":"PC10471",
-    "ZHANG, DE ZHEN":"694565",
-    "ZHANG, DE ZHEN":"694565",
-    "ZHANG, JIAN QUAN":"PC10471",
-    "ZHENG, RUIBO":"PC14283",
-    "ZHOU, XING H":"PC8562",
-    "ZHOU, XING HUA":"PC12485",
-    "ZHU, CUI LIANG":"694569",
-    "ZHU, CUI LIANG":"694569",
-    "ZUCKMAN, JON":"185191",
-    "WILLIAMS, DELORES":"PC32811",
-    "TSUI, SHUK JEE":"PC33163"
-}
-*/
-
-    let str=""
-    let unde=[]
-    $("#check").click(function(){
-        let tempPrtArr=[]
-        let isNeedTranspo=true;
-        prtsArr=$("#prts").val().split("\n")
-        
-        for(let i=0;i<prtsArr.length;i++){
-            
-            let prts=prtsArr[i].split("\t")[1]+""
-            if(prts.indexOf("DOB")>-1){
-                prts=prts.split(" DOB")[0];
-            }
-            console.log(prts==="Martinez, Lawrence Benedict"?"1111":"n")
-            let isNeedTranspo=prtsArr[i].split("\t")[0]==="Y"?true:false;
-            if(isNeedTranspo){
-                let prtID=obj[prts.toUpperCase()]
-
-                
-                if(prtID===undefined){
-                    if(unde.indexOf(prts)<0)
-                        unde.push(prts)
-                }else{
-                    if(tempPrtArr.indexOf(prts)<0){
-                        tempPrtArr.push(prts);
-                    }else{
-                        continue;
-                    }
-                    str+=prtID+"\t\t1000\t"+prtID+"\t490078\tCenter Attendance\n"
-                    str+=prtID+"\t1530\t\t490078\t"+prtID+"\tBack Home\n"
-                }
-            }
-        }
-        //console.log(str)
-       
-        $("#result").val(str)
-        for(let i=0;i<unde.length;i++){
-            $("#unSetUp").html($("#unSetUp").html()+"<Br>"+(i+1)+"."+unde[i].toUpperCase())
-        }    
-    })
-
-    
-    $("#med").click(function(){
-        let isNeedTranspo=true;
-        prtsArr=$("#prts").val().split("\n")
-        
-        for(let i=0;i<prtsArr.length;i++){
-            let prts=prtsArr[i].split("\t")[1]
-            if(prts.indexOf("DOB")>-1){
-                prts=prts.split(" DOB")[0];
-            }
-            let isNeedTranspo=prtsArr[i].split("\t")[0]==="Y"?true:false;
-            if(isNeedTranspo){
-                let prtID=obj[prts.toUpperCase()]
-                if(prtID===undefined){
-                    unde.push(prts)
-                }else{
-                    str+=prtID+"\t1529\t490078\t"+prtID+"\tMedication\t80\n"
-                }
-            }
-        }
-        //console.log(str)
-       
-        $("#result").val(str)
-        for(let i=0;i<unde.length;i++){
-            $("#unSetUp").html($("#unSetUp").html()+"<Br>"+(i+1)+"."+unde[i].toUpperCase())
-        }    
-    })
-    //reset button
-    $("#reset").click(function(){
-        //location.reload()
-        str="";
-        $("#result").val("")
-        $("#prts").val("")
-    })
-})
-</script>
