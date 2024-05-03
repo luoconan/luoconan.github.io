@@ -4,4 +4,5 @@ const PAGES = [
     ["prts_info.js", "Data For Prts"],
     ["OneHourViolation.html","build csv file to set 1 hour violation"],
     ["test.html", "test page. "],
+    ["page.js","page config"]
 ];
