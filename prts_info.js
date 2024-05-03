@@ -1991,7 +1991,7 @@ let prtObjInfo = {
         "address": "",
         "amTime": ""
     },
-    "Mok, Nai Tin":{
+    "Mok, Nai Tin": {
         "id": "PC33115",
         "room": "1",
         "rt": "1",
@@ -2639,7 +2639,7 @@ let prtObjInfo = {
         "address": "",
         "amTime": ""
     },
-    "Tsui, Shuk Jee":{
+    "Tsui, Shuk Jee": {
         "id": "PC33163",
         "room": "2",
         "rt": "7",
@@ -3304,14 +3304,28 @@ let prtObjInfo = {
         "amTime": ""
     }
 }
-function getForDAR(){
-    let res={};
-    Object.keys(prtObjInfo).forEach(prtName=>{
+function getForDAR() {
+    let res = {};
+    Object.keys(prtObjInfo).forEach(prtName => {
         //res={...res,{prtName:prtName.id}}
-        res[prtName.toUpperCase()]=prtObjInfo[prtName].id
+        res[prtName.toUpperCase()] = prtObjInfo[prtName].id
     })
     return res
 }
 
+function getPrtsArr() {
+    let prts = [];
+    Object.keys(prtObjInfo).forEach(prtInfo => {
+        let temp = {}
+        temp.name = prtInfo;
+        Object.keys(prtObjInfo[prtInfo]).forEach(info => {
+            temp[info] = prtObjInfo[prtInfo][info]
+            //prts.push(prtInfo[info])
+        })
+
+        prts.push(temp)
+    })
+    return prts;
+}
 
 
