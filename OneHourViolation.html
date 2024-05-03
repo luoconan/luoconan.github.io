@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Hour Violation</title>
+    <!-- 引入 Bootstrap 样式 -->
+    <link href="./bootstrap.css" rel="stylesheet">
+    <!-- 引入 jQuery -->
+    <script src="./js/jQuery.js"></script>
+    <!-- 引入 Bootstrap JavaScript 插件 -->
+    <script src="./bootstrap.js"></script>
+
+    <!-- 引入 test Data-->
+    <script src="./js/GeoTab.js"></script>
+    <script src="./js/Itineris.js"></script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- 添加label标签 -->
+                <label for="tripsRecord">Trips Record:</label>
+                <!-- 修改textarea的id为"tripsRecord" -->
+                <textarea id="tripsRecord" class="form-control" rows="5"
+                    placeholder="Enter Trips Record here..."></textarea>
+            </div>
+            <div class="col-md-6">
+                <!-- 添加label标签 -->
+                <label for="geoTabRecord">GeoTab Record:</label>
+                <!-- 修改textarea的id为"geoTabRecord" -->
+                <textarea id="geoTabRecord" class="form-control" rows="5"
+                    placeholder="Enter GeoTab Record here..."></textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <!-- 添加一个成功样式的按钮 -->
+                <button id="correctButton" type="button" class="btn btn-success">Correct them</button>
+            </div>
+        </div>
+        <div id="showTable"></div>
+        <!-- 引入 Bootstrap JavaScript 插件 -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        // 引入 test Data
+        $("#tripsRecord").val(itinerisReport)
+        $("#geoTabRecord").val(geoReport)
+        // 引入 test Data End
+        // 点击按钮时的事件
+        $("#correctButton").click(function () {
+            // 获取两个textarea框的内容
+            var tripsRecord = $("#tripsRecord").val().trim();
+            var geoTabRecord = $("#geoTabRecord").val().trim();
+            // 分别判断两个textarea框是否为空，只要有一个为空就显示提示框
+            if (tripsRecord === "") {
+                // 使用Bootstrap的提示框
+                alert("Please enter text in Trips Record.");
+            } else if (geoTabRecord === "") {
+                // 使用Bootstrap的提示框
+                alert("Please enter text in GeoTab Record.");
+            } else {
+                // =============处理trips Record表的部分  开始===============================       
+                // 将Trip Record数据转化成对象形式                    
+                let tripsTitlesObj = { "Service Date": {}, "Cancel Reason": {}, "Service Code": {}, "Passenger": {}, "Vehicle ID": {}, "PU Address": {}, "DO Address": {}, "PU Time Actual": {}, "DO Time Actual": {} };// 将列名转换成对应的位置eg.{ "Service Date":{Date:"2024/2/3",index:1}}, "Service Code":4 .....},方便使用
+                let tripsReName = "date,cancel,serverCode,prtName,vanNum,puAddr,doAddr,puTime,doTime".split(",")
+                // 将Trip Record 转换成对象形式
+                let tripsRecordArr = tripsRecord.split("\n"); // 按照行分段保存
+                Object.keys(tripsTitlesObj).forEach((title, index) => tripsTitlesObj[title] = { "name": tripsReName[index], "index": tripsRecordArr[0].split("\t").indexOf(title) })// tripsRecordArr第一行是列名,并且将对应列名的位置保存到titleObj中
+
+                tripsRecordArr.shift()
+
+                // Trip Recoed 以对象形式保存
+                let tripsRecordObjArr = [] // {"date":"2024/03/01","code":3 .... }
+                tripsRecordArr.forEach(obj => {
+                    let tempTrip = obj.split("\t");
+                    let tempObj = {};
+
+                    //tempObj[tripsTitlesObj["Service Date"].name]=tempTrip[tripsTitlesObj["Service Date"].index];
+
+                    Object.keys(tripsTitlesObj).forEach(key => tempObj[tripsTitlesObj[key].name] = tempTrip[tripsTitlesObj[key].index]);
+                    tempObj.itineris = ((new Date("1980-01-01T" + mTime(tempObj.doTime)) - new Date("1980-01-01T" + mTime(tempObj.puTime))) / 3600000).toFixed(2)
+                    tempObj.puTime = new Date(`${mDate(tempObj.date)}T${mTime(tempObj.puTime)}`)
+                    tempObj.doTime = new Date(`${mDate(tempObj.date)}T${mTime(tempObj.doTime)}`)
+                    if (tempObj.cancel == "" && (tempObj.serverCode != 80) && tempObj.puTime != "" && tempObj.doTime != "" && tempObj.itineris >= 1)
+                        tripsRecordObjArr.push(tempObj)
+                    //console.log(tempTrip)
+                });
+                tripsRecordObjArr.sort((a, b) => {
+                    if (a.vanNum < b.vanNum) return -1;
+                    if (a.vanNum > b.vanNum) return 1;
+                    if (a.date < b.date) return -1;
+                    if (a.date > b.date) return 1;
+                    return 0;
+                })
+                //$("#geoTabRecord").val(JSON.stringify(tripsRecordObjArr))
+                $("#showTable").html(createTableHtml([...tripsReName, "itineris"], tripsRecordObjArr)) //显示Trips Record 表
+                // =============处理trips Record表的部分  结束===============================  
+                // =============处理GeoTab Record表的部分  开始=============================== 
+                let geoTabTitlesObj = { "Device": {}, "Start Date": {}, "Stop Date": {}, "Driving Duration": {}, "Start Location": {}, "Stop Location": {} }    // 将列名转换成对应的位置eg.{ "Device":{vanNum:"ioa-11",index:1}}, .....},方便使用
+                let geoTabReName = "vanNum,bDate,eDate,GeoTab,puAddr,doAddr".split(",")
+                // 将geoTab Record 转换对象形式          
+                let geoTabRecordArr = geoTabRecord.split("\n");
+                Object.keys(geoTabTitlesObj).forEach((title, index) => geoTabTitlesObj[title] = { "name": geoTabReName[index], "index": geoTabRecordArr[0].split("\t").indexOf(title) })// geoTabRecordArr第一行为列名,并且将对应列名的位置保存到titleObj中
+                geoTabRecordArr.shift();
+                //console.log(JSON.stringify(geoTabTitlesObj))
+                // GeoTab Record 以对象形式保存
+                let geoTabRecordObjArr = [];
+                geoTabRecordArr.forEach(obj => {
+                    let tempTrip = obj.split("\t");
+                    let tempObj = {};
+                    Object.keys(geoTabTitlesObj).forEach(key => tempObj[geoTabTitlesObj[key].name] = tempTrip[geoTabTitlesObj[key].index]);
+                    tempObj.bDate = new Date(tempObj.bDate)
+                    tempObj.eDate = new Date(tempObj.eDate)
+                    geoTabRecordObjArr.push(tempObj);
+                })
+                $("#showTable").html($("#showTable").html() + createTableHtml([...geoTabReName], geoTabRecordObjArr)) //geoTab Record 表
+                // =============处理GeoTab Record表的部分  结束=============================== 
+
+                // 新建一个table.  Date, Prt Name, Address, Van Number, driver Duration, GeoTab Duration, reason
+                let finialTitles = "Date,Van Number,Prt Name,Address,driver Duration,GeoTab Duration,reason".split(",")
+                let finialObjArr = [];
+                for (let i = 0; i < tripsRecordObjArr.length; i++) {
+                    let trip = tripsRecordObjArr[i];
+                    for (let j = 0; j < geoTabRecordObjArr.length; j++) {
+                        let geo = geoTabRecordObjArr[j];
+                        //console.log(JSON.stringify(geo))
+                        if (trip.vanNum == geo.vanNum.replace("RV", "V")) {
+                            //console.log(tripTime.setMinutes(trip.puTime.getMinutes()+10)+"_______"+geoTime)
+
+                            // 找出trip开始时间,跟GeoTab到达时间,相差diffTime(自定义10分钟可修改更短)分钟的行程,保存geoTab的时间作为行程开始时间,保存地址作为开始地址,并且数据处理
+                            let diffTime = 10;
+                            let geoBeginTime = new Date();
+                            let tripAddr = trip.doAddr.replace(", USA", "").replace("Boulevard", "Blvd").replace("Avenue", "Ave").trim();
+
+                            if (Math.abs(trip.puTime - geo.eDate) < (diffTime * 1000 * 60)) {
+                                geoBeginTime = geo.eDate;
+                            }
+                            else {
+                                continue;
+                            }
+                            //找出距离最近的一个相同目的地(或者相近)的geoTab记录,并保存geoTab的时间作为行程结束时间.
+                            let geoEndTime;
+                            let geoAddr;
+                            for (let k = j; k < geoTabRecordObjArr.length; k++) {
+                                let _geo = geoTabRecordObjArr[k];
+                                geoAddr = _geo.puAddr.replace(", USA", "").replace("IOA - San Francisco, CA:", "").trim();
+                                geoEndTime = _geo.eDate
+                                if (geoAddr == tripAddr) {
+                                    let geoTabDuration = Math.abs(((geoEndTime - geoBeginTime) / 3600000).toFixed(2))
+                                    trip.GeoTab = geoTabDuration
+                                    trip.GeoTime = geoEndTime
+                                    break;
+                                    // console.log(JSON.stringify(geo))
+                                }
+                            }
+
+                        }
+
+                    }
+                    trip.puTime = trip.puTime.getHours() + ":" + trip.puTime.getMinutes() + ":" + trip.puTime.getSeconds()
+                    finialObjArr.push(trip);
+                }
+                //                let popOutDate="date,prtName,vanNum,puAddr,doAddr,puTime,doTime,itineris,GeoTab".split(",")
+                let popOutDateArr = "date,prtName,vanNum,puAddr,puTime,itineris,GeoTab".split(",")
+                $("#showTable").html(createTableHtml(popOutDateArr, finialObjArr))
+                getCSV(popOutDateArr, finialObjArr)
+                console.log(JSON.stringify(finialObjArr))
+                
+            }
+
+
+        });
+    });
+
+    //新建table
+    function createTableHtml(titles, items) {
+        let html = `<table class="table table-bordered table-striped">
+                    <thead class="bg-dark text-white">
+                        <tr><th>#</th>`
+        for (let i = 0; i < titles.length; i++) html += (titles[i] == "cancel" || titles[i] == "serverCode") ? "" : `<th>${titles[i]}</th>`
+        html += `</tr></thead>`
+        for (let i = 0, colNum = 0; i < items.length; i++) {
+            // if (items[i].itineris < 1) continue;
+            html += `<tr${colNum % 2 == 0 ? ' class="bg-light"' : ""}>`
+            colNum++;
+            html += `<td>${colNum}</td>`
+            for (let j = 0; j < titles.length; j++) {
+                if (titles[j] == "cancel" || titles[j] == "serverCode") continue
+                html += `<td>${items[i][titles[j]]}</td>`
+            }
+            html += "</tr>"
+        }
+
+
+        html += `</tbody>
+                </table>`
+        return html
+    }
+
+    //时间处理处
+    function mTime(timeString) {
+        let nTime = timeString
+        if (nTime.length == 7) nTime = "0" + nTime;
+        return nTime
+    }
+    //日期处理
+    function mDate(dateString) {
+        let nDate = dateString;
+        if (nDate.indexOf("/") > 0) {
+            nDate = nDate.replaceAll("/", "-")
+            if (nDate.split("-")[2].length == 4) {
+                let temp = nDate.split("-")
+                nDate = `${temp[2]}-${temp[0]}-${temp[1]}`
+            }
+        }
+        return nDate
+    }
+    //导出CSV文件
+    function getCSV(titleArr, dateArr) {
+        let data = dateArr;
+        let csv = titleArr.join(",") + "\n";
+        data.forEach(item => {
+            for (let i = 0; i < titleArr.length; i++) {
+                csv += `"${item[titleArr[i]]}"`
+                if (i < titleArr.length) csv += ","
+            }
+            csv+="\n"
+        })
+        // 创建并下载 CSV 文件
+        let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        let link = document.createElement('a');
+        if (link.download !== undefined) { // 如果浏览器支持下载属性
+            let url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'data.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+</script>
+</body>
+
+</html>

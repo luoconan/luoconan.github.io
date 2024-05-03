@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="./js/jq.js"></script>
+    <link href="./bootstrap.css" rel="stylesheet">
+    <script src="./bootstrap.js"></script>
+    
+
+    <title>Document</title>
+
+</head>
+<body>
+    <form action="#">
+        <textarea name="darText" id="darText">transport	Escort Req?	Name	Visit Type	appt time	curr facility	address	Phone	Appt Notes	Provider/Resource	External provider
+            Y	N	Abesamis, Purificacion K	DAY HEALTH - ALL DAY	 8:30 AM		4735 California Street APT #2 San Francisco CA 94118	Hm: 415-317-7866			SA221 IOA MOON DHC
+            N	N	Bishop Robinson, Jacqueline	DAY HEALTH - ALL DAY	 8:30 AM		3595 Geary Blvd #408 San Francisco CA 94118	Hm: 415-592-4309			SA221 IOA MOON DHC
+            Y	N	Bonner, Patricia	DAY HEALTH - ALL DAY	 8:00 AM	Victorian Manor	Victorian Manor 1444 McAllister Street San Francisco CA 94115	Hm: 415-921-7550			SA221 IOA STAR DHC
+            Y	N	Burr, Sandra Jeanne	DAY HEALTH - ALL DAY	 8:00 AM		640 Turk St., #3 San Francisco CA 94102	Hm: 415-409-6536			SA221 IOA STAR DHC
+            Y	N	Cabrera de Interiano, Elva	DAY HEALTH - ALL DAY	 8:30 AM		995 Brussels St. San Francisco CA 94134	Hm: 415-587-3561			SA221 IOA MOON DHC
+            Y	Y	Cao, Wan Ran	DAY HEALTH - ALL DAY	 8:00 AM		320 Clementina St. Apt 608 San Francisco CA 94103	Hm: 415-882-7987			SA221 IOA STAR DHC
+            N	N	Chan, Kwai-Hin	EXTERNAL APPOINTMENT	10:00 AM		2063 18th Ave San Francisco CA 94116	Hm: 415-566-8803	Dialysis every M, W, F,  636 Clay St. Silverride for transpo		SA221 IOA DIALYSIS
+            Y	N	Chan, Kwan Har	DAY HEALTH - ALL DAY	 8:30 AM		2014 34th Avenue San Francisco CA 94116	Hm: 415-609-9612			SA221 IOA SUN DHC
+            N	N	Chau, Simon	EXTERNAL APPOINTMENT	 9:00 AM		171 Farallones Street San Francisco CA 94112	Hm: 415-672-4262	Dialysis T, Th, Sat  9-12 Silverride.		SA221 IOA DIALYSIS
+            Y	N	Chen, Annie	DAY HEALTH - ALL DAY	 8:30 AM		5717 Geary Blvd. #2 San Francisco CA 94121	Hm: 415-668-5766			SA221 IOA SUN DHC</textarea>
+
+        
+        
+        
+        <button id="submit">submit</button>
+        <input type="reset" value="reset" />
+    </form>
+    <div id="pmTable"></div>
+</body>
+</html>
+<script>
+//nextDayPrt from testDar
+$(function(){
+    let nextDayPrt=""
+
+    let prt4Room={
+        "":"",
+    };
+
+    $("#submit").click(function(){
+        if($("#darText").val()!==""){
+            nextDayPrt=$("#darText").val();
+        
+
+            let prtObjStr="{"
+            let prtArr=nextDayPrt.split("\n")  //客人数据表
+            let prtTitle=prtArr[0].split("\t") //表头
+            for(let i=1;i<prtArr.length;i++){
+                let prt=prtArr[i].split("\t")  //每一个客人的信息
+                for(let j=0;j<prtTitle.length;j++){
+                    if(prtTitle[j]==="Name"){
+                        prtObjStr+=`"${prt[j]}":`
+                    }
+                    if(prtTitle[j]==="External provider"){
+                        //prtObjStr+=`"${prt[j]}",`
+
+                        if(prt[j].indexOf("SUN")>-1) prtObjStr+=`"1",`
+                        else if(prt[j].indexOf("STAR")>-1) prtObjStr+=`"2",`
+                        else if(prt[j].indexOf("MOON")>-1) prtObjStr+=`"3",`
+                        else prtObjStr+=`"0",`                        
+                    }
+                }
+            }
+            //prtObjStr=JSON.parse(prtObjStr)
+            //alert(prtObjStr)
+        }
+    })
+   
+
+    
+
+})
+
+
+</script>

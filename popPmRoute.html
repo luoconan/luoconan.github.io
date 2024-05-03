@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="./bootstrap.css" rel="stylesheet">
+    <script src="js/jq.js"></script>
+    <script src="./bootstrap.js"></script>
+    <script src="./prts_info.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+           color:black;
+        }
+       
+        .border{
+           padding-left:5px;
+           padding-right:5px;
+        }
+        #main{
+        }
+        #date{
+           /*width:690px;*/
+           text-align:center;
+           padding:10px 0;
+        }
+        #table{
+            display: flex;
+        }
+        .table_d{            
+            margin-left: 90px;
+        }
+        .table{
+            margin-left:15px
+        }
+        .childTable{ 
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div id="date"></div>
+        <div id="table"></div>
+    </div>
+</body>
+</html>
+<script>
+    //alert(prtObjInfo["Ma, Cui Hua"])
+    let orderBy=0; //if 0 
+    let today=new Date();
+    let todayDate=(today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
+        
+
+    (function($){
+        $.getUrlParam = function(name){
+            var reg = new RegExp("(^|&)" + name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
+
+    function whichRoom(prt){
+        let tempPrt="{@}"+prt
+
+        if(prtObjInfo[prt]){
+            let room=prtObjInfo[prt].room
+            
+            room = room==1?"☀":
+                   room==2?"✨":
+                   room==3?"🌙":
+                   "😄"
+            
+            tempPrt=room+tempPrt
+        }else{
+            tempPrt="😄"+tempPrt
+        }
+
+        return tempPrt;
+    }
+    function isWheelchair(prt){
+
+        return "-";
+    }
+
+    function createTable(arr,isRoom){
+        let boder_style='border-secondary';
+        let bg_style='bg-dark-subtle';
+        let tableHtml=""
+        if(isRoom){
+            //$("#date").html(".")
+            let tempTableHtml1 = `<table style="border:1px"><tr><th colspan="3" style="text-align: center"> </th></tr>`
+            let tempTableHtml2 = `<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt</th><th class="border border-dark ${bg_style}">Rt#</th></tr>`;
+            
+            let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2;            
+            let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2;
+            let moonTable=`<div class="childTable" id="moonRoom">`+tempTableHtml1+tempTableHtml2;
+            let otherTable=`<div id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2;
+            
+            for(let i=0,j=1;i<arr.length;i++){
+                let room=arr[i][0].split("{@}")[0]; // ☀✨🌙
+                let prtTr=`<tr style="color:black">
+                    <!--<td>${i}</td>-->
+                    <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
+                    <td class="border border-dark">${arr[i][1]}</td>`
+                
+                if(room=="☀"){
+                    sunTable+=prtTr;
+                }else if(room=="✨"){
+                    starTable+=prtTr;
+                }else if(room=="🌙"){
+                    moonTable+=prtTr;
+                }else{
+                    otherTable+=prtTr;
+                }
+            }
+            sunTable+="</table></div>";
+            starTable+="</table></div>";
+            if(`<div class="childTable" id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2==otherTable) otherTable=""
+            moonTable+="</div></table><br>"+otherTable+"</table></div>";
+
+            tableHtml=sunTable+starTable+moonTable
+            
+        }else{
+            $("#date").html(todayDate)
+            tableHtml = `<table style="border:1px">
+                             <tr>
+                                <!--<th class="border border-dark ${bg_style}"></th>-->
+                                <th class="border border-dark ${bg_style}">Prt</th>
+                                <th class="border border-dark ${bg_style}">Rt#</th>
+                                <th class="border border-dark ${bg_style}">W</th>
+      
+                                <th class="border border-dark ${bg_style}">&nbsp;</th>
+                                <!--<th class="border border-dark ${bg_style}"></th>-->
+                                <th class="border border-dark ${bg_style}">Prt</th>
+                                <th class="border border-dark ${bg_style}">Rt#</th>
+                                <th class="border border-dark ${bg_style}">W</th>
+                             </tr>`;
+    
+            let row=parseInt(arr.length/2+.6)
+            for(let i=0;i<row;i++){
+                let r = parseInt(i + row);
+                //left side
+                tableHtml += `<tr style="color:black">
+                    <!--<td>${i}</td>-->
+                    <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
+                    <td class="border border-dark">${arr[i][1]}</td>
+                    <td class="border border-dark">${arr[i][2]}</td>
+                    <td class="border border-dark ${bg_style}"></td>`
+                //right side
+                
+                let r_prt="",r_rtNum="",r_wheelchair=""
+                if(r<arr.length){
+                    r_prt=arr[r][0];
+                    r_rtNum=arr[r][1];
+                    r_wheelchair=arr[r][2]
+                    
+                }
+                tableHtml+=`<!--<td>${r}</td>-->
+                    <td class="border border-dark">${r_prt.replace("{@}","")}</td>
+                    <td class="border border-dark">${r_rtNum}</td>
+                    <td class="border border-dark">${r_wheelchair}</td>
+                `
+            }
+    
+    
+            tableHtml+="</table>"
+        }
+        $("#table").html(tableHtml)
+        $("#table").removeClass("table")
+        $("#table").addClass("table_d")
+    }
+
+    $(function(){
+
+
+        let param=$.getUrlParam("arr");
+        let tableHtml="";
+        let pmArr=eval(param)
+        //console.log($.getUrlParam("date1")+"----------");
+        if($.getUrlParam("date")!=null) todayDate=$.getUrlParam("date")
+        //console.log(param)
+
+       
+
+        // 将原始数据组合成一个按车(带上房号)排序的数组,方便制表        
+        let byRouteArr=[];
+        for(let i=1;i<pmArr.length-1;i++){
+            if(pmArr[i]===undefined) continue;
+            for(let j=0;j<pmArr[i].length;j++){
+                let tempPrt=pmArr[i][j]
+                let r=i
+                r=i==11?"Joe":i==12?"Wilson":r;
+                byRouteArr.push([whichRoom(tempPrt),r,isWheelchair(tempPrt)]);
+            }
+        }
+        // 新建一个按名排序的数组
+        let byNameArr=[...byRouteArr]
+        byNameArr.sort()
+
+
+        //console.log(byRouteArr,byRouteArr.length)
+        
+        
+        let tableArr=[...byRouteArr];//制表时候用的表
+        createTable(byNameArr)
+
+        $("#date").click(function(){
+            const FORM_NUMBER=6;
+            $("#table").html("")
+            orderBy++;
+            console.log(orderBy%FORM_NUMBER)
+            if(orderBy%FORM_NUMBER==0){// by name only
+                createTable(byNameArr)
+                //console.log("byNameArr:"+byNameArr)
+            }else if(orderBy%FORM_NUMBER==1){// by route
+                createTable(byRouteArr)
+                //console.log("byRouteArr:"+byRouteArr)
+            }else if(orderBy%FORM_NUMBER==2){// by Room and name
+                createTable(byNameArr,true)
+                $("#table").addClass("table")
+                $("#table").removeClass("table_d")
+                //console.log("byNameArr:"+byNameArr)
+            }else if(orderBy%FORM_NUMBER==3){// by Sun Room
+                createTable(byNameArr,true)
+                $("#starRoom").hide()
+                $("#moonRoom").hide()
+                $("#date").text("☀Sun Room"+todayDate)
+                //console.log("byRouteArr:"+byRouteArr)
+            }else if(orderBy%FORM_NUMBER==4){// by Star Room
+                createTable(byNameArr,true)
+                $("#sunRoom").hide()
+                $("#moonRoom").hide()
+                $("#date").text("✨Star Room"+todayDate)
+                //console.log("byRouteArr:"+byRouteArr)
+            }else if(orderBy%FORM_NUMBER==5){// by Moon Room
+                createTable(byNameArr,true)
+                $("#starRoom").hide()
+                $("#sunRoom").hide()
+                $("#date").text("🌙Moon Room"+todayDate)
+                $("#otherPrt").hide()
+                //console.log("byRouteArr:"+byRouteArr)
+            }
+            
+        })
+    })
+</script>

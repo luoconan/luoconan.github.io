@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAR</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- 引入 jQuery -->
+<style>
+    /* 添加 CSS 样式，给表格添加边框 */
+    table {
+        border-collapse: collapse;
+        border: 1px solid black;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        font-family: Arial, sans-serif;
+        color: #3E4A5B;
+    }
+    th {
+        background-color: #C6DAF2;
+    }
+    .even-row {
+        background-color: #EAF6F6;
+    }
+    .odd-row {
+        background-color: #F5F8FD;
+    }
+</style>
+</head>
+<body>
+<div id="inputArea">
+    <textarea id="inputText" rows="5" cols="50"></textarea><br>
+    <button id="darButton">DAR</button>
+    <button id="externalButton">External</button>
+</div>
+<div id="outputArea">
+    <div id="tableTitle"></div> <!-- 用于显示表名 -->
+    <div id="userData"></div> <!-- 用于显示用户输入的表格 -->
+</div>
+
+<script>
+let size=[ 2 , 2 , 4 , 5 , 3 , 4 , 6 , 4 , 8 , 8 , 4 ]
+let colWidth=[]
+let sum=eval(size.join("+"))
+for(let i=0;i<size.length;i++){
+    let percent=(size[i]/sum*100).toFixed(2)+'%'
+    colWidth.push(percent)
+}
+// 等待文档加载完成后执行
+$(document).ready(function(){
+
+    // 表头点击事件
+    $("#tableTitle").click(function(){
+        $("#inputArea").show()
+        $("#tableTitle").html("")
+        $("#userData").html("")
+    })
+
+    // DAR 按钮点击事件
+    $("#darButton").click(function(){
+        var inputText = $("#inputText").val();
+        displayUserTable(inputText); // 显示用户输入的表格
+        // 在这里可以添加 DAR 操作的逻辑
+        $("#inputArea").hide()
+    });
+
+    // External 按钮点击事件
+    $("#externalButton").click(function(){
+        var inputText = $("#inputText").val();
+        displayUserTable(inputText,true); // 显示用户输入的表格
+        $("td").parent("tr").hide()
+        $(".EXTERNAL-APPOINTMENT").parent("tr").show();
+        // 在这里可以添加 External 操作的逻辑
+        $("#inputArea").hide()
+    });
+
+    // 显示用户输入的表格的函数
+    function displayUserTable(inputText, isExternal) {
+        // 将输入文本按行分割
+        var lines = inputText.split("\n");
+        // 获取用于显示表格名称的 div 元素
+        var tableTitleDiv = $("#tableTitle");
+        // 获取用于显示用户输入表格的 div 元素
+        var userDataDiv = $("#userData");
+
+        // 清空之前的表格和表名
+        tableTitleDiv.empty();
+        userDataDiv.empty();
+
+        // 显示表名
+        var tableName = lines[0];
+        tableTitleDiv.text(tableName);
+
+        // 创建一个表格元素
+        var table = $("<table>").addClass("userTable");
+
+        // 创建表头行
+        var headRow = $("<tr>");
+        var columnNames = lines[1].split("\t"); // 以制表符分割每一列
+        columnNames.forEach(function(columnName,index) {            
+            headRow.append($(`<th style="width:${colWidth[index]};">`).text(columnName.replace("Transport","Trans")));
+        });
+        table.append(headRow);
+
+        // 创建数据行
+        var dataRows = [];
+        for (var i = 2; i < lines.length; i++) {
+            var rowData = lines[i].split("\t"); // 以制表符分割每一列
+            dataRows.push(rowData);
+        }
+
+        // 按照 "name" 列进行排序
+        dataRows.sort(function(a, b) {
+            return a[2] > b[2]?1:-1;
+        });
+
+        // 按照 "transport" 列进行倒序排序
+        dataRows.sort(function(a, b) {
+            return a[0] > b[0] ? -1 : 1
+        });
+
+        // 创建数据行
+        for (let i = 0, k=false; i < dataRows.length; i++) {
+            var rowData = dataRows[i];
+            if(isExternal && rowData[3].indexOf("EXTERNAL APPOINTMENT")<0) {}
+            else k=!k;
+            var dataRow = $("<tr>");
+                for (let j = 0; j < rowData.length; j++) {                    
+                    var data = rowData[j];
+                    let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"" 
+                    var cell = $(`<td style="${fontCenter}" class='${data.replaceAll(" ","-")}'>`).text(data);
+                    if (k) {
+                        cell.addClass("even-row");
+                    } else {
+                        cell.addClass("odd-row");
+                    }
+                    dataRow.append(cell);
+                }
+            table.append(dataRow);
+        }
+
+        // 将表格添加到 userDataDiv 中
+        userDataDiv.append(table);
+    }
+    //$("#inputText").val(DAR)
+    
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,579 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <link href="./bootstrap.css" rel="stylesheet">
+    <script src="./js/jq.js"></script>
+    <script src="./bootstrap.js"></script>
+    <script src="./prtinfo.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+    <style>
+   *{
+      color:black;
+   }
+   .border{
+      padding-left:5px;
+      padding-right:5px;
+   }
+   #today{
+      width:690px;
+      text-align:center;
+      padding:10px 0;
+   }
+    </style>
+</head>
+<body>
+<div id="today" style="width:690px;text-align:center">11-8-2023</div>
+
+
+<div id="textarea" style="margin:30px 90px">
+<textarea id="trips"></textarea>
+<button id="route" class="my-btn">showRoute</button>
+<button id="name" class="my-btn">showName</button>
+<textarea id="title">transpo,escort,name,apptType,aTime,nowAddr,home,phone,extNote,centerNote,note"</textarea>
+<textarea id="dar">
+</textarea>
+<button id="showCode" class="showCode">showCode</button>
+</div>
+
+<div id="showTable" style="width:600px;margin-left:90px">
+   <div id="pmTable"></div>
+</div>
+<script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v84a3a4012de94ce1a686ba8c167c359c1696973893317" integrity="sha512-euoFGowhlaLqXsPWQ48qSkBSCFs3DPRyiwVu3FjR96cMPx+Fr+gpWRhIafcHwqwCqWS42RZhIudOvEI+Ckf6MA==" data-cf-beacon="{&quot;rayId&quot;:&quot;823062ab9c19255a&quot;,&quot;r&quot;:1,&quot;version&quot;:&quot;2023.10.0&quot;,&quot;token&quot;:&quot;7be06a8d3e9342b5b2c67e7d10c02f1d&quot;}" crossorigin="anonymous"></script>
+
+
+
+<script>
+
+// ==UserScript==
+// @name         NewPmRoute
+// @namespace    https://www.conanluo.com/
+// @version      1.11
+// @description  Build a list
+// @author       Conan
+// @match        *://*.conanluo.com/pmroute.html
+// @require      https://code.jquery.com/jquery-2.2.4.min.js
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=itinerisonline.com
+// @grant        none
+// ==/UserScript==
+(function () {
+
+
+    let date = "09/30/2023 "; //fake date only for compare
+    let pmTime = "15:30:00";
+    let drivers = [
+        "Bert Reid",
+        "Crystal Calloway",
+        "Mauricio Reina",
+        "Yingyang Chen",
+        "Manuel Reina",
+        "Jerald Alejandro",
+        "Walter Mejia",
+        "Fook Fung",
+        "Kang Li",
+        "Han Yang Zhou",
+        "Wilson Ochoa",
+        "Zhao Zhong Zheng",
+        "Allen Daniels",
+        "Yosheki Richardson"
+    ];
+    let driverInfo = {
+        "Bert Reid": "10",
+        "Crystal Calloway": "08",
+        "Mauricio Reina": "02",
+        "Yingyang Chen": "09",
+        "Manuel Reina": "03",
+        "Jerald Alejandro": "04",
+        "Walter Mejia": "06",
+        "Fook Fung": "01",
+        "Kang Li": "05",
+        "Han Yang Zhou": "2Joe",
+        "Wilson Ochoa": "3Wilson",
+        "Zhao Zhong Zheng":"07",
+        "Allen Daniels":"08",
+        "Yosheki Richardson":"10"
+    };
+    let today=new Date();
+    $("#today").html((today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear())
+    /*
+        let driverInfo={
+            "Bert Reid":10,
+            "Crystal Calloway":8,
+            "Mauricio Reina":2,
+            "Yingyang Chen":9,
+            "Manuel Reina":3,
+            "Jerald Alejandro":4,
+            "Walter Mejia":6,
+            "Fook Fung":1,
+            "Kang Li":5,
+            "Han Yang Zhou":"Joe",
+            "Wilson Ochoa":"Wilson",
+            "Zhao Zhong Zheng":"7",
+            "Allen Daniels":"8"
+        }
+    */
+    function sortBy(keyWord) {
+        return function (m, n) {
+            let a = m[keyWord].toLowerCase();
+            let b = n[keyWord].toLowerCase();
+            if (a < b) return -1;
+            if (b < a) return 1;
+            return 0;
+        };
+    }
+  
+    function sortByTime() {
+        return function (m, n) {
+            let a = date + m.time;
+            let b = date + n.time;
+            if (a < b) return -1;
+            if (b < a) return 1;
+            return 0;
+        };
+    }
+  
+    function getNum(str){
+        return str=="10"?10:(str.substr(1,str.length))
+    }
+  
+    $(".my-btn").click(function () {
+        console.log(this.id)
+
+        let today=new Date();
+        $("#today").html((today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear())
+        let pmTable = $("#pmTable");
+        let trips = $("#trips").val();
+  
+        let groups = [];
+  
+  
+        let prtsArr = trips.split("\n");
+  
+        for (let i = 1; i < prtsArr.length; i++) {
+            let keys = prtsArr[0].split("\t");
+            let o = '{';
+            for (let j = 0; j < keys.length; j++) {
+                //o={};
+                //o[`${keys[j].replace(" ","_")}`]=prtsArr[i][j];
+                //o=o+`"${keys[j].replace(" ","_")}":"${prtsArr[i][j]}"`
+                let key = "";
+                let val = prtsArr[i].split("\t");
+                let chk = keys[j];
+                if (chk == "Driver Name") {
+                    key = "driver";
+                } else if (chk == "PassengerName") {
+                    key = "prt";
+                } else if (chk == "ServiceCode") {
+                    key = "wheelchair";
+                } else if (chk == "PickupOrdered") {
+                    key = "time";
+                }
+                if (key != "") {
+                    o = o + `"${key}":"${val[j]}"`;
+                }
+                if (key != "") o = o + ",";
+            }
+            o = o.substr(0, o.length - 1);
+            o = o + "}";
+            let obj = JSON.parse(o);
+            if (drivers.indexOf(obj.driver) >= 0) {
+  
+                //console.log(`${date+obj.time}>${date+pmTime}---${date+obj.time>=date+pmTime}`)
+                if (!(date + obj.time >= date + pmTime)) {
+                    continue;
+                }
+                if (obj.wheelchair == "Wheelchair") { // replace Wheelchair
+                    obj.wheelchair = 'w';
+                } else {
+                    obj.wheelchair = "";
+                }
+                obj.rtNum = driverInfo[obj.driver];
+  
+  
+  
+  
+                groups.push(obj);
+  
+            }
+            //groups.push((o))
+        }
+  
+        if(this.id=="route"){
+            groups.sort(sortBy("prt"));
+            groups.sort(sortBy("rtNum"));
+        }else{
+  
+            groups.sort(sortBy("prt"));
+        }
+  
+        //groups.sort(sortByTime())
+        let boder_style='border-secondary';
+        let bg_style='bg-dark-subtle';
+        let tableHtml = `<table style="border:1px">
+                         <tr>
+                            <!--<th class="border border-dark ${bg_style}"></th>-->
+                            <th class="border border-dark ${bg_style}">Prt</th>
+                            <th class="border border-dark ${bg_style}">Rt#</th>
+                            <th class="border border-dark ${bg_style}">W</th>
+  
+                            <th class="border border-dark ${bg_style}">&nbsp;</th>
+                            <!--<th class="border border-dark ${bg_style}"></th>-->
+                            <th class="border border-dark ${bg_style}">Prt</th>
+                            <th class="border border-dark ${bg_style}">Rt#</th>
+                            <th class="border border-dark ${bg_style}">W</th>
+                         </tr>`;
+        
+        let row = parseInt(groups.length / 2 + .6);
+        for (let i = 0; i < row; i++) {
+            let r = parseInt(i + row);
+            try{
+                tableHtml += `<tr style="color:black">
+                <!--<td>${i+1}</td>-->
+                <td class="border border-dark">${groups[i].prt}</td>
+                <td class="border border-dark">${getNum(groups[i].rtNum)}</td>
+                <td class="border border-dark">${groups[i].wheelchair}</td>
+                <td class="border border-dark ${bg_style}"></td>
+                <!--<td>${r+1}</td>-->`
+                let r_prt="",r_rtNum="",r_wheelchair=""
+                if(r<groups.length){
+                    r_prt=groups[r].prt
+                    r_rtNum=getNum(groups[r].rtNum)
+                    r_wheelchair=groups[r].wheelchair
+                }
+                tableHtml+=`
+                <td class="border border-dark">${r_prt}</td>
+                <td class="border border-dark">${r_rtNum}</td>
+                <td class="border border-dark">${r_wheelchair}</td>
+                </tr>`;
+            }catch(e){
+  
+            }
+        }
+  
+        tableHtml += `</table>`;
+      
+        pmTable.html(tableHtml);
+        
+        //pmTable.text(JSON.stringify(groups))
+        //alert(groups[5].prt)
+        //console.log(groups.length/2)
+  
+        $("#textarea").hide()
+        console.log(groups.length,row)
+        console.log(groups[32].prt,groups[33].prt)
+    });
+  
+    $("#showCode").click(function(){
+        let title=$("#title").val().split(",")
+        let dar=$("#dar")
+        let arry=dar.val().split("\n");
+        let newArr=[],str=""
+        for(let i=0,j=0;i<arry.length;i++){
+            if(arry[i]!=""){
+                let obj={}
+                let curPrt=arry[i].split("            ")
+                for(let k=0;k<title.length;k++){
+  
+                obj[title[k]]=(curPrt[k]+"").split("DOB")[0].trim()
+            }
+            newArr.push(obj)
+          }
+      }
+      //$("#trips").val(arry[1].split('            ')
+      //alert(JSON.stringify(newArr[0].name))
+
+      $("#pmTable").text(JSON.stringify(newArr))
+      
+    })
+  
+    $("#today").click(function(){
+        //console.log(this.id)
+        $("#textarea").show()
+  
+    })
+  
+  })();
+  
+
+</script></body></html>
+
+
+<script>
+str=`    Y            N            Abesamis, Purificacion K DOB: 2/04/1933  Age: 90 years              DAY HEALTH - ALL DAY  8:00 AM                           4735 California Street APT #2 San Francisco CA 94118     Hm: 415-317-7866                        SA221 IOA STAR DHC    
+
+    Y            Y            Beck, Ora DOB: 12/01/1946  Age: 76 years          EXTERNAL APPOINTMENT  1:00 PM             Parkside Retirement Homes       RCFE Parkside Retirement Home 2447 19th Ave San Francisco CA 94116              Hm: 415-564-6695          Transthoracic Echo: Mt. Zion 1600 Divisadero st. 5th fl #532 415.353.1262 fyi- 10/9 date wasn't available as requested by Pcp.           SA221 IOA DIAGNOSTIC UCSF CARDIOLOGY 400 Parnassus Ave, #501 
+    
+    Y            N            Beck, Ora DOB: 12/01/1946  Age: 76 years          DAY HEALTH - ALL DAY           8:30 AM             Parkside Retirement Homes              RCFE Parkside Retirement Home 2447 19th Ave San Francisco CA 94116   Hm: 415-564-6695                        SA221 IOA MOON DHC 
+    
+    Y            N            Bello, Christopher DOB: 6/05/1949  Age: 74 years              DAY HEALTH - ALL DAY  8:00 AM                           345 6th St #307 San Francisco CA 94103 Hm: 415-375-1970                        SA221 IOA STAR DHC     
+    
+    N            N            Bishop Robinson, Jacqueline DOB: 3/24/1942  Age: 81 years     DAY HEALTH - ALL DAY  8:30 AM                           3595 Geary Blvd #408 San Francisco CA 94118      Hm: 415-592-4309                        SA221 IOA MOON DHC      
+    
+    N            N            Bishop Robinson, Jacqueline DOB: 3/24/1942  Age: 81 years     OFFICE VISIT SHORT       11:00 AM                          3595 Geary Blvd #408 San Francisco CA 94118      Hm: 415-592-4309          vs/ wt   Jenny Deng    
+    
+    Y            N            Bonner, Patricia DOB: 2/08/1946  Age: 77 years DAY HEALTH - ALL DAY           8:00 AM             Victorian Manor              Victorian Manor 1444 McAllister Street San Francisco CA 94115     Hm: 415-921-7550                             SA221 IOA STAR DHC    
+    
+    N            N            Campbell, Stephan DOB: 5/13/1947  Age: 76 years              EXTERNAL APPOINTMENT           2:45 PM                           1880 Fulton St, Apt. 5 San Francisco CA 94117               Hm: 415-340-9684          x-ray in the clinic  SA221 IOA DIAGNOSTIC   CAL MOBILE X-RAY &amp; EKG 2610 YERBA VISTA CT
+    
+    Y            N            Campbell, Stephan DOB: 5/13/1947  Age: 76 years              DAY HEALTH - ALL DAY  8:30 AM                           1880 Fulton St, Apt. 5 San Francisco CA 94117    Hm: 415-340-9684                        SA221 IOA MOON DHC      
+    
+    Y            N            Campbell, Stephan DOB: 5/13/1947  Age: 76 years              OFFICE VISIT SHORT       2:30 PM                           1880 Fulton St, Apt. 5 San Francisco CA 94117    Hm: 415-340-9684          RN f/u right hip pain      Mandy Enkhbat
+    
+    Y            Y            Cao, Wan Ran DOB: 11/23/1934  Age: 88 years   NURSE ONLY     10:30 AM                          320 Clementina St. Apt 608 San Francisco CA 94103            Hm: 415-882-7987          Premarin Application     Alice Ding             
+    
+    Y            Y            Cao, Wan Ran DOB: 11/23/1934  Age: 88 years   DAY HEALTH - ALL DAY           8:00 AM                           320 Clementina St. Apt 608 San Francisco CA 94103 Hm: 415-882-7987                        SA221 IOA STAR DHC     
+    
+    N            N            Chan, Phillip DOB: 6/11/1928  Age: 95 years        OFFICE VISIT 30 MIN      9:00 AM                           3595 Geary Blvd #536 San Francisco CA 94118         Hm: 650-430-3123          RGB       Alla Pivnik          
+    
+    Y            N            Chen, Buoy Lan DOB: 9/23/1933  Age: 90 years  DAY HEALTH - ALL DAY           8:00 AM             Merced Residential Care Facility (Girard) Merced Girard 129 Girard St, San Francisco CA 94134      Hm: 415-467-8900                          SA221 IOA STAR DHC    
+    
+    Y            N            Cheng, Guang Shun DOB: 11/13/1955  Age: 67 years              COMPREHENSIVE EYE EXAM       10:15 AM                          890 29th Avenue San Francisco CA 94121 Hm: 415-831-5651          annual  Alan Chan             
+    
+    Y            N            Cheng, James DOB: 5/11/1951  Age: 72 years      DAY HEALTH - ALL DAY           8:00 AM                           1321 Mission Street, Apt. 206 San Francisco CA 94103        Hm: 628-300-5232                        SA221 IOA STAR DHC          
+    
+    Y            N            Cheng, James DOB: 5/11/1951  Age: 72 years      OFFICE VISIT 60 MIN      10:00 AM                          1321 Mission Street, Apt. 206 San Francisco CA 94103         Hm: 628-300-5232          QOM     Jocelyn Ko         
+    
+    Y            N            Cheng, James DOB: 5/11/1951  Age: 72 years      OFFICE VISIT 30 MIN      12:00 PM                          1321 Mission Street, Apt. 206 San Francisco CA 94103         Hm: 628-300-5232          Labs      Lucy Guevara   
+    
+    Y            N            Cheng, James DOB: 5/11/1951  Age: 72 years      NURSE ONLY     11:00 AM                          1321 Mission Street, Apt. 206 San Francisco CA 94103         Hm: 628-300-5232          Wound care       Mandy Enkhbat             
+    
+    Y            N            Cheung, William DOB: 7/22/1943  Age: 80 years DAY HEALTH - ALL DAY           8:30 AM                           1559 27th Ave San Francisco CA 94122         Hm: 628-899-6113          shower at center              SA221 IOA SUN DHC      
+    
+    Y            N            Chin, Ang Lin DOB: 7/01/1946  Age: 77 years       DAY HEALTH - ALL DAY           8:30 AM                           779 15th ave San Francisco CA 94118            Hm: 415-832-0110                        SA221 IOA SUN DHC      
+    
+    Y            N            Chin, Anita DOB: 6/30/1951  Age: 72 years          DAY HEALTH - ALL DAY           8:30 AM                           614 7th Ave San Francisco CA 94118            Hm: 415-702-6368                        SA221 IOA SUN DHC      
+    
+    Y            N            Chin, Anita DOB: 6/30/1951  Age: 72 years          OFFICE VISIT 30 MIN      8:00 AM                           614 7th Ave San Francisco CA 94118   Hm: 415-702-6368                        Lucy Guevara   
+    
+    Y            N            Chou, Sio Cheong DOB: 3/27/1940  Age: 83 years              COMPREHENSIVE EYE EXAM       2:30 PM             Victorian Manor              Victorian Manor 1444 McAllister St San Francisco CA 94115              Hm: 415-921-7550          annual va eval   Alan Chan         
+    
+    Y            N            Chou, Sio Cheong DOB: 3/27/1940  Age: 83 years              DAY HEALTH - ALL DAY  8:30 AM             Victorian Manor              Victorian Manor 1444 McAllister St San Francisco CA 94115              Hm: 415-921-7550                        SA221 IOA SUN DHC      
+    
+    Y            Y            Chou, Sio Cheong DOB: 3/27/1940  Age: 83 years              NURSE ONLY      3:00 PM             Victorian Manor              Victorian Manor 1444 McAllister St San Francisco CA 94115            Hm: 415-921-7550              post fall skin check          Mandy Enkhbat
+    
+    Y            N            Chow, Yuliang DOB: 7/12/1950  Age: 73 years     DAY HEALTH - ALL DAY           8:30 AM                           1215 Ellis Street, D106 San Francisco CA 94115         Hm: 415-939-5182                        SA221 IOA SUN DHC     
+    
+    Y            N            Chryst, Genn DOB: 2/09/1956  Age: 67 years       EXTERNAL APPOINTMENT  10:30 AM                          225 Berry Street, Unit #324 San Francisco CA 94158         Hm: 415-994-1245          Appt at Bay Area Foot Care 1 Sharder St. Ste.580 415 759 2014         SA221 IOA OUTSIDE SPECIALIST
+    
+    Y            Y            Chu, Clyde Y DOB: 4/16/1931  Age: 92 years        OFFICE VISIT 30 MIN      10:00 AM                          2034 43rd Avenue San Francisco CA 94116            Hm: 415-665-1383          Reassessment   Vivien Wong     
+    
+    N            N            Chu, Kan DOB: 3/09/1934  Age: 89 years              DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd #402 San Francisco CA 94118         Hm: 415-944-8199                        SA221 IOA SUN DHC     
+    
+    Y            Y            Chu, Kwai Lan DOB: 1/05/1938  Age: 85 years     OFFICE VISIT 30 MIN      12:00 PM                          533 29th Ave San Francisco CA 94121   Hm: 415-629-8241          Reassessment   Vivien Wong     
+    
+    Y            Y            Chu, Pak DOB: 10/20/1937  Age: 86 years            NURSE ONLY     4:30 PM                           1790 9th Ave San Francisco CA 94122              Hm: 415-996-0666          RBG/insulin Q Friday      Pacita Ascalon  
+    
+    Y            N            Chu, Pak DOB: 10/20/1937  Age: 86 years            DAY HEALTH - ALL DAY           8:30 AM                           1790 9th Ave San Francisco CA 94122            Hm: 415-996-0666                        SA221 IOA SUN DHC      
+    
+    Y            N            Chu, Yin DOB: 2/26/1936  Age: 87 years MASS IMMUNIZATION CLINIC 8:00 AM                           2034 43rd Avenue San Francisco CA 94116         Hm: 415-665-1383          flu only SA221 IOA CLINIC RN        
+    
+    Y            Y            Chu, Yin DOB: 2/26/1936  Age: 87 years OFFICE VISIT 30 MIN       10:30 AM                          2034 43rd Avenue San Francisco CA 94116              Hm: 415-665-1383          Reassessment   Vivien Wong     
+    
+    Y            N            Chung, Suk W DOB: 6/30/1962  Age: 61 years     DAY HEALTH - ALL DAY           8:00 AM                           1458 21st Avenue San Francisco CA 94122         Hm: 415-759-8757                        SA221 IOA STAR DHC     
+    
+    Y            N            Cornel, Rebecca DOB: 3/11/1944  Age: 79 years DAY HEALTH - ALL DAY           8:30 AM                           1634 41st Ave San Francisco CA 94122         Hm: 415-731-2699                        SA221 IOA MOON DHC     
+    
+    Y            N            Cruz, Ruben D DOB: 6/27/1959  Age: 64 years              COMPREHENSIVE EYE EXAM       2:00 PM                           730 Eddy St, Rm 115 San Francisco CA 94109          Hm: 415-353-5657          annual Va eval       Alan Chan         
+    
+    Y            Y            Cruz, Ruben D DOB: 6/27/1959  Age: 64 years     NURSE ONLY     10:15 AM                          730 Eddy St, Rm 115 San Francisco CA 94109   Hm: 415-353-5657          RBG,Ozempic dose and oral meds              Pacita Ascalon  
+    
+    Y            N            Cruz, Ruben D DOB: 6/27/1959  Age: 64 years     DAY HEALTH - ALL DAY           8:00 AM                           730 Eddy St, Rm 115 San Francisco CA 94109         Hm: 415-353-5657                        SA221 IOA STAR DHC     
+    
+    Y            N            Dixon, Myles E DOB: 3/04/1956  Age: 67 years    MASS IMMUNIZATION CLINIC 8:00 AM                           2141 Geary Blvd, APT 101 San Francisco CA 94115 Hm: 415-948-8691          covid19 only      SA221 IOA CLINIC RN          
+    
+    Y            N            Dixon, Myles E DOB: 3/04/1956  Age: 67 years    OFFICE VISIT 30 MIN      1:30 PM                           2141 Geary Blvd, APT 101 San Francisco CA 94115         Hm: 415-948-8691          MD visit f/u prostate              Jocelyn Ko         
+    
+    Y            N            Doyle, Tom DOB: 7/27/1951  Age: 72 years          BRIEF EYE EXAM    11:00 AM                          2770 Lombard Street #101 San Francisco CA 94123            Hm: 415-409-6277          scheduled per pt's request              Alan Chan         
+    
+    Y            N            Doyle, Tom DOB: 7/27/1951  Age: 72 years          DAY HEALTH - ALL DAY           8:30 AM                           2770 Lombard Street #101 San Francisco CA 94123 Hm: 415-409-6277          day health          SA221 IOA SUN DHC           
+    
+    N            N            Ferrell, Wanda DOB: 11/12/1956  Age: 66 years DAY HEALTH - ALL DAY           8:30 AM                           Coronet 3595 Geary Blvd #308 San Francisco CA 94118      Hm: 415-595-5165                        SA221 IOA MOON DHC      
+    
+    Y            N            Garcia, Dora J DOB: 5/14/1936  Age: 87 years     DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd #428 San Francisco CA 94118                                     SA221 IOA MOON DHC 
+    
+    Y            N            Godinez, Luis DOB: 11/28/1944  Age: 78 years    DAY HEALTH - ALL DAY           10:00 AM                          27 Hollywood Court San Francisco CA 94112         Hm: 415-806-1091                        SA221 IOA STAR DHC     
+    
+    -             -             Grossman, Murray DOB: 4/01/1930  Age: 93 years              DAY HEALTH - ALL DAY  8:30 AM                           3595 Geary Blvd #409 San Francisco CA 94118      Hm: 415-386-3221                        SA221 IOA MOON DHC      
+    
+    Y            N            Gu, Guan Qun DOB: 6/27/1935  Age: 88 years     DAY HEALTH - ALL DAY           8:30 AM                           2698 California St. Apt 401 San Francisco CA 94115 Hm: 415-921-1321                        SA221 IOA SUN DHC     
+    
+    Y            N            Guerra Ayala, Alma DOB: 10/10/1933  Age: 90 years              DAY HEALTH - ALL DAY  8:30 AM                           1880 Pine St., #703 San Francisco CA 94109 Hm: 415-410-8662                        SA221 IOA MOON DHC     
+    
+    Y            N            Huang Tam, Gui Ying DOB: 8/25/1940  Age: 83 years              DAY HEALTH - ALL DAY  8:30 AM                           367 Hale Street San Francisco CA 94134 Hm: 415-254-0060 Wk: 415-866-8928                   SA221 IOA SUN DHC      
+    
+    Y            Y            Huang, Chien Chien DOB: 4/06/1956  Age: 67 years              DAY HEALTH - ALL DAY  8:30 AM                           365 Fulton Street, #405 San Francisco CA 94102                                  SA221 IOA MOON DHC 
+    
+    Y            Y            Hung, Mei Sheung DOB: 9/25/1934  Age: 89 years              NURSE ONLY      10:00 AM                          345 Arguello blvd #302 San Francisco CA 94118         Hm: 707-647-3034          Trulicity dose     Pacita Ascalon
+    
+    Y            N            Hung, Mei Sheung DOB: 9/25/1934  Age: 89 years              DAY HEALTH - ALL DAY  8:30 AM                           345 Arguello blvd #302 San Francisco CA 94118      Hm: 707-647-3034                        SA221 IOA SUN DHC           
+    
+    Y            N            Huynh, Hi DOB: 4/22/1942  Age: 81 years            DAY HEALTH - ALL DAY           8:30 AM                           848 Kearny St #713 San Francisco CA 94108         Hm: 415-349-1543                        SA221 IOA SUN DHC     
+    
+    Y            N            Hwang, Soon DOB: 1/04/1934  Age: 89 years      DAY HEALTH - ALL DAY           8:15 AM                           1240 Fillmore, Apt 511 San Francisco CA 94115         Hm: 415-307-6796                        SA221 IOA STAR DHC     
+    
+    Y            N            Jin, Xue Lian DOB: 7/16/1940  Age: 83 years        DAY HEALTH - ALL DAY           8:30 AM                           2567 22nd Avenue San Francisco CA 94116         Hm: 415-678-7321                        SA221 IOA SUN DHC     
+    
+    Y            N            Kuang, Guo Ying DOB: 11/21/1931  Age: 91 years              DAY HEALTH - ALL DAY  8:15 AM                           447-7th Avenue #1 San Francisco CA 94118 Hm: 415-379-6502                        SA221 IOA STAR DHC     
+    
+    Y            N            Kuang, Guo Ying DOB: 11/21/1931  Age: 91 years              OFFICE VISIT 30 MIN       2:15 PM                           447-7th Avenue #1 San Francisco CA 94118 Hm: 415-379-6502                        Barbara Bauer  
+    
+    Y            N            Kuang, Guo Ying DOB: 11/21/1931  Age: 91 years              OFFICE VISIT 30 MIN       11:00 AM                          447-7th Avenue #1 San Francisco CA 94118 Hm: 415-379-6502          Labs      Lucy Guevara   
+    
+    Y            N            Lam, Phi Chiu DOB: 12/26/1955  Age: 67 years   DAY HEALTH - ALL DAY           8:30 AM                           1510 Jerrold Avenue San Francisco CA 94124         Hm: 415-802-8665                        SA221 IOA SUN DHC     
+    
+    Y            Y            Lea, Lai Chuen DOB: 12/30/1922  Age: 100 years              NURSE ONLY      11:00 AM                          1423 32nd Ave San Francisco CA 94122         Hm: 415-664-9366          RBG Check/Insulin              Alice Ding          
+    
+    Y            N            Lea, Lai Chuen DOB: 12/30/1922  Age: 100 years              DAY HEALTH - ALL DAY  8:30 AM                           1423 32nd Ave San Francisco CA 94122         Hm: 415-664-9366                        SA221 IOA SUN DHC     
+    
+    Y            N            Lee, Alydia DOB: 5/06/1949  Age: 74 years          DAY HEALTH - ALL DAY           8:00 AM                           1542 36th Ave San Francisco CA 94122         Hm: 415-515-2058                        SA221 IOA STAR DHC     
+    
+    Y            N            Lee, Gertrude DOB: 2/16/1938  Age: 85 years     DAY HEALTH - ALL DAY           8:30 AM                           364 4th Ave San Francisco CA 94118            Hm: 415-988-3973                        SA221 IOA SUN DHC      
+    
+    Y            Y            Lee, Har DOB: 4/14/1932  Age: 91 years DAY HEALTH - ALL DAY       8:30 AM                           1927 32nd Ave San Francisco CA 94116              Hm: 415-564-2208                        SA221 IOA STAR DHC    
+    
+    Y            N            Lee, Lai Yee DOB: 6/23/1934  Age: 89 years         DAY HEALTH - ALL DAY           8:30 AM                           350 Gaven Street, San Francisco CA 94134         Hm: 415-609-1886                        SA221 IOA SUN DHC     
+    
+    Y            Y            Lee, Lap Chow DOB: 9/15/1939  Age: 84 years    NURSE ONLY     11:45 AM                          76 Newton Street San Francisco CA 94112              Hm: 415-334-2891          RBG Check/Insulin          Alice Ding          
+    
+    Y            N            Lee, Lap Chow DOB: 9/15/1939  Age: 84 years    DAY HEALTH - ALL DAY           8:30 AM                           76 Newton Street San Francisco CA 94112         Hm: 415-334-2891                        SA221 IOA SUN DHC     
+    
+    N            N            Lee, Mui Chun DOB: 11/01/1927  Age: 95 years  DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd #505 San Francisco CA 94118         Hm: 415-666-3528                        SA221 IOA SUN DHC     
+    
+    Y            N            Li, Yan Zhi DOB: 7/12/1936  Age: 87 years            DAY HEALTH - ALL DAY           8:00 AM                           2191 45th Avenue San Francisco CA 94116         Hm: 415-812-3720          Warm hand-off with HC              SA221 IOA STAR DHC    
+    
+    Y            N            Liang, Sai Huan DOB: 6/23/1961  Age: 62 years   EXTERNAL APPOINTMENT  11:00 AM                          770 18th Ave San Francisco CA 94121   Hm: 415-559-4722          acupuncture every Fr @ 11am. Pt will go on her own, but needs pick up after the appt.     SA221 IOA OUTSIDE SPECIALIST         CHUN, HUI TAEK 1660 GEARY BLVD 
+    
+    N            N            Liang, Sai Huan DOB: 6/23/1961  Age: 62 years   DAY HEALTH - HALF DAY        12:45 PM                          770 18th Ave San Francisco CA 94121            Hm: 415-559-4722          Takes public transit        SA221 IOA SUN DHC           
+    
+    N            N            Luk Chiu, Fung Hin DOB: 11/14/1928  Age: 94 years              EXTERNAL APPOINTMENT           10:00 AM                          3595 GEARY BLVD #314 San Francisco CA 94118           Hm: 415-750-9819              appt with Dr Zaidi. Address: 2100 Webster St # 214. 415-923-3007. daughter will take prt    SA221 IOA OUTSIDE SPECIALIST ZAIDI, ALI AKBAR 2100 Webster St 
+    
+    -             -             Luu, Muoi DOB: 4/06/1937  Age: 86 years            DAY HEALTH - ALL DAY           8:30 AM                           Coronet 3595 Geary Blvd #436 San Francisco CA 94118      Hm: 415-668-6169                        SA221 IOA SUN DHC           
+    
+    -             -             Luu, To DOB: 4/22/1936  Age: 87 years  DAY HEALTH - ALL DAY       8:30 AM                           Coronet 3595 Geary Blvd #436 San Francisco CA 94118         Hm: 415-668-6169                        SA221 IOA SUN DHC     
+    
+    Y            N            Ly, Ha Bich DOB: 5/18/1935  Age: 88 years          DAY HEALTH - ALL DAY           8:30 AM                           2459-28th Avenue San Francisco CA 94116         Hm: 415-937-4074                        SA221 IOA SUN DHC     
+    
+    Y            Y            Ly, Mui DOB: 10/26/1926  Age: 97 years DAY HEALTH - ALL DAY       8:30 AM                           4116 Ulloa St San Francisco CA 94116              Hm: 415-513-7828                        SA221 IOA SUN DHC      
+    
+    Y            N            Ly, Trung DOB: 10/26/1929  Age: 94 years           DAY HEALTH - ALL DAY           8:30 AM                           848 Kearny St #713 San Francisco CA 94108         Hm: 415-349-6220                        SA221 IOA SUN DHC     
+    
+    Y            N            Matsuo, Emiko DOB: 8/25/1952  Age: 71 years   DAY HEALTH - ALL DAY           8:00 AM             Victorian Manor              Victorian Manor 1444 McAllister Street San Francisco CA 94115     Hm: 415-921-7550                             SA221 IOA STAR DHC    
+    
+    Y            Y            Mengesha, Hiwan DOB: 1/01/1942  Age: 81 years              OFFICE VISIT SHORT       12:00 PM                          1201 Golden Gate Ave #511 San Francisco CA 94115            Hm: 415-595-2093              Reassessment   Jocelyn Ko         
+    
+    N            N            Mengesha, Hiwan DOB: 1/01/1942  Age: 81 years              OFFICE VISIT 30 MIN       12:45 PM                          1201 Golden Gate Ave #511 San Francisco CA 94115            Hm: 415-595-2093              Reassessment   Charles Quintal
+    
+    -             -             Mengesha, Hiwan DOB: 1/01/1942  Age: 81 years              OFFICE VISIT 60 MIN       8:30 AM                           1201 Golden Gate Ave #511 San Francisco CA 94115            Hm: 415-595-2093          rn reassessment    Mandy Enkhbat
+    
+    N            N            Miao, Bao Fei DOB: 5/23/1943  Age: 80 years     DAY HEALTH - ALL DAY           8:30 AM                           1250 Haight Sreet, #403 San Francisco CA 94117 Hm: 415-748-9947          Comes to/from Center independently  SA221 IOA SUN DHC      
+    
+    Y            N            Miller, Thomas DOB: 8/31/1958  Age: 65 years   MASS IMMUNIZATION CLINIC 8:00 AM                           1001 Franklin St., Apt. 12H San Francisco CA 94109 Hm: 415-829-7575          Covid19 &amp; flu     SA221 IOA CLINIC RN          
+    
+    Y            N            Mui, Mee Thlu DOB: 11/04/1927  Age: 95 years MASS IMMUNIZATION CLINIC 8:00 AM                           5328 Fulton St San Francisco CA 94121         Hm: 415-831-6780          Covid19 &amp; flu     SA221 IOA CLINIC RN          
+    
+    Y            N            Mui, Mee Thlu DOB: 11/04/1927  Age: 95 years DAY HEALTH - ALL DAY           8:45 AM                           5328 Fulton St San Francisco CA 94121         Hm: 415-831-6780                        SA221 IOA SUN DHC     
+    
+    Y            Y            Mui, Mee Thlu DOB: 11/04/1927  Age: 95 years OFFICE VISIT 30 MIN      1:00 PM                           5328 Fulton St San Francisco CA 94121   Hm: 415-831-6780          MD visit              Jaeyoung Yang 
+    
+    N            N            Mui, So Shung DOB: 9/23/1944  Age: 79 years    DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd #309 San Francisco CA 94118         Hm: 415-386-2834                        SA221 IOA SUN DHC     
+    
+    Y            N            Randleston, Edward C. DOB: 5/16/1937  Age: 86 years              DAY HEALTH - ALL DAY  8:30 AM             Portola Gardens, LLC              Portola Gardens RCFE 350 University St, Room 235 San Francisco CA 94134            Hm: 415-366-1190 Wk: 415-816-9933                   SA221 IOA MOON DHC      
+    
+    -             -             Stamps, Ivory DOB: 1/30/1944  Age: 79 years      DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd #418 San Francisco CA 94118         Hm: 415-235-7740                        SA221 IOA MOON DHC     
+    
+    Y            N            Swimmer, John DOB: 3/14/1965  Age: 58 years  DAY HEALTH - ALL DAY           8:00 AM                           990 Polk St., #404 San Francisco CA 94109                                     SA221 IOA STAR DHC    
+    
+    Y            N            Takikawa, Noriko DOB: 8/05/1934  Age: 89 years              DAY HEALTH - ALL DAY  8:00 AM                           750 5th Avenue San Francisco CA 94118 Hm: 415-298-3256                        SA221 IOA STAR DHC     
+    
+    Y            N            Takikawa, Noriko DOB: 8/05/1934  Age: 89 years              OFFICE VISIT 30 MIN       10:00 AM                          750 5th Avenue San Francisco CA 94118 Hm: 415-298-3256          RN Skin Assessment              Mandy Enkhbat
+    
+    Y            N            Tan, Eileen DOB: 6/14/1944  Age: 79 years          OFFICE VISIT 30 MIN      10:00 AM                          705 Frederick Street San Francisco CA 94117            Hm: 415-759-1170 Wk: 415-705-9303     RBG       Alla Pivnik             
+    
+    Y            N            Tan, Eileen DOB: 6/14/1944  Age: 79 years          DAY HEALTH - ALL DAY           8:30 AM                           705 Frederick Street San Francisco CA 94117         Hm: 415-759-1170 Wk: 415-705-9303                   SA221 IOA SUN DHC      
+    
+    Y            Y            Tran, Anh DOB: 12/16/1938  Age: 84 years          NURSE ONLY     2:30 PM                           506 41st Avenue San Francisco CA 94121              Hm: 628-207-9328          RBG checks / insulin       Pacita Ascalon  
+    
+    Y            N            Tran, Anh DOB: 12/16/1938  Age: 84 years          DAY HEALTH - ALL DAY           8:30 AM                           506 41st Avenue San Francisco CA 94121         Hm: 628-207-9328          Transpo via Silver Ride              SA221 IOA SUN DHC      
+    
+    Y            N            Umeukeje, Alice DOB: 4/25/1936  Age: 87 years DAY HEALTH - ALL DAY           8:00 AM                           2517 Post Street San Francisco CA 94115         Hm: 415-000-0000          FAMILY BRINGS TO CTR. SECURE TRANSPO HOME             SA221 IOA STAR DHC    
+    
+    Y            Y            Umeukeje, Timothy DOB: 8/08/1927  Age: 96 years              NURSE ONLY      10:00 AM                          2517 Post Street, San Francisco CA 94115         Hm: 415-420-8246          RBG check + insulin              Pacita Ascalon  
+    
+    Y            N            Umeukeje, Timothy DOB: 8/08/1927  Age: 96 years              DAY HEALTH - ALL DAY  8:00 AM                           2517 Post Street, San Francisco CA 94115 Hm: 415-420-8246          FAMILY BRINGS TO CTR, SECURE TRANSPO HOME             SA221 IOA STAR DHC    
+    
+    N            N            Umeukeje, Timothy DOB: 8/08/1927  Age: 96 years              NURSE ONLY      2:00 PM                           2517 Post Street, San Francisco CA 94115         Hm: 415-420-8246          ostomy change Marie-Elisabeth Craig 
+    
+    N            N            Vass, Tatiana DOB: 5/19/1942  Age: 81 years      DAY HEALTH - ALL DAY           8:00 AM                           3595 Geary Blvd #608 San Francisco CA 94118         Hm: 415-340-3905                        SA221 IOA STAR DHC     
+    
+    N            N            Wang, You Lan DOB: 5/15/1941  Age: 82 years   NURSE ONLY     11:30 AM                          801 Howard Street #814 San Francisco CA 94103   Hm: 415-536-2993          full evaluation   Maria Ting         
+    
+    Y            N            Wong, Fung Ying DOB: 8/16/1938  Age: 85 years DAY HEALTH - ALL DAY           8:30 AM             Merced Residential Care Facility (Girard) Merced Girard 129 Girard St, San Francisco, CA San Francisco CA 94134   Hm: 415-467-8900                        SA221 IOA SUN DHC      
+    
+    Y            N            Wong, Gam Fee DOB: 7/23/1930  Age: 93 years DAY HEALTH - ALL DAY           8:00 AM             Merced Residential Care Facility (Girard) Merced Girard  129 Girard St San Francisco CA 94134      Hm: 415-467-8900                          SA221 IOA STAR DHC    
+    
+    Y            Y            Wong, Henry H DOB: 7/16/1938  Age: 85 years   OFFICE VISIT SHORT       2:30 PM             Merced Residential Care Facility (259 Broad)  2351 20th Ave San Francisco CA 94116   Hm: 415-806-0897          full eval       Hong Wu           
+    
+    Y            Y            Wong, Henry H DOB: 7/16/1938  Age: 85 years   DAY HEALTH - ALL DAY           8:30 AM             Merced Residential Care Facility (259 Broad)       2351 20th Ave San Francisco CA 94116   Hm: 415-806-0897              add on attx during family OOA   SA221 IOA SUN DHC      
+    
+    Y            Y            Wong, Henry H DOB: 7/16/1938  Age: 85 years   OFFICE VISIT SHORT       2:45 PM             Merced Residential Care Facility (259 Broad)  2351 20th Ave San Francisco CA 94116   Hm: 415-806-0897          full eval       Jerick Moses Madamba
+    
+    Y            N            Wong, Iris DOB: 3/22/1952  Age: 71 years            BRIEF EYE EXAM    3:00 PM                           1975 45th Ave San Francisco CA 94116              Hm: 415-713-6471          Rx check, per MDs request          Alan Chan             
+    
+    Y            Y            Wong, Iris DOB: 3/22/1952  Age: 71 years            EXTERNAL APPOINTMENT  11:40 AM                          1975 45th Ave San Francisco CA 94116   Hm: 415-713-6471          Ortho w/ Dr Zhang. 950 Stockton St # 200. 415-402-0793    SA221 IOA OUTSIDE SPECIALIST ZHANG, JIANGHUI 950 Stockton St 
+    
+    Y            N            Wong, Iris DOB: 3/22/1952  Age: 71 years            DAY HEALTH - ALL DAY           8:30 AM                           1975 45th Ave San Francisco CA 94116         Hm: 415-713-6471                        SA221 IOA SUN DHC     
+    
+    N            N            Wong, Iris DOB: 3/22/1952  Age: 71 years            OFFICE VISIT 30 MIN      2:30 PM                           1975 45th Ave San Francisco CA 94116   Hm: 415-713-6471          Reassessment   Charles Quintal
+    
+    N            N            Wong, Lan Ying DOB: 12/26/1942  Age: 80 years CASE MANAGEMENT VISIT      11:45 AM                          1250 Haight Street, #208 San Francisco CA 94117 Hm: 415-503-1523          INITIAL ASSESSMENT &amp; ENROLLMENT CONFERENCE       Elijah Tachman
+    
+    Y            Y            Wong, Lan Ying DOB: 12/26/1942  Age: 80 years OFFICE VISIT SHORT       11:00 AM                          1250 Haight Street, #208 San Francisco CA 94117         Hm: 415-503-1523          pcp visit              Barbara Bauer   
+    
+    N            N            Wong, Po Kun DOB: 8/17/1926  Age: 97 years     DAY HEALTH - ALL DAY           8:30 AM                           Coronet 3595 Geary Blvd, Apt 411 San Francisco CA 94118 Hm: 415-845-0379          CW to escort to DHC      SA221 IOA SUN DHC      
+    
+    N            N            Wong, Po Kun DOB: 8/17/1926  Age: 97 years     NURSE ONLY     10:30 AM                          Coronet 3595 Geary Blvd, Apt 411 San Francisco CA 94118         Hm: 415-845-0379          BP check/ RN visit              Jerick Moses Madamba
+    
+    Y            N            Woo, Mu Jie Xie DOB: 11/04/1946  Age: 76 years              DAY HEALTH - ALL DAY  8:30 AM                           801 Howard St # 534 San Francisco CA 94103        Hm: 415-680-0908          AM transpo only; leaves independently     SA221 IOA SUN DHC      
+    
+    Y            N            Woodard, Larry C DOB: 9/19/1944  Age: 79 years              EXTERNAL APPOINTMENT           10:00 AM                          3595 Geary Blvd #206 San Francisco CA 94118                            Dialysis every M, W, F 10-1:15pm SA221 IOA OUTSIDE SPECIALIST
+    
+    Y            N            Yancey, Norbert DOB: 11/16/1936  Age: 86 years              DAY HEALTH - ALL DAY  8:30 AM                           The Warfield 118 Taylor St, Room #217 415-400-5153 San Francisco CA 94102        Hm: 415-505-7171                          SA221 IOA MOON DHC 
+    
+    Y            Y            Ye, Hui Juan DOB: 5/06/1942  Age: 81 years        EXTERNAL APPOINTMENT  10:10 AM                          2191 45th Ave San Francisco CA 94116   Hm: 415-812-3720          GI. 789 Vallejo st. 415-982-6691 SA221 IOA OUTSIDE SPECIALIST       FUNG, GREGORY 789 Vallejo St 
+    
+    Y            N            Ye, Hui Juan DOB: 5/06/1942  Age: 81 years        DAY HEALTH - ALL DAY           8:00 AM                           2191 45th Ave San Francisco CA 94116         Hm: 415-812-3720          Warm hand-off with HC              SA221 IOA STAR DHC    
+    
+    Y            Y            Ye, Hui Juan DOB: 5/06/1942  Age: 81 years        NURSE ONLY     10:45 AM                          2191 45th Ave San Francisco CA 94116              Hm: 415-812-3720          RN visit f/u dermatitis    Jerick Moses Madamba         
+    
+    N            N            Yeung, Linying L DOB: 8/24/1942  Age: 81 years DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd. #405 San Francisco CA 94118         Hm: 415-387-2699 Wk: 628-977-9091                   SA221 IOA SUN DHC      
+    
+    -             -             Yim, Wai Hing DOB: 2/14/1925  Age: 98 years     DAY HEALTH - ALL DAY           8:30 AM                           3595 Geary Blvd #620 San Francisco CA 94118         Hm: 415-750-1206                        SA221 IOA SUN DHC     
+    
+    Y            N            Yu, Thomas DOB: 2/03/1950  Age: 73 years         DAY HEALTH - ALL DAY           8:00 AM                           1551 Hyde St #1 San Francisco CA 94109         Hm: 415-928-0442                        SA221 IOA STAR DHC     
+    
+    Y            Y            Yu, Thomas DOB: 2/03/1950  Age: 73 years         OFFICE VISIT 30 MIN      2:00 PM                           1551 Hyde St #1 San Francisco CA 94109   Hm: 415-928-0442          Reassessment   Vivien Wong     
+    
+    Y            N            Yuan, Fu Mei DOB: 8/10/1937  Age: 86 years       MASS IMMUNIZATION CLINIC 10:15 AM                          191 Evelyn Wy san francisco CA 94127         Hm: 415-689-7595          COVID19 &amp; flu   SA221 IOA CLINIC RN          
+    
+    Y            N            Yuan, Fu Mei DOB: 8/10/1937  Age: 86 years       DAY HEALTH - ALL DAY           8:30 AM                           191 Evelyn Wy san francisco CA 94127         Hm: 415-689-7595                        SA221 IOA SUN DHC     
+    
+    Y            N            Yuan, Shun DOB: 9/11/1938  Age: 85 years          MASS IMMUNIZATION CLINIC 10:00 AM                          191 Evelyn Wy san francisco CA 94127         Hm: 415-689-7595          COVID19 &amp; flu   SA221 IOA CLINIC RN          
+    
+    Y            N            Yuan, Shun DOB: 9/11/1938  Age: 85 years          DAY HEALTH - ALL DAY           8:30 AM                           191 Evelyn Wy san francisco CA 94127         Hm: 415-689-7595                        SA221 IOA SUN DHC     
+    
+    Y            N            Zalkus, David Carson DOB: 12/20/1955  Age: 67 years              EXTERNAL APPOINTMENT           9:00 AM                           3595 Geary Blvd #407 San Francisco CA 94118              Hm: 415-336-1519              Dialysis @ 2700 Geary Blvd 833 354 3507             SA221 IOA DIALYSIS            
+    
+    N            N            Zalkus, David Carson DOB: 12/20/1955  Age: 67 years              NURSE ONLY      1:00 PM                           3595 Geary Blvd #407 San Francisco CA 94118         Hm: 415-336-1519          RN wound care Mandy Enkhbat             
+    
+    Y            N            Zeng, Hanying DOB: 12/08/1939  Age: 83 years  OFFICE VISIT 30 MIN      1:15 PM                           655 Alabama St. #230 San Francisco CA 94110         Hm: 415-824-1876          md visit Barbara Bauer  
+    
+    Y            N            Zeng, Hanying DOB: 12/08/1939  Age: 83 years  OFFICE VISIT 30 MIN      10:00 AM                          655 Alabama St. #230 San Francisco CA 94110         Hm: 415-824-1876          Labs      Lucy Guevara   
+    
+    Y            N            Zhang, De Zhen DOB: 3/01/1939  Age: 84 years  DAY HEALTH - ALL DAY           8:30 AM                           562 6th Ave Apt 9 San Francisco CA 94118         Hm: 415-370-1952                        SA221 IOA SUN DHC     
+    
+    Y            N            Zhang, Kuiying DOB: 4/18/1934  Age: 89 years    DAY HEALTH - ALL DAY           8:30 AM                           2051 46th Ave San Francisco CA 94116         Hm: 650-380-0694                        SA221 IOA SUN DHC     
+`
+
+$("#dar").val(str)
+
+</script>
