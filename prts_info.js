@@ -3540,5 +3540,5 @@ function getPrtsArr() {
 }
 
 function getAddressToRoute(){
-    retrurn prts;
+    return addrs;
 }
