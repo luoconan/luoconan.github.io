@@ -556,7 +556,7 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": "",
+        "amTime": "1045",
         "noAM":"",
         "noPM":""
     },
@@ -778,7 +778,7 @@ let prtObjInfo = {
         "address": "",
         "amTime": "",
         "noAM":"",
-        "noPM":""
+        "noPM":true
     },
     "Cheung, William": {
         "id": "633044",
@@ -3547,7 +3547,7 @@ let prtObjInfo = {
         "comeDay": "",
         "address": "",
         "amTime": "",
-        "noAM":"",
+        "noAM":true,
         "noPM":""
     },
     "Umeukeje, Timothy": {
@@ -3557,7 +3557,7 @@ let prtObjInfo = {
         "comeDay": "",
         "address": "",
         "amTime": "",
-        "noAM":"",
+        "noAM":true,
         "noPM":""
     },
     "Urrutia, Marta Lilia": {
@@ -3938,7 +3938,7 @@ let prtObjInfo = {
         "address": "",
         "amTime": "",
         "noAM":"",
-        "noPM":""
+        "noPM":true
     },
     "Woodard, Larry": {
         "id": "173341",
