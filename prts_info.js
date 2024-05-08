@@ -832,7 +832,7 @@ let prtObjInfo = {
     },
     "Chow, Wan Chung": {
         "id": "PC32911",
-        "room": "1",
+        "room": "2",
         "rt": "7",
         "comeDay": "",
         "address": "",
@@ -952,7 +952,7 @@ let prtObjInfo = {
     },
     "Chung, Ann": {
         "id": "645941",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -1221,6 +1221,16 @@ let prtObjInfo = {
         "noPM":""
     },
     "Garcia Maldonado, Aurelia": {
+        "id": "693773",
+        "room": "3",
+        "rt": "5",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Garcia-Maldonado, Aurelia": {
         "id": "693773",
         "room": "3",
         "rt": "5",
@@ -1820,10 +1830,30 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Kwong, Charlie L": {
+        "id": "PC34661",
+        "room": "1",
+        "rt": "1",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Kwong, Chi Min": {
         "id": "555550",
         "room": "1",
         "rt": "8",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Kwong, Yuk Lin Ng": {
+        "id": "PC34662",
+        "room": "1",
+        "rt": "1",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -4022,7 +4052,7 @@ let prtObjInfo = {
     },
     "Yan, Xin Fa": {
         "id": "PC30591",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
