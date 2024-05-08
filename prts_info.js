@@ -783,7 +783,7 @@ let prtObjInfo = {
     "Cheung, William": {
         "id": "633044",
         "room": "1",
-        "rt": "10",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
