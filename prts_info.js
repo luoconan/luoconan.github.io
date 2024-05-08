@@ -216,7 +216,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Abesamis, Purificacion K": {
         "id": "PC10990",
@@ -224,7 +226,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Agemso, Woubishet": {
         "id": "490099",
@@ -232,7 +236,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Akichika, Rowena": {
         "id": "693456",
@@ -240,7 +246,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Aldana, Eugenia": {
         "id": "490014",
@@ -248,7 +256,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Anies, Cristeta": {
         "id": "693470",
@@ -256,7 +266,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Arias, Lydia": {
         "id": "664978",
@@ -264,7 +276,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Aubrey, Corrine": {
         "id": "PC24904",
@@ -272,7 +286,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bajjalieh, Laila": {
         "id": "536349",
@@ -280,7 +296,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Barrow, Joseph": {
         "id": "172980",
@@ -288,7 +306,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Beck, Ora": {
         "id": "632940",
@@ -296,7 +316,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bello, Christopher": {
         "id": "693509",
@@ -304,7 +326,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bian, John": {
         "id": "645728",
@@ -312,7 +336,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bishop Robinson, Jacqueline": {
         "id": "173290",
@@ -320,7 +346,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Blake, Dera": {
         "id": "693517",
@@ -328,7 +356,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bolden, Joseph": {
         "id": "534373",
@@ -336,7 +366,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bonilla, Yolanda": {
         "id": "188622",
@@ -344,7 +376,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Bonner, Patricia": {
         "id": "PC7598",
@@ -352,7 +386,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Briggs, Sharon": {
         "id": "490028",
@@ -360,7 +396,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Burr, Sandra": {
         "id": "693544",
@@ -368,7 +406,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Burr, Sandra Jeanne": {
         "id": "693544",
@@ -376,7 +416,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cabrera De Interiano, Elva": {
         "id": "693551",
@@ -384,7 +426,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Campbell, Stephan": {
         "id": "PC7599",
@@ -392,7 +436,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Canizalez, Graciela": {
         "id": "173296",
@@ -400,7 +446,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cao, Wan Ran": {
         "id": "195159",
@@ -408,7 +456,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Carlsson, Sally S": {
         "id": "PC8659",
@@ -416,7 +466,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Carroll-Iturralde, Ruth": {
         "id": "490043",
@@ -424,7 +476,9 @@ let prtObjInfo = {
         "rt": "11",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Carroll, Robert A": {
         "id": "PC11081",
@@ -432,7 +486,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cassidy, Betty": {
         "id": "693572",
@@ -440,7 +496,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chae, Dong": {
         "id": "632943",
@@ -448,7 +506,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chamberlin, C": {
         "id": "PC8563",
@@ -456,7 +516,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Albert N": {
         "id": "PC27355",
@@ -464,7 +526,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Chung Wing": {
         "id": "501606",
@@ -472,7 +536,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, David": {
         "id": "PC11090",
@@ -480,7 +546,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, David L": {
         "id": "693589",
@@ -488,7 +556,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Kwai-Hin": {
         "id": "181932",
@@ -496,7 +566,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Kwan Har": {
         "id": "501011",
@@ -504,7 +576,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Patricia": {
         "id": "180900",
@@ -512,7 +586,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Phillip": {
         "id": "180886",
@@ -520,7 +596,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Shirlena": {
         "id": "193244",
@@ -528,7 +606,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Sook Wah": {
         "id": "173301",
@@ -536,7 +616,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Suk Ching": {
         "id": "PC8544",
@@ -544,7 +626,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Sylvia W": {
         "id": "PC11099",
@@ -552,7 +636,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chan, Wai Hing": {
         "id": "693594",
@@ -560,7 +646,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chang, Judy": {
         "id": "PC7569",
@@ -568,7 +656,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chao, Kwoh Chin": {
         "id": "693601",
@@ -576,7 +666,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chau, Polo": {
         "id": "633043",
@@ -584,7 +676,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chau, Simon": {
         "id": "PC8459",
@@ -592,7 +686,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chavez Lopez, Humberto": {
         "id": "490079",
@@ -600,7 +696,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chen, Annie": {
         "id": "PC21267",
@@ -608,7 +706,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chen, Buoy Lan": {
         "id": "PC8509",
@@ -616,7 +716,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chen, Shun Hui": {
         "id": "490081",
@@ -624,7 +726,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chen, Yan Fang": {
         "id": "181660",
@@ -632,7 +736,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chen, Yiqun": {
         "id": "PC11141",
@@ -640,7 +746,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chen, Zuo Ren": {
         "id": "PC8510",
@@ -648,7 +756,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cheng, Guang Shun": {
         "id": "PC11147",
@@ -656,7 +766,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cheng, James": {
         "id": "PC8986",
@@ -664,7 +776,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cheung, William": {
         "id": "633044",
@@ -672,7 +786,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chiang, Kuo Hsiun": {
         "id": "PC27880",
@@ -680,7 +796,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chin, Ang Lin": {
         "id": "PC8511",
@@ -688,7 +806,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chin, Anita": {
         "id": "PC14702",
@@ -696,7 +816,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chou, Sio Cheong": {
         "id": "PC8512",
@@ -704,7 +826,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chow, Wan Chung": {
         "id": "PC32911",
@@ -712,7 +836,9 @@ let prtObjInfo = {
         "rt": "7",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chow, Yau Soong": {
         "id": "PC11182",
@@ -720,7 +846,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chow, Yuliang": {
         "id": "PC11183",
@@ -728,7 +856,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Choy, Pui": {
         "id": "PC16213",
@@ -736,7 +866,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chryst, Genn": {
         "id": "PC10374",
@@ -744,7 +876,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Chen Xiao": {
         "id": "490373",
@@ -752,7 +886,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Clyde Y": {
         "id": "693624",
@@ -760,7 +896,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Kan": {
         "id": "173304",
@@ -768,7 +906,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Kenneth K": {
         "id": "633045",
@@ -776,7 +916,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Kwai Lan": {
         "id": "501607",
@@ -784,7 +926,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Pak C.": {
         "id": "PC11186",
@@ -792,7 +936,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chu, Yin": {
         "id": "693625",
@@ -800,7 +946,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chung, Ann": {
         "id": "645941",
@@ -808,7 +956,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chung, Isaac I": {
         "id": "PC11196",
@@ -816,7 +966,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Chung, Suk W": {
         "id": "PC11198",
@@ -824,7 +976,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cordova, Julia": {
         "id": "PC14280",
@@ -832,7 +986,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cornel, Rebecca": {
         "id": "490378",
@@ -840,7 +996,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Cruz, Ruben D": {
         "id": "PC11212",
@@ -848,7 +1006,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Curry, James": {
         "id": "693660",
@@ -856,7 +1016,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dang, Ly K": {
         "id": "597823",
@@ -864,7 +1026,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dang, Tony T": {
         "id": "693664",
@@ -872,7 +1036,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dao, Ngoc Tu": {
         "id": "693665",
@@ -880,7 +1046,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dao, Tran Tu": {
         "id": "693666",
@@ -888,7 +1056,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Davis, Patricia A": {
         "id": "PC30769",
@@ -896,7 +1066,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Deguzman, Evangelina": {
         "id": "693680",
@@ -904,7 +1076,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Diaz, Humberto": {
         "id": "187920",
@@ -912,7 +1086,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dixon, Myles E": {
         "id": "PC11260",
@@ -920,7 +1096,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dokko, Daniel": {
         "id": "PC26392",
@@ -928,7 +1106,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Dokko, Kyungwon": {
         "id": "PC19092",
@@ -936,7 +1116,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Doyle, Thomas": {
         "id": "693698",
@@ -944,7 +1126,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Duong, Ban": {
         "id": "693703",
@@ -952,7 +1136,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Fan, Hongyu": {
         "id": "693731",
@@ -960,7 +1146,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Fang, Yue Hua": {
         "id": "PC11294",
@@ -968,7 +1156,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ferrell, Wanda": {
         "id": "693735",
@@ -976,7 +1166,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Fischer, Felizitas M": {
         "id": "693736",
@@ -984,7 +1176,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Fung, Lai King": {
         "id": "693757",
@@ -992,7 +1186,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Fung, Yuk Leung": {
         "id": "PC11312",
@@ -1000,7 +1196,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Furlough, Loyce": {
         "id": "PC13387",
@@ -1008,7 +1206,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Gao, Yi Ren": {
         "id": "PC10682",
@@ -1016,7 +1216,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Garcia Maldonado, Aurelia": {
         "id": "693773",
@@ -1024,7 +1226,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Garcia, Agustin": {
         "id": "693766",
@@ -1032,7 +1236,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Garcia, Dora": {
         "id": "173312",
@@ -1040,7 +1246,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Godinez, Luis": {
         "id": "490397",
@@ -1048,7 +1256,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Gormally, Mary Sr.": {
         "id": "PC8518",
@@ -1056,7 +1266,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Grant, Teri": {
         "id": "173313",
@@ -1064,7 +1276,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Grossman, Murray": {
         "id": "490400",
@@ -1072,7 +1286,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Gu, Guan Qun": {
         "id": "194426",
@@ -1080,7 +1296,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Guleng, Ben": {
         "id": "PC33112",
@@ -1088,7 +1306,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Guerra Ayala, Alma": {
         "id": "490404",
@@ -1096,7 +1316,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Guevara, Judith Teresa": {
         "id": "490406",
@@ -1104,7 +1326,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hang, Mai Su": {
         "id": "PC23147",
@@ -1112,7 +1336,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Harper, Linda": {
         "id": "PC27638",
@@ -1120,7 +1346,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Harris, Janet": {
         "id": "693837",
@@ -1128,7 +1356,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "He, Ting Gui": {
         "id": "693841",
@@ -1136,7 +1366,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "He, Yu": {
         "id": "693842",
@@ -1144,7 +1376,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Head, Sherrie": {
         "id": "173019",
@@ -1152,7 +1386,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hellam, Ruben A": {
         "id": "PC11389",
@@ -1160,7 +1396,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hellam. Ruben, Ruben": {
         "id": "693846",
@@ -1168,7 +1406,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hernandez, Marcia": {
         "id": "PC8519",
@@ -1176,7 +1416,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hernandez, Victoria": {
         "id": "491464",
@@ -1184,7 +1426,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ho, Kim": {
         "id": "PC8520",
@@ -1192,7 +1436,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ho, Kim Yee": {
         "id": "PC11401",
@@ -1200,7 +1446,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Horne, Ronald W": {
         "id": "693877",
@@ -1208,7 +1456,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang Tam, Gui Ying": {
         "id": "PC8500",
@@ -1216,7 +1466,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Chien Chien": {
         "id": "PC23529",
@@ -1224,7 +1476,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Jing H": {
         "id": "PC8521",
@@ -1232,7 +1486,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Jing Hua": {
         "id": "PC11441",
@@ -1240,7 +1496,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Shao Ming": {
         "id": "492775",
@@ -1248,7 +1506,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Shu Fen F": {
         "id": "492789",
@@ -1256,7 +1516,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Wei Liang": {
         "id": "PC27228",
@@ -1264,7 +1526,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huang, Zhao Huan": {
         "id": "PC11458",
@@ -1272,7 +1536,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hubbard, Charlotte": {
         "id": "PC30590",
@@ -1280,7 +1546,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hui, Wai Chun Ngai": {
         "id": "PC8522",
@@ -1288,7 +1556,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hung, Mei Shueng": {
         "id": "PC8523",
@@ -1296,7 +1566,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hung, Mei Sheung": {
         "id": "PC8523",
@@ -1304,7 +1576,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Huynh, Hi": {
         "id": "PC8524",
@@ -1312,7 +1586,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Hwang, Soon": {
         "id": "PC11053",
@@ -1320,7 +1596,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Jackson, Kevin": {
         "id": "693904",
@@ -1328,7 +1606,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "James, Annie": {
         "id": "693907",
@@ -1336,7 +1616,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Jesse, Pena": {
         "id": "PC9200",
@@ -1344,7 +1626,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Jiminez, Gloria": {
         "id": "PC13144",
@@ -1352,7 +1636,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Jin, Xue Lian": {
         "id": "693917",
@@ -1360,7 +1646,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Johnson, Willie": {
         "id": "PC8525",
@@ -1368,7 +1656,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Jones, Elaine": {
         "id": "693920",
@@ -1376,7 +1666,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kelly, Dorothy Jane": {
         "id": "PC8526",
@@ -1384,7 +1676,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kerfoot, Lori J": {
         "id": "PC11511",
@@ -1392,7 +1686,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Keung, Ping W": {
         "id": "PC8527",
@@ -1400,7 +1696,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Keung, Ping Wan": {
         "id": "PC11514",
@@ -1408,7 +1706,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kim, Ho": {
         "id": "PC26734",
@@ -1416,7 +1716,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kim, Hong": {
         "id": "177377",
@@ -1424,7 +1726,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kim, Lily": {
         "id": "501613",
@@ -1432,7 +1736,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kong, Fung Kuen": {
         "id": "173352",
@@ -1440,7 +1746,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kovaleva, Irina S": {
         "id": "PC27361",
@@ -1448,7 +1756,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kukol, Joanne": {
         "id": "PC30908",
@@ -1456,7 +1766,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kwan, Peo L": {
         "id": "PC8528",
@@ -1464,7 +1776,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kwan, Peo Line": {
         "id": "PC11540",
@@ -1472,7 +1786,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kwock, Ying Bing": {
         "id": "PC11543",
@@ -1480,7 +1796,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kwong Chang, Lin Hing": {
         "id": "PC11548",
@@ -1488,7 +1806,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kwong, Chang Lin": {
         "id": "693958",
@@ -1496,7 +1816,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kwong, Chi Min": {
         "id": "555550",
@@ -1504,7 +1826,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Kyang, Won Dokko": {
         "id": "PC26392",
@@ -1512,7 +1836,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lam, Thomas": {
         "id": "PC8530",
@@ -1520,7 +1846,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lau, Cheng Kun": {
         "id": "PC30593",
@@ -1528,7 +1856,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lau, Kitwan": {
         "id": "PC8531",
@@ -1536,7 +1866,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lau, Yuk Yu": {
         "id": "PC20377",
@@ -1544,7 +1876,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lea, Lai Chuen": {
         "id": "173387",
@@ -1552,7 +1886,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Alydia": {
         "id": "PC16549",
@@ -1560,7 +1896,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Betty Lan-Yuen": {
         "id": "693977",
@@ -1568,7 +1906,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Choi Kuen": {
         "id": "PC8532",
@@ -1576,7 +1916,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Fung": {
         "id": "173155",
@@ -1584,7 +1926,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Gertrude": {
         "id": "PC15238",
@@ -1592,7 +1936,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Har Tam": {
         "id": "536566",
@@ -1600,7 +1946,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Har": {
         "id": "536566",
@@ -1608,7 +1956,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Lai Yee": {
         "id": "693985",
@@ -1616,7 +1966,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Lap Chow": {
         "id": "693986",
@@ -1624,7 +1976,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Larry": {
         "id": "693987",
@@ -1632,7 +1986,9 @@ let prtObjInfo = {
         "rt": "11",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, May Jean J": {
         "id": "PC11607",
@@ -1640,7 +1996,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Mui Chun": {
         "id": "173319",
@@ -1648,7 +2006,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Ngan Chu": {
         "id": "693990",
@@ -1656,7 +2016,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Shuk F Lee": {
         "id": "PC8534",
@@ -1664,7 +2026,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lee, Sooja": {
         "id": "693992",
@@ -1672,7 +2036,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lei, Hon Wan": {
         "id": "PC11623",
@@ -1680,7 +2046,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leong, Steven": {
         "id": "173320",
@@ -1688,7 +2056,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Frank F": {
         "id": "PC11631",
@@ -1696,7 +2066,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Hoi Man": {
         "id": "PC11632",
@@ -1704,7 +2076,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Hung Chun": {
         "id": "PC29600",
@@ -1712,7 +2086,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Kwong Fat": {
         "id": "491474",
@@ -1720,7 +2096,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Leisly L": {
         "id": "PC11634",
@@ -1728,7 +2106,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Ricky H": {
         "id": "PC11637",
@@ -1736,7 +2116,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Ting See": {
         "id": "188077",
@@ -1744,7 +2126,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Wing Kwai": {
         "id": "694006",
@@ -1752,7 +2136,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Leung, Wing Sang": {
         "id": "188075",
@@ -1760,7 +2146,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Li, Kewu": {
         "id": "PC30036",
@@ -1768,7 +2156,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Li, Wenping": {
         "id": "694010",
@@ -1776,7 +2166,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Li, Yan Zhi": {
         "id": "PC23066",
@@ -1784,7 +2176,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Li, Yongfu": {
         "id": "694012",
@@ -1792,7 +2186,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Liang, Guo Zhi": {
         "id": "PC9633",
@@ -1800,7 +2196,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Liang, Huan Mei": {
         "id": "PC8535",
@@ -1808,7 +2206,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Liang, Minan": {
         "id": "501143",
@@ -1816,7 +2216,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Liang, Sai Huan": {
         "id": "694014",
@@ -1824,7 +2226,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lin, Chao Ping": {
         "id": "173321",
@@ -1832,7 +2236,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lipinski, Andrjez": {
         "id": "PC8536",
@@ -1840,7 +2246,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lipinski, Andrzej Richard": {
         "id": "PC11708",
@@ -1848,7 +2256,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Liu, Can Yao": {
         "id": "694023",
@@ -1856,7 +2266,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Liu, Hao": {
         "id": "PC26224",
@@ -1864,7 +2276,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Llerena, Sylvia": {
         "id": "PC25007",
@@ -1872,7 +2286,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Logan, Venitta": {
         "id": "PC13057",
@@ -1880,7 +2296,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lu, Linda": {
         "id": "694043",
@@ -1888,7 +2306,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lu, Xiong": {
         "id": "694045",
@@ -1896,7 +2316,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lucas, Vivian": {
         "id": "694046",
@@ -1904,7 +2326,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luevano, Megan": {
         "id": "PC9615",
@@ -1912,7 +2336,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luk Chiu, Fung Hin": {
         "id": "PC11763",
@@ -1920,7 +2346,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luo, Hui Wei": {
         "id": "501602",
@@ -1928,7 +2356,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luo, Mahjer": {
         "id": "PC23618",
@@ -1936,7 +2366,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luong, Vu": {
         "id": "694050",
@@ -1944,7 +2376,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luong, Vu Quan Q": {
         "id": "PC11772",
@@ -1952,7 +2386,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luu, Muoi": {
         "id": "PC8537",
@@ -1960,7 +2396,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Luu, To": {
         "id": "491467",
@@ -1968,7 +2406,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ly, Ha Bich": {
         "id": "555882",
@@ -1976,7 +2416,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ly, Kha Chay": {
         "id": "PC26647",
@@ -1984,7 +2426,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ly, Mui": {
         "id": "694052",
@@ -1992,7 +2436,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ly, Trung": {
         "id": "PC7572",
@@ -2000,7 +2446,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lyons, Gregory": {
         "id": "694053",
@@ -2008,7 +2456,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Lyons, Gregory B. Brent": {
         "id": "PC11780",
@@ -2016,7 +2466,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ma, Cui Hua": {
         "id": "PC14948",
@@ -2024,7 +2476,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ma, Helen": {
         "id": "PC17163",
@@ -2032,7 +2486,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ma, Kwan Shou": {
         "id": "694054",
@@ -2040,7 +2496,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ma, Rongan": {
         "id": "694055",
@@ -2048,7 +2506,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mac, Tam": {
         "id": "PC8538",
@@ -2056,7 +2516,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mac, Tammy Thuy": {
         "id": "PC25540",
@@ -2064,7 +2526,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Macdonald, Christopher": {
         "id": "PC21137",
@@ -2072,7 +2536,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Majher, John J.": {
         "id": "694066",
@@ -2080,7 +2546,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Malek, Hossein": {
         "id": "650270",
@@ -2088,7 +2556,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Manilla, Danilo": {
         "id": "PC27356",
@@ -2096,7 +2566,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mao, Lao L": {
         "id": "PC11803",
@@ -2104,7 +2576,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Martinez, Antoinette I": {
         "id": "PC23199",
@@ -2112,7 +2586,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Martinez, Benedict": {
         "id": "PC14432",
@@ -2120,7 +2596,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Martinez, Lawrence Benedict": {
         "id": "694085",
@@ -2128,7 +2606,9 @@ let prtObjInfo = {
         "rt": "11",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Matosich, Helen A": {
         "id": "694091",
@@ -2136,7 +2616,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Matsuo, Emiko": {
         "id": "694092",
@@ -2144,7 +2626,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mccarthy, Steven": {
         "id": "PC15386",
@@ -2152,7 +2636,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mckean, Rosemary": {
         "id": "536353",
@@ -2160,7 +2646,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mederos, Aquileo": {
         "id": "PC10934",
@@ -2168,7 +2656,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mengesha, Hiwan": {
         "id": "694118",
@@ -2176,7 +2666,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Miao, Bao Fei": {
         "id": "PC24047",
@@ -2184,7 +2676,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Miller, Marvin": {
         "id": "694124",
@@ -2192,7 +2686,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Miller, Thomas": {
         "id": "PC8457",
@@ -2200,7 +2696,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mok, Nai Tin": {
         "id": "PC33115",
@@ -2208,7 +2706,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Monroy, Alma": {
         "id": "PC9616",
@@ -2216,7 +2716,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Montoya, Luis Alonzo": {
         "id": "PC11846",
@@ -2224,7 +2726,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Moore, Ernestine": {
         "id": "192111",
@@ -2232,7 +2736,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Morley, Marilyn": {
         "id": "PC11851",
@@ -2240,7 +2746,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Moskvychov, Svyatoslav G": {
         "id": "PC29006",
@@ -2248,7 +2756,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Mui, So Shung": {
         "id": "694158",
@@ -2256,7 +2766,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Needes, Norman": {
         "id": "PC12578",
@@ -2264,7 +2776,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Kwai": {
         "id": "694172",
@@ -2272,7 +2786,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Ping": {
         "id": "694173",
@@ -2280,7 +2796,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Ping Jan": {
         "id": "694174",
@@ -2288,7 +2806,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Po San": {
         "id": "694175",
@@ -2296,7 +2816,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Sai Mun": {
         "id": "646480",
@@ -2304,7 +2826,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Siu H Yu": {
         "id": "PC11869",
@@ -2312,7 +2836,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ng, Siu Har Yu": {
         "id": "PC8539",
@@ -2320,7 +2846,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Nguyen, Kimtuyen": {
         "id": "PC8540",
@@ -2328,7 +2856,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Nguyen, Lap Hoang": {
         "id": "PC14281",
@@ -2336,7 +2866,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Nguyen, Nhanh Thi": {
         "id": "PC14282",
@@ -2344,7 +2876,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Nudelman, Irina": {
         "id": "694190",
@@ -2352,7 +2886,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Nunn, Sue Tsin": {
         "id": "694192",
@@ -2360,7 +2896,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ornano-Lopez, Maria Del Pilar": {
         "id": "PC8542",
@@ -2368,7 +2906,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ornano, Julia": {
         "id": "597822",
@@ -2376,7 +2916,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pal, Gary": {
         "id": "PC14034",
@@ -2384,7 +2926,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pan, Wiley": {
         "id": "501151",
@@ -2392,7 +2936,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pascal, Fabian": {
         "id": "694228",
@@ -2400,7 +2946,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pascual, Corozan": {
         "id": "PC10922",
@@ -2408,7 +2956,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Peed, Leatrice": {
         "id": "694236",
@@ -2416,7 +2966,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pegueros, Sandra": {
         "id": "534380",
@@ -2424,7 +2976,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pegueros, Sandra Frances": {
         "id": "PC11955",
@@ -2432,7 +2986,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Penry, Paul": {
         "id": "694240",
@@ -2440,7 +2996,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Penry, Paul E": {
         "id": "PC11962",
@@ -2448,7 +3006,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Perkins, Michael C": {
         "id": "694243",
@@ -2456,7 +3016,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Perry, Stephen": {
         "id": "PC21872",
@@ -2464,7 +3026,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Peterson, Samuel": {
         "id": "694245",
@@ -2472,7 +3036,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pho, Lina": {
         "id": "PC8543",
@@ -2480,7 +3046,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pizzorno, Mary C Christina": {
         "id": "PC11985",
@@ -2488,7 +3056,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Porter, Gregory": {
         "id": "694260",
@@ -2496,7 +3066,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Pugh, Michael": {
         "id": "PC18970",
@@ -2504,7 +3076,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Quach, Miles": {
         "id": "694264",
@@ -2512,7 +3086,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ramos, Gladys": {
         "id": "694275",
@@ -2520,7 +3096,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Randleston, Edward C": {
         "id": "694276",
@@ -2528,7 +3106,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Randleston, Edward C.": {
         "id": "694276",
@@ -2536,7 +3116,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Randleston, Edward": {
         "id": "694276",
@@ -2544,7 +3126,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Rapisura, Herminia": {
         "id": "694280",
@@ -2552,7 +3136,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Rich-French, Jennylynn": {
         "id": "PC27362",
@@ -2560,7 +3146,9 @@ let prtObjInfo = {
         "rt": "11",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Richardson, Mark L": {
         "id": "694295",
@@ -2568,7 +3156,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Rodriguez, Carmelo S": {
         "id": "PC30589",
@@ -2576,7 +3166,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Rodriguez, Carmelo": {
         "id": "PC30589",
@@ -2584,7 +3176,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Romero, Judith": {
         "id": "694318",
@@ -2592,7 +3186,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Salunga, Marissa": {
         "id": "PC10280",
@@ -2600,7 +3196,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Scott, Sharon": {
         "id": "PC28672",
@@ -2608,7 +3206,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Seymour, Mary": {
         "id": "501474",
@@ -2616,7 +3216,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Shen, Chang Rong": {
         "id": "694359",
@@ -2624,7 +3226,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Sherman, Doris": {
         "id": "PC21988",
@@ -2632,7 +3236,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Siu, Wah Bik B": {
         "id": "PC12100",
@@ -2640,7 +3246,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Smiley, Patricia": {
         "id": "597820",
@@ -2648,7 +3256,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Stamps, Ivory": {
         "id": "191703",
@@ -2656,7 +3266,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Stern, Mark": {
         "id": "694394",
@@ -2664,7 +3276,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Su Hang, Mai": {
         "id": "PC24048",
@@ -2672,7 +3286,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Sun, Ruilian": {
         "id": "173331",
@@ -2680,7 +3296,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Swimmer, John": {
         "id": "PC9620",
@@ -2688,7 +3306,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Takikawa, Noriko": {
         "id": "PC19110",
@@ -2696,7 +3316,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tam, Wai Ken": {
         "id": "490313",
@@ -2704,7 +3326,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tan, Eileen": {
         "id": "PC8545",
@@ -2712,7 +3336,9 @@ let prtObjInfo = {
         "rt": "11",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tan, Raymond": {
         "id": "694409",
@@ -2720,7 +3346,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tan, Robert": {
         "id": "PC21037",
@@ -2728,7 +3356,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tang, Alice": {
         "id": "694410",
@@ -2736,7 +3366,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tang, Kok Fang": {
         "id": "490311",
@@ -2744,7 +3376,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tang, Nien": {
         "id": "490310",
@@ -2752,7 +3386,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Taussig, Marie": {
         "id": "173333",
@@ -2760,7 +3396,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tavakoli Malek, Zahra": {
         "id": "PC8546",
@@ -2768,7 +3406,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Taylor, Peggy": {
         "id": "694416",
@@ -2776,7 +3416,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "The, Siang Hoei": {
         "id": "PC12157",
@@ -2784,7 +3426,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tieu, Minh": {
         "id": "694428",
@@ -2792,7 +3436,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Todd, Terrence Donald": {
         "id": "PC12160",
@@ -2800,7 +3446,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tong, Kam Siu": {
         "id": "PC8549",
@@ -2808,7 +3456,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tran, Anh": {
         "id": "PC8453",
@@ -2816,7 +3466,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tran, Hong": {
         "id": "PC8550",
@@ -2824,7 +3476,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tran, Hong Thu": {
         "id": "PC12174",
@@ -2832,7 +3486,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tran, Lien T": {
         "id": "PC24413",
@@ -2840,7 +3496,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tran, Phuoc": {
         "id": "PC12182",
@@ -2848,7 +3506,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tsui, Shuk Jee": {
         "id": "PC33163",
@@ -2856,7 +3516,9 @@ let prtObjInfo = {
         "rt": "7",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Tu, David": {
         "id": "490307",
@@ -2864,7 +3526,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Turner, Robert": {
         "id": "PC26226",
@@ -2872,7 +3536,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Umeukeje, Alice": {
         "id": "635789",
@@ -2880,7 +3546,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Umeukeje, Timothy": {
         "id": "PC8552",
@@ -2888,7 +3556,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Urrutia, Marta Lilia": {
         "id": "PC20378",
@@ -2896,7 +3566,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Vaccari, Vivian": {
         "id": "694444",
@@ -2904,7 +3576,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Vasquez, Leticia": {
         "id": "663298",
@@ -2912,7 +3586,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Vass, Tatiana": {
         "id": "173339",
@@ -2920,7 +3596,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wan, Lai Yin": {
         "id": "PC12239",
@@ -2928,7 +3606,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wan, Seeyen": {
         "id": "PC30702",
@@ -2936,7 +3616,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wang, Caishao": {
         "id": "PC8553",
@@ -2944,7 +3626,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wang, Chun Ling": {
         "id": "490299",
@@ -2952,7 +3636,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wang, Dao Gang": {
         "id": "195604",
@@ -2960,7 +3646,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wang, Judy": {
         "id": "694478",
@@ -2968,7 +3656,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wang, Judy W": {
         "id": "PC12251",
@@ -2976,7 +3666,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wang, You Lan": {
         "id": "694480",
@@ -2984,7 +3676,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Washington, Betty": {
         "id": "694487",
@@ -2992,7 +3686,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Washington, Virginia": {
         "id": "PC13233",
@@ -3000,7 +3696,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Waters, Reno": {
         "id": "PC26517",
@@ -3008,7 +3706,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Webster, Margaret": {
         "id": "PC12270",
@@ -3016,7 +3716,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Webster, Sr. Margaret": {
         "id": "PC8554",
@@ -3024,7 +3726,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "White, Dale": {
         "id": "PC24282",
@@ -3032,7 +3736,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Williams, Delores": {
         "id": "PC32811",
@@ -3040,7 +3746,9 @@ let prtObjInfo = {
         "rt": "8",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Williams, Michael": {
         "id": "PC12279",
@@ -3048,7 +3756,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wilson, Cregg": {
         "id": "PC8479",
@@ -3056,7 +3766,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wilton, Donald R": {
         "id": "PC14415",
@@ -3064,7 +3776,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Bill Kwok": {
         "id": "PC8555",
@@ -3072,7 +3786,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Fung Ying": {
         "id": "694519",
@@ -3080,7 +3796,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Gam Fee": {
         "id": "PC8456",
@@ -3088,7 +3806,9 @@ let prtObjInfo = {
         "rt": "6",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Henry H": {
         "id": "PC16301",
@@ -3096,7 +3816,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Iris": {
         "id": "694520",
@@ -3104,7 +3826,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, John": {
         "id": "694521",
@@ -3112,7 +3836,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Kam Sau": {
         "id": "645710",
@@ -3120,7 +3846,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Lan Ying": {
         "id": "PC27358",
@@ -3128,7 +3856,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, May Oi": {
         "id": "694522",
@@ -3136,7 +3866,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, May Seung": {
         "id": "PC29479",
@@ -3144,7 +3876,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Po Kun": {
         "id": "490289",
@@ -3152,7 +3886,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Shou Chu": {
         "id": "648560",
@@ -3160,7 +3896,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Wai C": {
         "id": "PC8556",
@@ -3168,7 +3906,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wong, Yue Yao": {
         "id": "PC25144",
@@ -3176,7 +3916,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Woo, May": {
         "id": "195073",
@@ -3184,7 +3926,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Woo, Mu Jie Xie": {
         "id": "PC12313",
@@ -3192,7 +3936,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Woodard, Larry": {
         "id": "173341",
@@ -3200,7 +3946,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Woods, Renita": {
         "id": "694528",
@@ -3208,7 +3956,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Wu, Gan": {
         "id": "694532",
@@ -3216,7 +3966,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Xu, Anne": {
         "id": "490281",
@@ -3224,7 +3976,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Xu, Gen Su": {
         "id": "694535",
@@ -3232,7 +3986,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Xu, Guang": {
         "id": "PC27495",
@@ -3240,7 +3996,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Xu, Ziyin": {
         "id": "694537",
@@ -3248,7 +4006,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yadambat, Baatar": {
         "id": "694538",
@@ -3256,7 +4016,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yan, Xin Fa": {
         "id": "PC30591",
@@ -3264,7 +4026,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yancey, Norbert": {
         "id": "694540",
@@ -3272,7 +4036,9 @@ let prtObjInfo = {
         "rt": "4",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yang, Feng Lan": {
         "id": "PC12366",
@@ -3280,7 +4046,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ye, Hui Juan": {
         "id": "PC23067",
@@ -3288,7 +4056,9 @@ let prtObjInfo = {
         "rt": "9",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ye, Wei Hua": {
         "id": "694546",
@@ -3296,7 +4066,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Ye, Yibin": {
         "id": "694547",
@@ -3304,7 +4076,9 @@ let prtObjInfo = {
         "rt": "10",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yearwood, Eloisa": {
         "id": "PC13918",
@@ -3312,7 +4086,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yeoh, Khian Heng": {
         "id": "PC8558",
@@ -3320,7 +4096,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yeung, Linying L": {
         "id": "PC12391",
@@ -3328,7 +4106,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yim, Wai Hing": {
         "id": "694549",
@@ -3336,7 +4116,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yin, Shan": {
         "id": "PC15863",
@@ -3344,7 +4126,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Young, John": {
         "id": "PC30592",
@@ -3352,7 +4136,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yu, Birui": {
         "id": "694550",
@@ -3360,7 +4146,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yu, Hua Sheng": {
         "id": "PC12413",
@@ -3368,7 +4156,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yu, Kwai Ha": {
         "id": "694552",
@@ -3376,7 +4166,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yu, Thomas": {
         "id": "195228",
@@ -3384,7 +4176,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yu, Yi Jun": {
         "id": "PC14750",
@@ -3392,7 +4186,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yu, Yong Dong": {
         "id": "PC27360",
@@ -3400,7 +4196,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yuan, Fu Mei": {
         "id": "PC12426",
@@ -3408,7 +4206,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yuan, Shun": {
         "id": "694555",
@@ -3416,7 +4216,9 @@ let prtObjInfo = {
         "rt": "2",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Yunden, Tsogtchimeg": {
         "id": "694557",
@@ -3424,7 +4226,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zalkus, David": {
         "id": "490271",
@@ -3432,7 +4236,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zavaleta, Dora": {
         "id": "PC12433",
@@ -3440,7 +4246,9 @@ let prtObjInfo = {
         "rt": "3",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zeng, Hanying": {
         "id": "694564",
@@ -3448,7 +4256,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zeng, HanYing": {
         "id": "694564",
@@ -3456,7 +4266,9 @@ let prtObjInfo = {
         "rt": "5",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zhang Jin Quan": {
         "id": "PC10471",
@@ -3464,7 +4276,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zhang, De Zhen": {
         "id": "694565",
@@ -3472,7 +4286,9 @@ let prtObjInfo = {
         "rt": "1",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zhang, Jian Quan": {
         "id": "PC10471",
@@ -3480,7 +4296,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zheng, Ruibo": {
         "id": "PC14283",
@@ -3488,7 +4306,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zhou, Xing Hua": {
         "id": "PC12485",
@@ -3496,7 +4316,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zhu, Cui Liang": {
         "id": "694569",
@@ -3504,7 +4326,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Zuckman, Jon": {
         "id": "185191",
@@ -3512,7 +4336,9 @@ let prtObjInfo = {
         "rt": "",
         "comeDay": "",
         "address": "",
-        "amTime": ""
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     }
 }
 function getForDAR() {
