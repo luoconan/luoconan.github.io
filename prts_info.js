@@ -3740,6 +3740,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Watt, Kwok Yan Hong": {
+        "id": "PC34828",
+        "room": "1",
+        "rt": "7",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Webster, Margaret": {
         "id": "PC12270",
         "room": "",
