@@ -148,6 +148,14 @@ $(document).ready(function(){
 
         // 将表格添加到 userDataDiv 中
         userDataDiv.append(table);
+        $(".escort").click(function(){
+            let $this=$(this)
+            $this.html(`<input type='text' class='${$(this).id}' />`)
+            $("."+$this.id).keypress(e=>{
+                let va=$(this).val()
+                if(e.which == 13) $this.html(va)
+            })
+        })
     }
     //$("#inputText").val(DAR)
     
