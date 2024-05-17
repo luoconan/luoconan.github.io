@@ -135,7 +135,7 @@ $(document).ready(function(){
                         isEscort=`escort `
                         escortId="escort_"+i
                     }
-                    var cell = $(`<td style="${fontCenter}" class='${isEscort}${data.replaceAll(" ","-")}'>`).text(data);
+                    var cell = $(`<td style="${fontCenter}" ${escortId==""?"":"id='"+escortId+"'"} class='${isEscort}${data.replaceAll(" ","-")}'>`).text(data);
                     if (k) {
                         cell.addClass("even-row");
                     } else {
@@ -150,11 +150,14 @@ $(document).ready(function(){
         userDataDiv.append(table);
         $(".escort").click(function(){
             let $this=$(this)
-            $this.html(`<input type='text' class='${$(this).id}' />`)
-            $("."+$this.id).keypress(function(e){
+            let thisId=$(this).attr("id")
+            $(this).html(`<input type='text' id='_${thisId}' />`)
+            document.getElementById("_"+thisId).focus()
+            $("#_"+thisId).keypress(function(e){
                 let va=$(this).val();
                 let key=e.keyCode || e.which || e.charCode
                 if(key == 13) $this.html(va)
+                return;
             })
         })
     }
