@@ -130,7 +130,11 @@ $(document).ready(function(){
                 for (let j = 0; j < rowData.length; j++) {                    
                     var data = rowData[j];
                     let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
-                    let isEscort=(j==1?`escort escort_${i} `:"")
+                    let isEscort="",escortId="";
+                    if (j==2){
+                        isEscort=`escort `
+                        escortId="escort_"+i
+                    }
                     var cell = $(`<td style="${fontCenter}" class='${isEscort}${data.replaceAll(" ","-")}'>`).text(data);
                     if (k) {
                         cell.addClass("even-row");
