@@ -131,7 +131,7 @@ $(document).ready(function(){
                     var data = rowData[j];
                     let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
                     let isEscort=(j==1?`escort escort_${i} `:"")
-                    var cell = $(`<td style="${fontCenter}" class='${data.replaceAll(" ","-")}'>`).text(data);
+                    var cell = $(`<td style="${fontCenter}" class='${isEscort}${data.replaceAll(" ","-")}'>`).text(data);
                     if (k) {
                         cell.addClass("even-row");
                     } else {
