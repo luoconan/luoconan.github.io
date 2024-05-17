@@ -151,7 +151,7 @@ $(document).ready(function(){
         $(".escort").click(function(){
             let $this=$(this)
             $this.html(`<input type='text' class='${$(this).id}' />`)
-            $("."+$this.id).keypress(e=>{
+            $("."+$this.id).keypress(function(e){
                 let va=$(this).val();
                 let key=e.keyCode || e.which || e.charCode
                 if(key == 13) $this.html(va)
