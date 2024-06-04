@@ -1,4 +1,5 @@
-let addrs={"2 Watt Avenue":"2",
+let addrs={"2 Watt Ave":"2",
+"327 29th Ave":"1",
 "508 Somerset St":"2",
 "4145 Lincoln Way":"7",
 "37 Sequoia Way":"2",
@@ -783,6 +784,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Chow, James": {
+        "id": "PC36911",
+        "room": "1",
+        "rt": "1",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Chou, Sio Cheong": {
         "id": "PC8512",
         "room": "1",
@@ -1467,6 +1478,26 @@ let prtObjInfo = {
         "id": "PC27228",
         "room": "1",
         "rt": "10",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Huang, Wendg W": {
+        "id": "PC36528",
+        "room": "1",
+        "rt": "6",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Huang, Ying J": {
+        "id": "PC36530",
+        "room": "1",
+        "rt": "6",
         "comeDay": "",
         "address": "",
         "amTime": "",
