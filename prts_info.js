@@ -3074,7 +3074,7 @@ let prtObjInfo = {
     },
     "Richardson, Mark L": {
         "id": "694295",
-        "room": "",
+        "room": "2",
         "rt": "",
         "comeDay": "",
         "address": "",
