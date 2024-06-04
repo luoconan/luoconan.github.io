@@ -240,16 +240,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Akichika, Rowena": {
-        "id": "693456",
-        "room": "2",
-        "rt": "8",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Aldana, Eugenia": {
         "id": "490014",
         "room": "",
@@ -300,16 +290,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Barrow, Joseph": {
-        "id": "172980",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Beck, Ora": {
         "id": "632940",
         "room": "3",
@@ -344,16 +324,6 @@ let prtObjInfo = {
         "id": "173290",
         "room": "",
         "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Blake, Dera": {
-        "id": "693517",
-        "room": "2",
-        "rt": "8",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -660,16 +630,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Chao, Kwoh Chin": {
-        "id": "693601",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Chau, Polo": {
         "id": "633043",
         "room": "1",
@@ -900,16 +860,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Chu, Kan": {
-        "id": "173304",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Chu, Kenneth K": {
         "id": "633045",
         "room": "1",
@@ -1060,30 +1010,10 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Davis, Patricia A": {
-        "id": "PC30769",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Deguzman, Evangelina": {
         "id": "693680",
         "room": "2",
         "rt": "8",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Diaz, Humberto": {
-        "id": "187920",
-        "room": "",
-        "rt": "",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -2210,16 +2140,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Li, Yongfu": {
-        "id": "694012",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Liang, Guo Zhi": {
         "id": "PC9633",
         "room": "1",
@@ -2303,16 +2223,6 @@ let prtObjInfo = {
     "Liu, Hao": {
         "id": "PC26224",
         "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Llerena, Sylvia": {
-        "id": "PC25007",
-        "room": "3",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -2604,16 +2514,6 @@ let prtObjInfo = {
         "id": "PC11803",
         "room": "",
         "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Martinez, Antoinette I": {
-        "id": "PC23199",
-        "room": "3",
-        "rt": "2",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -3080,16 +2980,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Pizzorno, Mary C Christina": {
-        "id": "PC11985",
-        "room": "2",
-        "rt": "2",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Porter, Gregory": {
         "id": "694260",
         "room": "",
@@ -3184,36 +3074,6 @@ let prtObjInfo = {
         "id": "694295",
         "room": "",
         "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Rodriguez, Carmelo S": {
-        "id": "PC30589",
-        "room": "3",
-        "rt": "3",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Rodriguez, Carmelo": {
-        "id": "PC30589",
-        "room": "3",
-        "rt": "3",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Romero, Judith": {
-        "id": "694318",
-        "room": "3",
-        "rt": "2",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -3360,16 +3220,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Tan, Eileen": {
-        "id": "PC8545",
-        "room": "1",
-        "rt": "11",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Tan, Raymond": {
         "id": "694409",
         "room": "",
@@ -3382,16 +3232,6 @@ let prtObjInfo = {
     },
     "Tan, Robert": {
         "id": "PC21037",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Tang, Alice": {
-        "id": "694410",
         "room": "",
         "rt": "",
         "comeDay": "",
@@ -3980,28 +3820,8 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":true
     },
-    "Woodard, Larry": {
-        "id": "173341",
-        "room": "3",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Woods, Renita": {
         "id": "694528",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Wu, Gan": {
-        "id": "694532",
         "room": "",
         "rt": "",
         "comeDay": "",
@@ -4180,16 +4000,6 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Yu, Birui": {
-        "id": "694550",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
     "Yu, Hua Sheng": {
         "id": "PC12413",
         "room": "",
@@ -4254,26 +4064,6 @@ let prtObjInfo = {
         "id": "694555",
         "room": "1",
         "rt": "2",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Yunden, Tsogtchimeg": {
-        "id": "694557",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Zalkus, David": {
-        "id": "490271",
-        "room": "",
-        "rt": "",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -4362,16 +4152,6 @@ let prtObjInfo = {
     },
     "Zhu, Cui Liang": {
         "id": "694569",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Zuckman, Jon": {
-        "id": "185191",
         "room": "",
         "rt": "",
         "comeDay": "",
