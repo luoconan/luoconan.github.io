@@ -2079,9 +2079,9 @@ let prtObjInfo = {
         "noPM":""
     },
     "Leung, Hung Chun": {
-        "id": "PC29600",
+        "id": "PC33540",
         "room": "1",
-        "rt": "",
+        "rt": "1",
         "comeDay": "",
         "address": "",
         "amTime": "",
