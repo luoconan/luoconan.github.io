@@ -80,6 +80,7 @@
 
                 $("result").val(arrToString(true)+arrToString(false));
                 
+                console.log("done")
                 // push table to am and pm Array
                 function tableToObjectArray(table,isIncludeTitle){
                     let titleLine=isIncludeTitle?1:0;
@@ -106,6 +107,7 @@
                         }
                         pushToAmAndPmTrip(prtObj);
                     }
+                    console.log("done am, pm array")
                 }
 
                 // translate the Table Title
@@ -128,6 +130,7 @@
                             break;
                         }
                     }
+                    console.log("title:-----\n"+title)
                     return title;
                 }
                 
@@ -140,7 +143,7 @@
                     if(noPm.indexOf(prt.name)<0){
                         pm.push(prt);
                     }
-                    
+                    console.log("set to Am and PM----")
                 }
                 
                 // make am and pm Array to be the Trip_Createation code) isAm == "true" am array, == "false" pm array
@@ -173,6 +176,7 @@
                             str+=`${prtID}\t1530\t${""}\t490078\t${prtID}\t${appType}\n`;
                         }
                     }
+                    console.log("arr to String:\n"+str)
                     return str;
                 }
             });
