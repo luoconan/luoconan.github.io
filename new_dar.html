@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New_DAR</title>
+    <title>New Dar</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap.css">
     <style>
@@ -137,10 +137,12 @@
                     let noAm=[];
                     let noPm=[];
                     if(noAm.indexOf(prt.name)<0){
-                        am.push(prt);
+                        if(am.indexOf(prt.name)<0)
+                            am.push(prt);
                     }
                     if(noPm.indexOf(prt.name)<0){
-                        pm.push(prt);
+                        if(pm.indexOf(prt.name)<0)
+                            pm.push(prt);
                     }
                 }
                 
