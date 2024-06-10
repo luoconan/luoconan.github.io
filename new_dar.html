@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new DAR</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.css">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+        #unSetUp {
+            margin-top: 20px;
+            color: #6ddc35;
+        }
+        label {
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">New DAR</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="prts">Original</label>
+                <textarea class="form-control" id="prts" rows="10"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label for="result">Create Code</label>
+                <textarea class="form-control" id="result" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <button id="check" class="btn btn-primary mr-2">New DAR</button>
+                <button id="checkByTable" class="btn btn-green mr-2">New DAR By Table</button>
+                <button id="med" class="btn btn-secondary mr-2">Med</button>
+                <button id="reset" class="btn btn-danger">Clear</button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="unSetUp"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="js/jq.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="./prts_info.js"></script>
+    <script>
+        $(document).ready(function() {
+            let obj=getForDAR();
+            let str="";
+            let unde=[];
+
+            $("#checkByTable").click(function(){
+                //clear all data
+                str = "";
+                unde = [];
+                $("#result").val("");
+                //get the table String
+                let table=$("#prt").val();
+                let am=[],pm=[]; 
+                
+                let haveTitle=true;
+                let firstLine=table.split("\n")[0];
+                try{
+                    if(firstLine.split("\t")[firstLine.split("\t").length-2]!="") haveTitle=false;
+                }catch(e){
+
+                }
+
+                tableToObjectArray(table,haveTitle);
+
+                $("result").val(arrToString(true));
+                $("result").val(arrToString(false));
+                
+                // push table to am and pm Array
+                function tableToObjectArray(table,isIncludeTitle){
+                    let titleLine=isIncludeTitle?1:0;
+                    let prtLine=titleLine+1;
+                    let objArr=[];
+
+                    let tableArr=table.split("\n");
+                    let titleArr=tableArr[titleLine].split("\t");
+                    
+
+                    for(let i=prtLine;i<tableArr.length;i++){
+                        let prtObj={},prtArr=tableArr[i].split("\t");
+                        for(let j=0;j<prtArr.length;j++){
+                            let key=titleArr[j],value=prtArr[j];
+
+
+                            key=titleChange(key).toLowerCase();
+
+                            if(value.indexOf("DOB:") > -1) {
+                                value = value.split(" DOB:")[0];
+                            }
+
+                            prtObj[key]=value;
+                        }
+                        pushToAmAndPmTrip(prtObj);
+                    }
+                }
+
+                // translate the Table Title
+                function titleChange(key){
+                    let title=key.toLowerCase();
+                    let rule=[
+                        ["Escort Req?","isEscort"],
+                        ["Visit Type","type"],
+                        ["appt time","time"],
+                        ["curr facility","currentAddress"],
+                        ["Appt Notes","note"],
+                        ["Provider/Resource","resource"],
+                        ["External provider","provider"],
+                        
+                    ]
+
+                    for(let i=0;i<rule.length;i++){
+                        if(title==rule[0].toLowerCase()){
+                            title=rule[1];
+                            break;
+                        }
+                    }
+                    return title;
+                }
+                
+                function pushToAmAndPmTrip(prt){
+                    let noAm=[];
+                    let noPm=[];
+                    if(noAm.indexOf(prt.name)<0){
+                        am.push(prt);
+                    }
+                    if(noPm.indexOf(prt.name)<0){
+                        pm.push(prt);
+                    }
+                    
+                }
+                
+                // make am and pm Array to be the Trip_Createation code) isAm == "true" am array, == "false" pm array
+                function arrToString(isAm){
+                    let arr=[];
+                    let str=``;
+                    let appType=''
+                    if(isAm){
+                        [...arr]=am;
+                        appType=`Center Attendance`;
+                    }else{
+                        [...arr]=pm;
+                        appType='Back Home';
+                    }
+                    for (let i=0;i<arr.length;i++){
+                        let prtName=arr[i].name;
+                        let prtID=obj[prtName.toUpperCase()];
+                        if(prt.transport!="Y") continue;
+                        if(prt.address.indexOf("3595 Geary")>-1) continue;
+                        if(isAm){
+                            str+=`${prtID}\t${""}\t1000\t${prtID}\t490078\t${appType}\n`;
+                        }else{
+                            str+=`${prtID}\t1530\t${""}\t490078\t${prtID}\t${appType}\n`
+                        }
+                    }
+                    return str;
+                }
+            });
+            
+            $("#check").click(function(){
+                // Clear previous results and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#unSetUp").html("");
+                
+                let tempPrtArr = [];
+                let isNeedTranspo = true;
+                prtsArr = $("#prts").val().split("\n");
+                
+                for(let i = 0; i < prtsArr.length; i++) {
+                    let prts = prtsArr[i].split("\t")[1] + "";
+                    if(prts.indexOf("DOB") > -1) {
+                        prts = prts.split(" DOB")[0];
+                    }
+                    isNeedTranspo = prtsArr[i].split("\t")[0] === "Y" ? true : false;
+                    if(isNeedTranspo) {
+                        let prtID = obj[prts.toUpperCase()];
+                        if(prtID === undefined) {
+                            if(unde.indexOf(prts) < 0) {
+                                unde.push(prts);
+                            }
+                        } else {
+                            if(tempPrtArr.indexOf(prts) < 0) {
+                                tempPrtArr.push(prts);
+                            } else {
+                                continue;
+                            }
+                            str += prtID + "\t\t1000\t" + prtID + "\t490078\tCenter Attendance\n";
+                            str += prtID + "\t1530\t\t490078\t" + prtID + "\tBack Home\n";
+                        }
+                    }
+                }
+                $("#result").val(str);
+                for(let i = 0; i < unde.length; i++) {
+                    $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
+                }
+            });
+
+            $("#med").click(function(){
+                // Clear previous results and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#unSetUp").html("");
+                
+                let isNeedTranspo = true;
+                prtsArr = $("#prts").val().split("\n");
+                
+                for(let i = 0; i < prtsArr.length; i++) {
+                    let prts = prtsArr[i].split("\t")[1];
+                    if(prts.indexOf("DOB") > -1) {
+                        prts = prts.split(" DOB")[0];
+                    }
+                    isNeedTranspo = prtsArr[i].split("\t")[0] === "Y" ? true : false;
+                    if(isNeedTranspo) {
+                        let prtID = obj[prts.toUpperCase()];
+                        if(prtID === undefined) {
+                            unde.push(prts);
+                        } else {
+                            str += prtID + "\t1529\t490078\t" + prtID + "\tMedication\t80\n";
+                        }
+                    }
+                }
+                $("#result").val(str);
+                for(let i = 0; i < unde.length; i++) {
+                    $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
+                }
+            });
+
+            // Reset button
+            $("#reset").click(function(){
+                // Clear all values and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#prts").val("");
+                $("#unSetUp").html("");
+            });
+        });
+    </script>
+</body>
+</html>
