@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New_DAR</title>
+    <title>New DAR</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap.css">
     <style>
@@ -156,11 +156,12 @@
                         appType='Back Home';
                     }
                     for (let i=0;i<arr.length;i++){
-                        let prtName=arr[i].name;
+                        let prt=arr[i]
+                        let prtName=prt.name;
                         let prtID=obj[prtName.toUpperCase()];
                         if(prtID === undefined) {
-                            if(unde.indexOf(prts) < 0) {
-                                unde.push(prts);
+                            if(unde.indexOf(prt.name) < 0) {
+                                unde.push(prt.name);
                             }
                             continue; 
                         }
