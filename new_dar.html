@@ -78,7 +78,7 @@
 
                 tableToObjectArray(table,haveTitle);
 
-                $("result").val(arrToString(true)+arrToString(false));
+                $("#result").val(arrToString(true)+arrToString(false));
                 
                 console.log("done")
                 // push table to am and pm Array
@@ -130,7 +130,6 @@
                             break;
                         }
                     }
-                    console.log("title:-----\n"+title)
                     return title;
                 }
                 
@@ -143,7 +142,6 @@
                     if(noPm.indexOf(prt.name)<0){
                         pm.push(prt);
                     }
-                    console.log("set to Am and PM----")
                 }
                 
                 // make am and pm Array to be the Trip_Createation code) isAm == "true" am array, == "false" pm array
