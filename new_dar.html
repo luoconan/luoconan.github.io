@@ -78,7 +78,7 @@
 
                 tableToObjectArray(table,haveTitle);
 
-                $("#result").val(arrToString(true)+arrToString(false));
+                $("result").val(arrToString(true)+arrToString(false));
                 
                 // push table to am and pm Array
                 function tableToObjectArray(table,isIncludeTitle){
@@ -158,6 +158,12 @@
                     for (let i=0;i<arr.length;i++){
                         let prtName=arr[i].name;
                         let prtID=obj[prtName.toUpperCase()];
+                        if(prtID === undefined) {
+                            if(unde.indexOf(prts) < 0) {
+                                unde.push(prts);
+                            }
+                            continue;
+                        }
                         if(prt.transport!="Y") continue;
                         if(prt.address.indexOf("3595 Geary")>-1) continue;
                         if(isAm){
