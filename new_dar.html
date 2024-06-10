@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Dar</title>
+    <title>New DAR</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap.css">
     <style>
@@ -137,12 +137,15 @@
                     let noAm=[];
                     let noPm=[];
                     if(noAm.indexOf(prt.name)<0){
-                        if(am.indexOf(prt.name)<0)
+                        if(JSON.stringify(am).indexOf(prt.name)<0){
                             am.push(prt);
+                        }
                     }
                     if(noPm.indexOf(prt.name)<0){
-                        if(pm.indexOf(prt.name)<0)
+                        if(JSON.stringify(pm).indexOf(prt.name)<0){
                             pm.push(prt);
+                        }
+                        console.log(pm)
                     }
                 }
                 
