@@ -54,6 +54,36 @@
     <script src="bootstrap.js"></script>
     <script src="./prts_info.js"></script>
     <script>
+
+        //Monday Wednesday Friday
+        const MWF_PRE_SET_ARR=[]
+        //Tuesday Thursday Saturday
+        const TTS_PRE_SET_ARR=[]
+        //preset array
+        const PRE_SET_ARR=[
+            /*Monday*/
+            [...MWF_PRE_SET_ARR,
+
+            ],
+            /*Tuesday*/
+            [...TTS_PRE_SET_ARR
+
+            ],
+            /*Wednesday*/
+            [...MWF_PRE_SET_ARR,
+
+            ],
+            /*Thursday*/
+            [...TTS_PRE_SET_ARR
+
+            ],
+            /*Friday*/
+            [...MWF_PRE_SET_ARR,
+                
+            ],
+            /*everyday*/
+            []
+        ]
         $(document).ready(function() {
             let obj=getForDAR();
             let str="";
@@ -153,7 +183,10 @@
                 function arrToString(isAm){
                     let arr=[];
                     let str=``;
-                    let appType=''
+                    let appType='';
+                    let unde=[];
+
+
                     if(isAm){
                         [...arr]=am;
                         appType=`Center Attendance`;
@@ -173,13 +206,41 @@
                         }
                         if(prt.transport!="Y") continue;
                         if(prt.address.indexOf("3595 Geary")>-1) continue;
+                        
+                        // Monday Tuesday Wednesday Thursday Friday
+                        let todayDate=new Date().getDay();
+                        switch (todayDate) {
+                            case 1:
+                                
+                                break;
+                            case 2:
+                                
+                                break;
+                            case 3:
+                                
+                                break;
+                            case 4:
+                                
+                                break;
+                            case 5:
+                            case 6:
+                            case 0:
+                                
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                        
                         if(isAm){
                             str+=`${prtID}\t${""}\t1000\t${prtID}\t490078\t${appType}\n`;
                         }else{
                             str+=`${prtID}\t1530\t${""}\t490078\t${prtID}\t${appType}\n`;
                         }
                     }
-                    console.log("arr to String:\n"+str)
+                    for(let i = 0; i < unde.length; i++) {
+                        $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
+                    }
                     return str;
                 }
             });
