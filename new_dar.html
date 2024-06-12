@@ -56,30 +56,29 @@
     <script>
 
         //Monday Wednesday Friday
-        const MWF_PRE_SET_ARR=[]
+        const MWF_PRESET_ARR=["Chryst, Genn"]
         //Tuesday Thursday Saturday
-        const TTS_PRE_SET_ARR=[]
+        const TTS_PRESET_ARR=["Wong, Henry"]
         //preset array
-        const PRE_SET_ARR=[
+        const PRESET_ARR=[
             /*Monday*/
-            [...MWF_PRE_SET_ARR,
-
+            [...MWF_PRESET_ARR,
             ],
             /*Tuesday*/
-            [...TTS_PRE_SET_ARR
+            [...TTS_PRESET_ARR
 
             ],
             /*Wednesday*/
-            [...MWF_PRE_SET_ARR,
+            [...MWF_PRESET_ARR,
 
             ],
             /*Thursday*/
-            [...TTS_PRE_SET_ARR
+            [...TTS_PRESET_ARR
 
             ],
             /*Friday*/
-            [...MWF_PRE_SET_ARR,
-                
+            [...MWF_PRESET_ARR,
+
             ],
             /*everyday*/
             []
@@ -184,7 +183,6 @@
                     let arr=[];
                     let str=``;
                     let appType='';
-                    let unde=[];
 
 
                     if(isAm){
@@ -199,33 +197,33 @@
                         let prtName=prt.name;
                         let prtID=obj[prtName.toUpperCase()];
                         if(prtID === undefined) {
-                            if(unde.indexOf(prt.name) < 0) {
-                                unde.push(prt.name);
+                            if(unde.indexOf(prtName) < 0) {
+                                unde.push(prtName);
                             }
                             continue; 
                         }
                         if(prt.transport!="Y") continue;
-                        if(prt.address.indexOf("3595 Geary")>-1) continue;
+                        if(prt.currentAddress.indexOf("3595 Geary")>-1) continue;
                         
                         // Monday Tuesday Wednesday Thursday Friday
                         let todayDate=new Date().getDay();
                         switch (todayDate) {
-                            case 1:
-                                
+                            case 1://set up Tuesday rule
+                                if(JSON.stringify(PRESET_ARR[1]).indexOf(prtName)>-1) continue;
                                 break;
-                            case 2:
-                                
+                            case 2://set up Wednesday rule
+                                if(JSON.stringify(PRESET_ARR[2]).indexOf(prtName)>-1) continue;
                                 break;
-                            case 3:
-                                
+                            case 3://set up Thursday rule
+                                if(JSON.stringify(PRESET_ARR[3]).indexOf(prtName)>-1) continue;
                                 break;
-                            case 4:
-                                
+                            case 4://set up Friday rule
+                                if(JSON.stringify(PRESET_ARR[4]).indexOf(prtName)>-1) continue;
                                 break;
-                            case 5:
+                            case 5://set up Monday rule
                             case 6:
                             case 0:
-                                
+                                if(JSON.stringify(PRESET_ARR[0]).indexOf(prtName)>-1) continue;
                                 break;
                         
                             default:
@@ -238,10 +236,11 @@
                             str+=`${prtID}\t1530\t${""}\t490078\t${prtID}\t${appType}\n`;
                         }
                     }
-                    for(let i = 0; i < unde.length; i++) {
-                        $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
-                    }
+                    
                     return str;
+                }
+                for(let i = 0; i < unde.length; i++) {
+                    $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
                 }
             });
             
