@@ -3629,7 +3629,7 @@ let prtObjInfo = {
         "noPM":""
     },
     "Watt, Kwok Yan Hong": {
-        "id": "PC34828",
+        "id": "PC37504",
         "room": "1",
         "rt": "7",
         "comeDay": "",
