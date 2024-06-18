@@ -301,7 +301,7 @@ let prtObjInfo = {
     "Beck, Ora": {
         "id": "632940",
         "room": "3",
-        "rt": "10",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -551,7 +551,7 @@ let prtObjInfo = {
     "Chan, Kwan Har": {
         "id": "501011",
         "room": "1",
-        "rt": "9",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -601,7 +601,7 @@ let prtObjInfo = {
     "Chan, Suk Ching": {
         "id": "PC8544",
         "room": "1",
-        "rt": "10",
+        "rt": "2",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -761,7 +761,7 @@ let prtObjInfo = {
     "Chiang, Kuo Hsiun": {
         "id": "PC27880",
         "room": "1",
-        "rt": "9",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -971,7 +971,7 @@ let prtObjInfo = {
     "Cruz, Ruben D": {
         "id": "PC11212",
         "room": "2",
-        "rt": "",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -991,7 +991,7 @@ let prtObjInfo = {
     "Dang, Ly K": {
         "id": "597823",
         "room": "1",
-        "rt": "9",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -1851,7 +1851,7 @@ let prtObjInfo = {
     "Lau, Cheng Kun": {
         "id": "PC30593",
         "room": "1",
-        "rt": "10",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -3081,7 +3081,7 @@ let prtObjInfo = {
     "Randleston, Edward": {
         "id": "694276",
         "room": "3",
-        "rt": "",
+        "rt": "6",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -3091,7 +3091,7 @@ let prtObjInfo = {
     "Rapisura, Herminia": {
         "id": "694280",
         "room": "3",
-        "rt": "2",
+        "rt": "6",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -3631,7 +3631,7 @@ let prtObjInfo = {
     "Watt, Kwok Yan Hong": {
         "id": "PC37504",
         "room": "1",
-        "rt": "7",
+        "rt": "10",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -3821,7 +3821,7 @@ let prtObjInfo = {
     "Wong, Shou Chu": {
         "id": "648560",
         "room": "1",
-        "rt": "9",
+        "rt": "7",
         "comeDay": "",
         "address": "",
         "amTime": "",
