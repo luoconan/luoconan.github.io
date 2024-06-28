@@ -3128,6 +3128,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Richardson, Mark": {
+        "id": "694295",
+        "room": "2",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Salunga, Marissa": {
         "id": "PC10280",
         "room": "",
