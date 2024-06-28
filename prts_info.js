@@ -1488,7 +1488,7 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
-    "Huang, Wendg W": {
+    "Huang, Wendy W": {
         "id": "PC36528",
         "room": "1",
         "rt": "6",
@@ -2290,7 +2290,7 @@ let prtObjInfo = {
     },
     "Lu, Xiong": {
         "id": "694045",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
