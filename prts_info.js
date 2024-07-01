@@ -1388,6 +1388,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Ho, Anna": {
+        "id": "PC38166",
+        "room": "1",
+        "rt": "1",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Ho, Kim": {
         "id": "PC8520",
         "room": "2",
