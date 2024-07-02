@@ -2528,6 +2528,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Mai, Su Hang": {
+        "id": "PC24048",
+        "room": "",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Majher, John J.": {
         "id": "694066",
         "room": "",
@@ -3230,16 +3240,6 @@ let prtObjInfo = {
     },
     "Stern, Mark": {
         "id": "694394",
-        "room": "",
-        "rt": "",
-        "comeDay": "",
-        "address": "",
-        "amTime": "",
-        "noAM":"",
-        "noPM":""
-    },
-    "Su Hang, Mai": {
-        "id": "PC24048",
         "room": "",
         "rt": "",
         "comeDay": "",
