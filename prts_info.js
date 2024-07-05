@@ -1810,7 +1810,7 @@ let prtObjInfo = {
     },
     "Kwong, Charlie L": {
         "id": "PC34661",
-        "room": "1",
+        "room": "2",
         "rt": "1",
         "comeDay": "",
         "address": "",
@@ -2780,8 +2780,8 @@ let prtObjInfo = {
     },
     "Ng, Ping": {
         "id": "694173",
-        "room": "",
-        "rt": "",
+        "room": "1",
+        "rt": "10",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -2790,8 +2790,8 @@ let prtObjInfo = {
     },
     "Ng, Ping Jan": {
         "id": "694174",
-        "room": "",
-        "rt": "",
+        "room": "1",
+        "rt": "10",
         "comeDay": "",
         "address": "",
         "amTime": "",
@@ -4082,6 +4082,16 @@ let prtObjInfo = {
         "id": "694552",
         "room": "1",
         "rt": "2",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Yu, Rui Guo": {
+        "id": "PC37686",
+        "room": "2",
+        "rt": "1",
         "comeDay": "",
         "address": "",
         "amTime": "",
