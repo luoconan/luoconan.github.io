@@ -90,11 +90,11 @@
         if(isRoom){
             //$("#date").html(".")
             let tempTableHtml1 = `<table style="border:1px"><tr><th colspan="3" style="text-align: center"> </th></tr>`
-            let tempTableHtml2 = `<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt</th><th class="border border-dark ${bg_style}">Rt#</th></tr>`;
+            let tempTableHtml2 = roomName=>`<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt------${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th></tr>`;
             
-            let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2;            
-            let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2;
-            let moonTable=`<div class="childTable" id="moonRoom">`+tempTableHtml1+tempTableHtml2;
+            let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2("Sun");            
+            let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2("Star");
+            let moonTable=`<div class="childTable" id="moonRoom">`+tempTableHtml1+tempTableHtml2("Moon");
             let otherTable=`<div id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2;
             
             for(let i=0,j=1;i<arr.length;i++){
