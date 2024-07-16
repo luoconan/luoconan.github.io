@@ -95,7 +95,7 @@
             let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2("Sun");            
             let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2("Star");
             let moonTable=`<div class="childTable" id="moonRoom">`+tempTableHtml1+tempTableHtml2("Moon");
-            let otherTable=`<div id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2;
+            let otherTable=`<div id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2("Other");
             
             for(let i=0,j=1;i<arr.length;i++){
                 let room=arr[i][0].split("{@}")[0]; // ☀✨🌙
@@ -116,7 +116,7 @@
             }
             sunTable+="</table></div>";
             starTable+="</table></div>";
-            if(`<div class="childTable" id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2==otherTable) otherTable=""
+            if(`<div class="childTable" id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2("Other")==otherTable) otherTable=""
             moonTable+="</div></table><br>"+otherTable+"</table></div>";
 
             tableHtml=sunTable+starTable+moonTable
