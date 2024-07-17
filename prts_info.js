@@ -809,7 +809,7 @@ let prtObjInfo = {
         "noPM":""
     },
     "Chow, Wan Chung": {
-        "id": "PC32911",
+        "id": "PC35428",
         "room": "2",
         "rt": "7",
         "comeDay": "",
@@ -1499,7 +1499,7 @@ let prtObjInfo = {
         "noPM":""
     },
     "Huang, Wendy W": {
-        "id": "PC36528",
+        "id": "PC39047",
         "room": "1",
         "rt": "6",
         "comeDay": "",
@@ -1509,7 +1509,7 @@ let prtObjInfo = {
         "noPM":""
     },
     "Huang, Ying J": {
-        "id": "PC36530",
+        "id": "PC39048",
         "room": "1",
         "rt": "6",
         "comeDay": "",
