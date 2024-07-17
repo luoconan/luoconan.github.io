@@ -1809,7 +1809,7 @@ let prtObjInfo = {
         "noPM":""
     },
     "Kwong, Charlie L": {
-        "id": "PC34661",
+        "id": "PC37503",
         "room": "2",
         "rt": "1",
         "comeDay": "",
