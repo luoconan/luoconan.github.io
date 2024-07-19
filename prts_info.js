@@ -2328,6 +2328,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Lum, Yung Ching": {
+        "id": "PC38863",
+        "room": "1",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Luk Chiu, Fung Hin": {
         "id": "PC11763",
         "room": "",
@@ -3350,7 +3360,7 @@ let prtObjInfo = {
     },
     "Taylor, Peggy": {
         "id": "694416",
-        "room": "",
+        "room": "3",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -3600,7 +3610,7 @@ let prtObjInfo = {
     },
     "Wang, Judy W": {
         "id": "PC12251",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
