@@ -2547,6 +2547,16 @@ let prtObjInfo = {
         "amTime": "",
         "noAM":"",
         "noPM":""
+    },,
+    "Su Hang, Mai": {
+        "id": "PC23147",
+        "room": "",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
     },
     "Majher, John J.": {
         "id": "694066",
