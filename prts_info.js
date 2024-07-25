@@ -2547,7 +2547,7 @@ let prtObjInfo = {
         "amTime": "",
         "noAM":"",
         "noPM":""
-    },,
+    },
     "Su Hang, Mai": {
         "id": "PC23147",
         "room": "",
