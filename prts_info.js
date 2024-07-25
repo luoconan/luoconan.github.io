@@ -618,6 +618,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Chan, Virginia C": {
+        "id": "PC38161",
+        "room": "1",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Chan, Wai Hing": {
         "id": "693594",
         "room": "",
