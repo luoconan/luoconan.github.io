@@ -1,4 +1,8 @@
 let addrs={"424 Sawyer St":"6",
+"471 19th Avenue Apt 2":"1",
+"327 29th Ave":"1",
+"471 19th Ave":"1",
+"476 5th Ave":"1",
 "424 Sawyer St":"6",
 "508 Somerset St":"6",
 "291 Ramsell Street":"2",
