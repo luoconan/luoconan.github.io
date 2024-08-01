@@ -61,7 +61,7 @@
     })(jQuery);
 
     function whichRoom(orgPrt){
-        let prt = orgPrt.replace(" - @2pm","")
+        let prt = orgPrt.replace(" - @2pm","").replace(" - @3pm","")
         let tempPrt="{@}"+orgPrt
 
         if(prtObjInfo[prt]){
