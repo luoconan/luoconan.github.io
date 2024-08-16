@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">NEW DAR</h2>
+        <h2 class="text-center">New DAR</h2>
         <div class="row">
             <div class="col-md-6">
                 <label for="prts">Original</label>
@@ -107,7 +107,7 @@
 
                 tableToObjectArray(table,haveTitle);
 
-                $("#result").val(arrToString(true)+arrToString(false));
+                $("#result").val((arrToString(true)+arrToString(false)).split("\n").sort().join("\n"));
                 
                 console.log("done")
                 // push table to am and pm Array
@@ -237,7 +237,7 @@
                         }
                     }
                     
-                    return str.split("\n").sort().join("\n");
+                    return str;
                 }
                 for(let i = 0; i < unde.length; i++) {
                     $("#unSetUp").append("<br>" + (i + 1) + ". " + unde[i].toUpperCase());
