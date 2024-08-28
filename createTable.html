@@ -100,7 +100,7 @@ $(document).ready(function(){
         var headRow = $("<tr>");
         var columnNames = lines[1].split("\t"); // 以制表符分割每一列
         columnNames.forEach(function(columnName,index) {            
-            headRow.append($(`<th style="width:${colWidth[index]};">`).text(columnName.replace("Transport","Trans")));
+            headRow.append($(`<th style="width:${colWidth[index]};" class="col-${index}">`).text(columnName.replace("Transport","Trans")));
         });
         table.append(headRow);
 
@@ -126,7 +126,7 @@ $(document).ready(function(){
             var rowData = dataRows[i];
             if(isExternal && rowData[3].indexOf("EXTERNAL APPOINTMENT")<0) {}
             else k=!k;
-            var dataRow = $("<tr>");
+            var dataRow = $(`<tr class="row-${i}">`);
                 for (let j = 0; j < rowData.length; j++) {                    
                     var data = rowData[j];
                     let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
@@ -135,7 +135,7 @@ $(document).ready(function(){
                         isEscort=`escort `
                         escortId="escort_"+i
                     }
-                    var cell = $(`<td style="${fontCenter}" ${escortId==""?"":"id='"+escortId+"'"} class='${isEscort}${data.replaceAll(" ","-")}'>`).text(data);
+                    var cell = $(`<td style="${fontCenter}" ${escortId==""?"":"id='"+escortId+"'"} class='${isEscort}${data.replaceAll(" ","-")} col-${j}'>`).text(data);
                     if (k) {
                         cell.addClass("even-row");
                     } else {
