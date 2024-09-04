@@ -193,6 +193,10 @@
                         appType='Back Home';
                     }
                     for (let i=0;i<arr.length;i++){
+                        
+                        if(prt.transport!="Y") continue;
+                        if(prt.address.indexOf("3595 Geary")>-1) continue;
+                        
                         let prt=arr[i]
                         let prtName=prt.name;
                         let prtID=obj[prtName.toUpperCase()];
@@ -202,8 +206,6 @@
                             }
                             continue; 
                         }
-                        if(prt.transport!="Y") continue;
-                        if(prt.address.indexOf("3595 Geary")>-1) continue;
                         
                         // Monday Tuesday Wednesday Thursday Friday
                         let todayDate=new Date().getDay();
