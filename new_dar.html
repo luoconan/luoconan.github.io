@@ -198,7 +198,10 @@
                         let prtID=obj[prtName.toUpperCase()];
                         if(prtID === undefined) {
                             if(unde.indexOf(prtName) < 0) {
-                                unde.push(prtName);
+                                if(prt.transport=="Y"){
+                                    if(prt.address.indexOf("3595 Geary")<0)
+                                        unde.push(prtName);
+                                }
                             }
                             continue; 
                         }
