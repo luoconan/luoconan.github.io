@@ -97,17 +97,25 @@ $(document).ready(function(){
         var table = $("<table>").addClass("userTable");
 
         // 创建表头行
+        var headCtrl = $("<tr class='row--1'>");
         var headRow = $("<tr>");
         var columnNames = lines[1].split("\t"); // 以制表符分割每一列
-        columnNames.forEach(function(columnName,index) {            
-            headRow.append($(`<th style="width:${colWidth[index]};" class="col-${index}">`).text(columnName.replace("Transport","Trans")));
+        columnNames.forEach(function(columnName,index) {
+            headCtrl.append($(`<th class="col-${index}">`).html(
+                               `<input type="button" style="background:red" value="X" onclick="$('.col-${index}').hide()")">&nbsp;
+                                <input type="button" style="background:green" value='clear' onclick="$('.col-${index}').text('')")">`));
+            let col_Width=isExternal&&index>8?"4%":colWidth[index]
+            headRow.append($(`<th style="width:${col_Width};" class="col-${index}">`).text(columnName.replace("Transport","Trans")));
         });
+        if(isExternal) headRow.append($(`<th class="col--1" style="width:2%">`));
+        headCtrl.append($(`<th class="col--1"><input type="button" id="hide_ctrl" value="hide" onclick="$('.row--1').hide();$('.col--1').hide()"></th>`));
+        if(isExternal) table.append(headCtrl);
         table.append(headRow);
 
         // 创建数据行
         var dataRows = [];
         for (var i = 2; i < lines.length; i++) {
-            var rowData = lines[i].split("\t"); // 以制表符分割每一列
+            var rowData = lines[i].replaceAll("上午","AM").replaceAll("下午","PM").split("\t"); // 以制表符分割每一列
             dataRows.push(rowData);
         }
 
@@ -121,28 +129,39 @@ $(document).ready(function(){
             return a[0] > b[0] ? -1 : 1
         });
 
+        //如果是external appt 按照时间排序
+        if(isExternal){
+            dataRows.sort(function(a,b){                
+                let s1=a[4].replaceAll(":","").replaceAll(" AM","").replaceAll(" 上午","").replaceAll(" PM","00").replaceAll(" 下午","0")
+                let s2=b[4].replaceAll(":","").replaceAll(" AM","").replaceAll(" 上午","").replaceAll(" PM","00").replaceAll(" 下午","0")
+                return s1-s2
+            })
+        }
+        
+
         // 创建数据行
         for (let i = 0, k=false; i < dataRows.length; i++) {
             var rowData = dataRows[i];
             if(isExternal && rowData[3].indexOf("EXTERNAL APPOINTMENT")<0) {}
             else k=!k;
             var dataRow = $(`<tr class="row-${i}">`);
-                for (let j = 0; j < rowData.length; j++) {                    
-                    var data = rowData[j];
-                    let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
-                    let isEscort="",escortId="";
-                    if (j==1){
-                        isEscort=`escort `
-                        escortId="escort_"+i
-                    }
-                    var cell = $(`<td style="${fontCenter}" ${escortId==""?"":"id='"+escortId+"'"} class='${isEscort}${data.replaceAll(" ","-")} col-${j}'>`).text(data);
-                    if (k) {
-                        cell.addClass("even-row");
-                    } else {
-                        cell.addClass("odd-row");
-                    }
-                    dataRow.append(cell);
+            for (let j = 0; j < rowData.length; j++) {                    
+                var data = rowData[j];
+                let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
+                let isEscort="",escortId="";
+                if (j==1){
+                    isEscort=`escort `
+                    escortId="escort_"+i
                 }
+                var cell = $(`<td style="${fontCenter}" ${escortId==""?"":"id='"+escortId+"'"} class='${isEscort}${data.replaceAll(" ","-")} col-${j}'>`).text(data);
+                if (k) {
+                    cell.addClass("even-row");
+                } else {
+                    cell.addClass("odd-row");
+                }
+                dataRow.append(cell);
+            }
+            if(isExternal) dataRow.append($(`<th class="col--1">`).html(`<input style="background:red;width:10px" value="X" onclick="$('.row-${i}').hide()">`))
             table.append(dataRow);
         }
 
@@ -160,6 +179,7 @@ $(document).ready(function(){
                 return;
             })
         })
+        
     }
     //$("#inputText").val(DAR)
     
