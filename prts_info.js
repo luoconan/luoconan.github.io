@@ -24,7 +24,6 @@ let addrs={
 "4145 Lincoln Way":"9",
 "711 Eddy Street":"4",
 "2243 30th Avenue":"10",
-"4145 Lincoln Way":"7",
 "14 Roemer Way":"11",
 "23 Glenview Drive":"2",
 "25 Buckingham Way":"2",
