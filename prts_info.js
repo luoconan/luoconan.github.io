@@ -1,4 +1,8 @@
-let addrs={"424 Sawyer Street":"6",
+let addrs={
+"607 23rd Avenue":"1",
+"1405 Franklin Street":"8",
+"1250 Hayes Street":"8",
+"424 Sawyer Street":"6",
 "327 29th Avenue":"1",
 "838 30th Avenue":"1",
 "655 Alabama Street":"5",
