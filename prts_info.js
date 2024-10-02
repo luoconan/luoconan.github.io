@@ -1,4 +1,6 @@
 let addrs={
+"1405 Franklin Street":"8",
+"1405 Franklin Street 507":"8",
 "607 23rd Avenue":"1",
 "1405 Franklin Street":"8",
 "1250 Hayes Street":"8",
