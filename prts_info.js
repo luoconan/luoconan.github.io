@@ -407,6 +407,26 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Bunag, Imelda":{
+        "id": "PC45113",
+        "room": "",
+        "rt": "3",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Bunag, Relio":{
+        "id": "PC45178",
+        "room": "",
+        "rt": "3",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Burr, Sandra": {
         "id": "693544",
         "room": "2",
@@ -1372,6 +1392,16 @@ let prtObjInfo = {
         "room": "",
         "rt": "",
         "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Hau, Yuet":{        
+        "id": "PC43194",
+        "room": "",
+        "rt": "",
+        "comeDay": "4",
         "address": "",
         "amTime": "",
         "noAM":"",
