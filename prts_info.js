@@ -1419,7 +1419,7 @@ let prtObjInfo = {
     },
     "He, Yu": {
         "id": "693842",
-        "room": "2",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
