@@ -149,9 +149,9 @@ $(document).ready(function(){
                 var data = rowData[j];
                 let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
                 let isEscort="",escortId="";
-                if (j==1){
-                    isEscort=`escort `
-                    escortId="escort_"+i
+                if (j==1 || j==5){
+                    isEscort=`editable `
+                    escortId=j==1?("escort_"+i):("additional_note"+i)
                 }
                 var cell = $(`<td style="${fontCenter}" ${escortId==""?"":"id='"+escortId+"'"} class='${isEscort}${data.replaceAll(" ","-")} col-${j}'>`).text(data);
                 if (k) {
@@ -167,7 +167,7 @@ $(document).ready(function(){
 
         // 将表格添加到 userDataDiv 中
         userDataDiv.append(table);
-        $(".escort").click(function(){
+        $(".editable").click(function(){
             let $this=$(this)
             let thisId=$(this).attr("id")
             $(this).html(`<input type='text' id='_${thisId}' />`)
