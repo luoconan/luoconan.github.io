@@ -1,4 +1,5 @@
 let addrs={
+"2770 Lombard Street 101":"3",
 "1405 Franklin Street":"8",
 "1405 Franklin Street 507":"8",
 "607 23rd Avenue":"1",
@@ -409,7 +410,7 @@ let prtObjInfo = {
     },
     "Bunag, Imelda":{
         "id": "PC45113",
-        "room": "",
+        "room": "3",
         "rt": "3",
         "comeDay": "",
         "address": "",
@@ -419,7 +420,7 @@ let prtObjInfo = {
     },
     "Bunag, Relio":{
         "id": "PC45178",
-        "room": "",
+        "room": "3",
         "rt": "3",
         "comeDay": "",
         "address": "",
@@ -977,6 +978,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Chu, Pak": {
+        "id": "PC11186",
+        "room": "1",
+        "rt": "10",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Chu, Yin": {
         "id": "693625",
         "room": "1",
@@ -1159,7 +1170,7 @@ let prtObjInfo = {
     },
     "Fan, Hongyu": {
         "id": "693731",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -1358,7 +1369,7 @@ let prtObjInfo = {
         "noPM":""
     },
     "Ha, Tong Han Han": {
-        "id": "PC39500",
+        "id": "PC44638",
         "room": "1",
         "rt": "1",
         "comeDay": "",
@@ -1399,7 +1410,7 @@ let prtObjInfo = {
     },
     "Hau, Yuet":{        
         "id": "PC43194",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "4",
         "address": "",
@@ -1577,6 +1588,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Huang, Shu Fen": {
+        "id": "492789",
+        "room": "1",
+        "rt": "10",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
     "Huang, Wei Liang": {
         "id": "PC27228",
         "room": "1",
@@ -1629,7 +1650,7 @@ let prtObjInfo = {
     },
     "Hui, Wai Chun Ngai": {
         "id": "PC8522",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -2589,7 +2610,7 @@ let prtObjInfo = {
     },
     "Ma, Rongan": {
         "id": "694055",
-        "room": "",
+        "room": "1",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -2839,7 +2860,7 @@ let prtObjInfo = {
     },
     "Morley, Marilyn": {
         "id": "PC11851",
-        "room": "",
+        "room": "2",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -2847,6 +2868,16 @@ let prtObjInfo = {
         "noAM":"",
         "noPM":""
     },
+    "Mosier, Jessica":{
+        "id":"PC44642",
+        "room": "3",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },    
     "Moskvychov, Svyatoslav G": {
         "id": "PC29006",
         "room": "",
@@ -3029,7 +3060,7 @@ let prtObjInfo = {
     },
     "Pan, Wiley": {
         "id": "501151",
-        "room": "2",
+        "room": "1",
         "rt": "8",
         "comeDay": "",
         "address": "",
@@ -3179,7 +3210,7 @@ let prtObjInfo = {
     },
     "Ramos, Gladys": {
         "id": "694275",
-        "room": "",
+        "room": "2",
         "rt": "",
         "comeDay": "",
         "address": "",
@@ -3350,6 +3381,16 @@ let prtObjInfo = {
     "Stern, Mark": {
         "id": "694394",
         "room": "",
+        "rt": "",
+        "comeDay": "",
+        "address": "",
+        "amTime": "",
+        "noAM":"",
+        "noPM":""
+    },
+    "Steven, Mccarthy": {
+        "id": "PC15386",
+        "room": "3",
         "rt": "",
         "comeDay": "",
         "address": "",
