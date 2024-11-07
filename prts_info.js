@@ -1158,6 +1158,16 @@ let prtObjInfo = {
         "noAM": "", 
         "noPM": ""
     }, 
+    "Doyle, Tom": {
+        "id": "693698", 
+        "room": "3", 
+        "rt": "3", 
+        "comeDay": "5", 
+        "address": "", 
+        "amTime": "", 
+        "noAM": "", 
+        "noPM": ""
+    }, 
     "Duong, Ban": {
         "id": "693703", 
         "room": "", 
