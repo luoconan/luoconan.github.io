@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">DAR_Compare</h2>
+        <h2 class="text-center">DAR Compare</h2>
         <div class="row">
             <div class="col-md-6">
                 <label for="prts">Old DAR</label>
@@ -72,8 +72,8 @@
 
                 //for newOneArr Name
                 for(let i=0;i<newOneArr.length;i++){
-                    let prtName=newOneArr.split("\t")[1];
-                    let isTransport=newOneArr.split("\t")[0]
+                    let prtName=newOneArr[i].split("\t")[1];
+                    let isTransport=newOneArr[i].split("\t")[0]
                     if(newNames.indexOf(prtName)<0 && isTransport=="Y"){
                         newNames.push(prtName)
                         newNames1.push(prtName)
