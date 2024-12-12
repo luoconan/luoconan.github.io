@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAR Compare</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.css">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+        #unSetUp {
+            margin-top: 20px;
+            color: #6ddc35;
+        }
+        label {
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">DAR Compare</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="prts">Old DAR</label>
+                <textarea class="form-control" id="oldDAR" rows="10"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label for="result">New DAR</label>
+                <textarea class="form-control" id="newDAR" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <button id="check" class="btn btn-primary mr-2">Check</button>
+                <button id="reset" class="btn btn-danger">Clear</button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="js/jq.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="./prts_info.js"></script>
+    <script>
+        $(document).ready(function() {
+            let obj=getForDAR();
+            let str="";
+            let unde=[];
+            
+            $("#check").click(function(){
+                // Clear previous results and errors
+                str = "";
+                let oldNames = [];
+                let newNames = [];
+                let oldNames1 = [];
+                let newNames1 = [];
+
+                let oldOneArr=$("#oldDAR").val();
+                oldOneArr=oldOneArr.split("\n")
+                let newOneArr=$("#newDAR").val();
+                newOneArr=newOneArr.split("\n");
+
+                //for newOneArr Name
+                for(let i=0;i<newOneArr.length;i++){
+                    let prtName=newOneArr.split("\t")[1];
+                    let isTransport=newOneArr.split("\t")[0]
+                    if(newNames.indexOf(prtName)<0 && isTransport=="Y"){
+                        newNames.push(prtName)
+                        newNames1.push(prtName)
+                    }
+                }
+
+                //for oldOneArr
+                oldOneNameIndex=oldOneArr[0].split('\t').indexOf("Passenger ")
+                oldOneStatueIndex=oldOneArr[0].split('\t').indexOf("PU ")
+                for(let i=1;i<oldOneArr.length;i++){
+                    let trip=oldOneArr[i].split("\t")
+                    let prtName=trip[oldOneNameIndex];
+                    if(trip[oldOneStatueIndex].indexOf("Cancel")<0){
+                        oldNames.push(prtName)
+                        oldNames1.push(prtName)
+                    }
+
+                }
+                
+                let tempPrts = [];
+
+                console.log("oldName:",oldNames)
+                console.log("newName:",newNames)
+
+            // Reset button
+            $("#reset").click(function(){
+                // Clear all values and errors
+                str = "";
+                unde = [];
+                $("#result").val("");
+                $("#oldDAR").val("");
+                $("#newDAR").html("");
+            });
+        });
+    </script>
+</body>
+</html>
