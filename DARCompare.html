@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">DAR Compare</h2>
+        <h2 class="text-center">DAR_Compare</h2>
         <div class="row">
             <div class="col-md-6">
                 <label for="prts">Old DAR</label>
@@ -89,14 +89,16 @@
                     if(trip[oldOneStatueIndex].indexOf("Cancel")<0){
                         oldNames.push(prtName)
                         oldNames1.push(prtName)
+                        //delete the prt from newNames which has already set up 
+                        newNames1.filter(prt=>prt!==prtName)
                     }
 
                 }
                 
                 let tempPrts = [];
 
-                console.log("oldName:",oldNames)
-                console.log("newName:",newNames)
+                //console.log("oldName:",oldNames)
+                console.log("newName:",newNames1)
 
             });
             // Reset button
