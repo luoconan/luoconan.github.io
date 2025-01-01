@@ -191,7 +191,7 @@
             for(let j=0;j<pmArr[i].length;j++){
                 let tempPrt=pmArr[i][j]
                 let r=i
-                r=i==15?"Joe":i;
+                r=i==12?"Joe":i==13?"12":r;
                 byRouteArr.push([whichRoom(tempPrt),r,isWheelchair(tempPrt)]);
             }
         }
