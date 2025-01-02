@@ -186,7 +186,7 @@
 
         // 将原始数据组合成一个按车(带上房号)排序的数组,方便制表        
         let byRouteArr=[];
-        for(let i=1;i<pmArr.length-1;i++){
+        for(let i=0;i<pmArr.length-1;i++){
             if(pmArr[i]===undefined) continue;
             for(let j=0;j<pmArr[i].length;j++){
                 let tempPrt=pmArr[i][j]
