@@ -41,8 +41,11 @@
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-md-12">
-                <div id="result"></div>
+            <div class="col-md-6">
+                <div id="result1"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="result2"></div>
             </div>
         </div>
     </div>
@@ -61,8 +64,9 @@
                 // Clear previous results and errors
                 str = "";
                 let oldNames = [];
-                let newNames = [];
                 let oldNames1 = [];
+                let oldNames2 = [];
+                let newNames = [];
                 let newNames1 = [];
 
                 let oldOneArr=$("#oldDAR").val();
@@ -72,35 +76,61 @@
 
                 //for newOneArr Name
                 for(let i=0;i<newOneArr.length;i++){
-                    let prtName=newOneArr[i].split("\t")[1];
-                    let isTransport=newOneArr[i].split("\t")[0]
-                    if(newNames.indexOf(prtName)<0 && isTransport=="Y"){
+                    let prtName=newOneArr[i].split("\t")[1].trim().toUpperCase();
+                    let isTransport=newOneArr[i].split("\t")[0].trim().toUpperCase()=="Y"
+                    if(!newNames.includes(prtName) && isTransport){
                         newNames.push(prtName)
-                        newNames1.push(prtName)
                     }
                 }
 
                 //for oldOneArr
-                oldOneNameIndex=oldOneArr[0].split('\t').indexOf("Passenger ")
-                oldOneStatueIndex=oldOneArr[0].split('\t').indexOf("PU ")
+                oldOneTitle=oldOneArr[0].split('\t')
+
+                for(let i=0;i<oldOneTitle.length;i++){
+                    oldOneTitle[i]=oldOneTitle[i].trim()
+                }
+                
+
+                oldOneNameIndex=oldOneTitle.indexOf("Passenger")
+                oldOneStatueIndex=oldOneTitle.indexOf("PU")
+                //console.log("'PU ".trim()+"'")
+                //console.log(oldOneArr[0].split('\t').indexOf("Passenger"))
                 for(let i=1;i<oldOneArr.length;i++){
                     let trip=oldOneArr[i].split("\t")
-                    let prtName=trip[oldOneNameIndex];
-                    if(oldNames.indexOf(prtName) && !trip[oldOneStatueIndex].indexOf("Cancel")<0){
+                    let prtName=trip[oldOneNameIndex].trim().toUpperCase();
+                    console.log(prtName)
+                    if(!oldNames.includes(prtName) && !trip[oldOneStatueIndex].includes("Cancel")){
                         oldNames.push(prtName)
+                    }else if(!oldNames1.includes(prtName) && trip[oldOneStatueIndex].includes("Cancel")){
                         oldNames1.push(prtName)
-                        //delete the prt from newNames which has already set up 
-                        newNames1.filter(prt=>prt!==prtName)
+                        oldNames2.push(`<font color="red">${prtName}</font>`)
                     }
 
                 }
                 
                 let tempPrts = [];
 
-                console.log("oldName:",oldNames)
-                console.log("newName:",newNames1)
+                let {c,d}=diffArray(oldNames,newNames)
+
+                console.log("oldName:",c+oldNames2)
+                console.log("newName:",d)
+                
+
+                $("#result1").html(c.join("<br>")+"<hr>"+oldNames2.join("<br>"))
+                $("#result2").html(d.join("<br>"))
 
             });
+
+            /**
+             * diffArray(a,b) a,b is array
+             * return {c,d} c,d is Array
+            */
+           function diffArray(a,b){
+                const c=a.filter(x=>!b.includes(x));
+                const d=b.filter(x=>!a.includes(x));
+                return {c,d}
+           }
+
             // Reset button
             $("#reset").click(function(){
                 // Clear all values and errors
