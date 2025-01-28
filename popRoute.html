@@ -61,7 +61,7 @@
     })(jQuery);
 
     function whichRoom(orgPrt){
-        let prt = orgPrt.split(" - @")
+        let prt = orgPrt.split(" - @")[0]
         let tempPrt="{@}"+orgPrt
 
         if(prtObjInfo[prt]){
