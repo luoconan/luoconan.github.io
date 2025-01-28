@@ -7,7 +7,7 @@
     <script src="./bootstrap.js"></script>
     <script src="./prts_info.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Sheet</title>
+    <title>Document</title>
     <style>
         *{
            color:black;
@@ -61,7 +61,8 @@
     })(jQuery);
 
     function whichRoom(orgPrt){
-        let prt = orgPrt.replace(" - @2pm","").replace(" - @3pm","")
+        //let prt = orgPrt.replace(" - @2pm","").replace(" - @3pm","")
+        let prt = orgPrt.split(" - @")[0]
         let tempPrt="{@}"+orgPrt
 
         if(prtObjInfo[prt]){
@@ -123,7 +124,7 @@
             tableHtml=sunTable+starTable+moonTable
             
         }else{
-            $("#date").html(todayDate + ($.getUrlParam("rt")?(" -> "+$.getUrlParam("rt")+` Route Sheet`):""))
+            $("#date").html(todayDate)
             tableHtml = `<table style="border:1px">
                              <tr>
                                 <!--<th class="border border-dark ${bg_style}"></th>-->
