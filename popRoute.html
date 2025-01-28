@@ -1,342 +1,248 @@
-// ==UserScript==
-// @name         IOA IQ
-// @namespace    https://www.conanluo.com/
-// @version      1.2.13
-// @description  route the route
-// @author       Conan
-// @match        https://*.itinerisonline.com/*
-// @require      https://code.jquery.com/jquery-2.2.4.min.js
-// @ require      https://work.conanluo.com/prts_info.js
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=itinerisonline.com
-// @grant        none
-// @downloadURL  https://update.greasyfork.org/scripts/523062/IOA%20IQ.user.js
-// @updateURL    https://update.greasyfork.org/scripts/523062/IOA%20IQ.meta.js
-// ==/UserScript==
-
-(function(){
-
-    /*for high light route begin*/
-    let colors=["000000","b51548","188225","f3f600","AAAA00","443ea1","b1f9d1","aa77aa","01b4fa","f685e6","e08536","dddddd"];
-    let address=[];
-    let popRtUrl="https://work.conanluo.com/popRoute.html?arr="
-    /*for high light route end*/
-
-
-    let drivers={
-        29714:{name:"Wilson",route:"12"},
-        25937:{name:"Bert",route:"10"},
-        30094:{name:"Lok",route:"1"},
-        29757:{name:"Zhong",route:"7"},
-        24954:{name:"Mauricio",route:"2"},
-        27707:{name:"Raymond",route:"9"},
-        30263:{name:"Jabari",route:"8"},
-        30125:{name:"Jerry",route:"3"},
-        25442:{name:"Walter",route:"6"},
-        13395:{name:"Ken",route:"5"},
-        30269:{name:"Jackie",route:"4"},
-        22836:{name:"Joe",route:"MV"},
-        27753:{name:"Jerald",route:"11"},
-        30380:{name:"Jay",route:"9"}
-    }
-
-    /****************************
-    frame changed. begin
-    *****************************/
-    //setup top button
-    let topBtn=`
-    <nav id='topBtnDiv'>
-    <button id='hightLightRoute' class='btn btn-success'>hightLightRoute</button>
-    <button id='popAmRoute' class='btn btn-danger'>popAmRoute</button>
-    <button id='popPmRoute' class='btn btn-danger'>popPmRoute</button>
-    <button id='clearDeadPixel' class='btn btn-warning' onclick="$('#timelineCurrentTime').hide();">clearDeadPixel</button>
-    <button id='mainPage0' class='btn btn-primary goToPage'>createSchedule</button>
-    <button id='mainPage1' class='btn btn-primary mainUse goToPage'>todayRoute1</button>
-    <button id='mainPage2' class='btn btn-primary mainUse goToPage'>todayRoute2</button>
-    </nav>
-    `;
-    $("body").prepend(topBtn);
-
-    //set up the listenner for each top button
-    //
-    $(".goToPage").click(function(){
-        let flag=this.id.replace("mainPage","");
-        top.location=getMainUrl(getToday(),flag);
-        location.reload();
-    })
-
-    $("#hightLightRoute").click(function(){
-        resetRouteFrame()
-    })
-
-
-
-    /****************************
-    frame changed. begin
-    *****************************/
-    /*
-    resetRoute
-    */
-    function resetRouteFrame(){
-        $(".vehicle-group").each(function(){
-            let id=$(this).attr("id");
-            let driverID=id.split("@")[0];
-            //$(this).perpend(`<span color='orange'>465456</span>`)
-            if(driverID)$(this).find("span").first().html(
-                `<font style='font-size:20px;color:DarkMagenta'>Route ${drivers[driverID].route}</font>&nbsp;&nbsp;&nbsp;&nbsp;
-                 <font color="6495ED" style="font-size:17px;background:lightgrey">${drivers[driverID].name}<br></font>`)
-        })
-    }
-
-
-    /**************
-    hide unwanted elements
-    **************/
-    $(".fa-toggle-down").click()
-
-    /**************
-    **************/
-    setTimeout(function(){
-        resetRouteFrame()
-
-        $(".fa-toggle-down").click()
-    },1000);
-    setInterval(function(){
-
-        resetRouteFrame()
-    },1000)
-
-    /****************************
-    Functions Begin
-    *****************************/
-    /**
-    *getMainUrl, return the Link back to main-use page -> /affiliate/#/admin/schedule
-    */
-    function getMainUrl(today,flag){
-        let billToId=flag<=1?"490078":"490078,%20294341";
-        let returnString=""
-        console.log(billToId)
-        if(flag>=1) returnString =`/affiliate/#/admin/schedule?serviceDate=${today.year}-${today.month}-${today.day}&division=ca04&billToId=${billToId}&billToCustomQuery=`;
-        else if(flag==0) returnString = `/affiliate/#/trip-import?billToId=${billToId}&popOutCode=true`
-        return returnString
-    }
-
-
-    function getToday(){
-        let today=new Date(),
-        mMonth=today.getMonth()+1,
-        mDay=today.getDate(),
-        mYear=today.getFullYear();
-
-        mMonth = mMonth<10?"0"+mMonth:mMonth;
-        mDay = mDay<10?"0"+mDay:mDay;
-
-        return {"year":mYear,"month":mMonth,"day":mDay}
-    }
-
-
-    /**highlight Route Begin**/
-    async function delay(time){
-        return new Promise((res,rej)=>{
-            setTimeout(_=>res(),time)
-        })
-    }
-    $("#hightLightRoute").click(function(){
-        (async () => {
-            let da=document.getElementsByClassName("table table-condensed table-hover selectable")[0].getElementsByTagName("tr");
-
-            for(let i=0;i<da.length;i++){
-                if(!((da[i].innerText+"").indexOf("3575 Geary ")>-1)){
-                    let splitWord="\t";
-                    if((da[i].innerText+"").indexOf("\tPU")>-1)
-                        splitWord+="PU ";
-                    else if((da[i].innerText+"").indexOf("\tDO")>-1)
-                        splitWord+="DO ";
-                    else continue;
-
-
-                    da[i].click();
-                    let name=da[i].innerText.split(splitWord)[1].split("\t")[0];
-                    await delay(100);
-                    let prt=document.getElementsByClassName("da selected")[0]
-                    prt.innerText=name
-                    changeBg(da[i],prt,1)
-
-                }
-
-            }
-
-            //show color
-            let colorHtml="<div class='panel-primary'><h3 class='panel-heading'>The Color For The Route</h3>"
-            for(let i=0;i<colors.length;i++){
-                let x=i;
-                if(x==11 || x==0) x="Check Which Route"
-                else x="Route "+x
-                colorHtml+=`<span style="padding:5px 30px; background-color:#${colors[i]};${i==5||i==0?"color:white;":""}">${x}</span>&nbsp;&nbsp;`
-            }
-            if($("#show_route_color").length<=0)
-                $(".tab-pane").prepend(`<div id="show_route_color"></div>`)
-            $("#show_route_color").html(colorHtml+'</div><br><hr><br>')
-
-            // $("#ch").text(address.join("@"))
-        })();
-    })
-
-    function changeBg(da,prt,type){
-//        let color=type==1?"red":"green";
-        let slt=type==1?"\tPU ":"\tDO ";
-//        let name=da.innerText.split(slt)[1].split("\t")[0];
-        let addr=da.innerText.split("\t")[6];
-        address.push(addr)
-//console.log(addrs[addr.replace(", San Francisco","")]);
-        let addrIndex=addr.replace(", San Francisco","");
-/**/
-        try{
-            addrIndex=addrIndex.split(" #")[0]
-            //console.log(addrIndex)
-        }catch(e){
-            try {
-                addrIndex=addrIndex.split(" Apt")[0];
-            } catch (error) {
-
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="./bootstrap.css" rel="stylesheet">
+    <script src="js/jq.js"></script>
+    <script src="./bootstrap.js"></script>
+    <script src="./prts_info.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Sheet</title>
+    <style>
+        *{
+           color:black;
         }
-/**/
-        $(prt).css("background-color","#"+colors[addrs[addrIndex]])
-        // $(prt).css("background-color","#999999")
-    }
-    /**highlight Route End**/
+       
+        .border{
+           padding-left:5px;
+           padding-right:5px;
+        }
+        #main{
+        }
+        #date{
+           /*width:690px;*/
+           text-align:center;
+           padding:10px 0;
+        }
+        #table{
+            display: flex;
+        }
+        .table_d{            
+            margin-left: 90px;
+        }
+        .table{
+            margin-left:15px
+        }
+        .childTable{ 
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div id="date"></div>
+        <div id="table"></div>
+    </div>
+</body>
+</html>
+<script>
+    //alert(prtObjInfo["Ma, Cui Hua"])
+    let orderBy=0; //if 0 
+    let today=new Date();
+    let todayDate=(today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
+        
 
-    /**pop out Route Begin**/
+    (function($){
+        $.getUrlParam = function(name){
+            var reg = new RegExp("(^|&)" + name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null) return unescape(r[2]); return null;
+        }
+    })(jQuery);
 
-    $("#popAmRoute").click(function(){
-        let rtNum={"IOA-11":10,
-                   "IOA-12":1,
-                   "IOA-13":7,
-                   "IOA-14":11,
-                   "IOA-15":2,
-                   "IOA-16":9,
-                   "IOA-17":8,
-                   "IOA-19":3,
-                   "IOA-20":6,
-                   "IOA-21":5,
-                   "IOA-22":4,
-                   "IOA-06":12,
-                   "V-310":0,
-                   "V-378":13
+    function whichRoom(orgPrt){
+        let prt = orgPrt.split(" - @")
+        let tempPrt="{@}"+orgPrt
+
+        if(prtObjInfo[prt]){
+            let room=prtObjInfo[prt].room
+            
+            room = room==1?"☀":
+                   room==2?"✨":
+                   room==3?"🌙":
+                   "😄"
+            
+            tempPrt=room+tempPrt
+        }else{
+            tempPrt="😄"+tempPrt
         }
 
-        let prtArrAm=[[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-        $(".schedule-monitor>tbody").each(function(i,o){
-            //$(o).find('td').each(function(j,td){
-            //console.log($(td).text(),`---${i}---${j}`)
+        return tempPrt;
+    }
+    function isWheelchair(prt){
 
-            //})
-            //console.log($(o).find('td').eq(17).text(),`---${i}---`)//ioa -> AM route
-            if($(o).find('td').eq(17).text().includes("IOA")) {
-                //3 -> Van Number, 8 -> name
-                let van = ($(o).find('td').eq(3).text()).trim()
-                let name = ($(o).find('td').eq(8).text())
-                if(rtNum[van]){
-                    prtArrAm[rtNum[van]].push(name+" - @");
-                    prtArrAm[rtNum[van]].sort()
-                }
-            }
-        })
-        console.log(prtArrAm.toString())
-        let url=popRtUrl+JSON.stringify(prtArrAm)
-        window.open(url+`&rt= AM Route Sheet`)
-        console.log(url)
+        return "-";
+    }
 
-    })
-    /**pop out Route End**/
-
-
-    /**Pop up Pm Route Begin**/
-    $("#popPmRoute").click(function(){
-        const PICK_UP_TIME="15:30";
-        const EARLY_PICK_UP_TIME_2="14:00";
-        const EARLY_PICK_UP_TIME_3="15:00";
-        (async () => {
-            let pmArr=[];//index number is route number, 11 => joe & 12=> wilson
-            //console.log($("#schedule-area").html())
-
-            let schedule=document.getElementById("schedule-area").getElementsByClassName("vehicle-group");
-            for(let i=0; i<schedule.length; i++){
-                if(schedule[i].id=="@"){
-                    continue;
-                }
-
-                let tempArr=[];
-                let route="";
-
-                schedule[i].click()
-
-                route=$(schedule[i]).find("font").eq(0).text().replace("Route ","")
-
-                if(route=="Mini Van" || route=="MV"){
-                    route=$(schedule[i]).find("font").eq(1).text().trim()
-                    route=route=="Joe"?0:13
-                }
-
-                //console.log(route)
-                let checkList=document.getElementById("checkpoint-list").getElementsByTagName("tr")
-
-                for(let j=0;j<checkList.length;j++){
-
-                    if($(checkList[j].getElementsByTagName("td")[0]).find("a").text().trim()===PICK_UP_TIME){
-                        let tempPrt=$(checkList[j].getElementsByTagName("td")[4]).text().replace(" PU ","").trim()
-                        tempArr.push(tempPrt)
-
-                    }else if($(checkList[j].getElementsByTagName("td")[0]).find("a").text().trim()===EARLY_PICK_UP_TIME_2){
-                        let tempPrt=$(checkList[j].getElementsByTagName("td")[4]).text().replace(" PU ","").trim()+" - @2pm"
-                        tempArr.push(tempPrt)
-                    }else if($(checkList[j].getElementsByTagName("td")[0]).find("a").text().trim()===EARLY_PICK_UP_TIME_3){
-                        let tempPrt=$(checkList[j].getElementsByTagName("td")[4]).text().replace(" PU ","").trim()+" - @3pm"
-                        tempArr.push(tempPrt)
-                    }
-
-                    // console.log($(checkList[j].getElementsByTagName("td")[6]).text().trim()===CENTER_ADDRESS)
-                }
-                pmArr[parseInt(route)]=tempArr.sort()
-
-
-                await delay(10)
-                //1break;
-                //console.log(schedule[i].id)
-            }
-            //console.log(pmArr[1])
-
-            //test file
-            //let url="https://conanluo.com/ioa/popPmRoute.html?"
-
-            let url=popRtUrl
-            let param="["
-
-            for(let i=0;i<pmArr.length;i++){
-                let tempArr;
-                console.log(i+"---"+pmArr[i])
-                if(pmArr[i]===undefined){
-                    param+="undefined,"
+    function createTable(arr,isRoom){
+        let boder_style='border-secondary';
+        let bg_style='bg-dark-subtle';
+        let tableHtml=""
+        if(isRoom){
+            //$("#date").html(".")
+            let tempTableHtml1 = `<table style="border:1px"><tr><th colspan="3" style="text-align: center"> </th></tr>`
+            let tempTableHtml2 = roomName=>`<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt&nbsp;@${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th></tr>`;
+            
+            let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2("Sun");            
+            let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2("Star");
+            let moonTable=`<div class="childTable" id="moonRoom">`+tempTableHtml1+tempTableHtml2("Moon");
+            let otherTable=`<div id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2("Other");
+            
+            for(let i=0,j=1;i<arr.length;i++){
+                let room=arr[i][0].split("{@}")[0]; // ☀✨🌙
+                let prtTr=`<tr style="color:black">
+                    <!--<td>${i}</td>-->
+                    <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
+                    <td class="border border-dark">${arr[i][1]}</td>`
+                
+                if(room=="☀"){
+                    sunTable+=prtTr;
+                }else if(room=="✨"){
+                    starTable+=prtTr;
+                }else if(room=="🌙"){
+                    moonTable+=prtTr;
                 }else{
-                    tempArr=pmArr[i]
-                    param+="["
-                    for(let j=0;j<tempArr.length;j++){
-                        param+=`"${tempArr[j]}"`
-                        if((j+1)!=tempArr.length) param+=","
-                    }
-                    param+="],"
+                    otherTable+=prtTr;
                 }
             }
+            sunTable+="</table></div>";
+            starTable+="</table></div>";
+            if(`<div class="childTable" id="otherPrt">`+tempTableHtml1+`other`+tempTableHtml2("unknown room")==otherTable) otherTable=""
+            moonTable+="</div></table><br>"+otherTable+"</table></div>";
 
-            param+="undefined]"
+            tableHtml=sunTable+starTable+moonTable
+            
+        }else{
+            $("#date").html(todayDate + $.getUrlParam("rt"))
+            tableHtml = `<table style="border:1px">
+                             <tr>
+                                <!--<th class="border border-dark ${bg_style}"></th>-->
+                                <th class="border border-dark ${bg_style}">Prt</th>
+                                <th class="border border-dark ${bg_style}">Rt#</th>
+                                <th class="border border-dark ${bg_style}">W</th>
+      
+                                <th class="border border-dark ${bg_style}">&nbsp;</th>
+                                <!--<th class="border border-dark ${bg_style}"></th>-->
+                                <th class="border border-dark ${bg_style}">Prt</th>
+                                <th class="border border-dark ${bg_style}">Rt#</th>
+                                <th class="border border-dark ${bg_style}">W</th>
+                             </tr>`;
+    
+            let row=parseInt(arr.length/2+.6)
+            for(let i=0;i<row;i++){
+                let r = parseInt(i + row);
+                //left side
+                tableHtml += `<tr style="color:black">
+                    <!--<td>${i}</td>-->
+                    <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
+                    <td class="border border-dark">${arr[i][1]}</td>
+                    <td class="border border-dark">${arr[i][2]}</td>
+                    <td class="border border-dark ${bg_style}"></td>`
+                //right side
+                
+                let r_prt="",r_rtNum="",r_wheelchair=""
+                if(r<arr.length){
+                    r_prt=arr[r][0];
+                    r_rtNum=arr[r][1];
+                    r_wheelchair=arr[r][2]
+                    
+                }
+                tableHtml+=`<!--<td>${r}</td>-->
+                    <td class="border border-dark">${r_prt.replace("{@}","")}</td>
+                    <td class="border border-dark">${r_rtNum}</td>
+                    <td class="border border-dark">${r_wheelchair}</td>
+                `
+            }
+    
+    
+            tableHtml+="</table>"
+        }
+        $("#table").html(tableHtml)
+        $("#table").removeClass("table")
+        $("#table").addClass("table_d")
+    }
 
-            window.open(url+"arr="+param+`&rt= PM Route Sheet`)
+    $(function(){
 
-            //finished then relocate
-            //document.location.href="www.baidu.com"
-        })();
+
+        let param=$.getUrlParam("arr");
+        let tableHtml="";
+        let pmArr=eval(param)
+        //console.log($.getUrlParam("date1")+"----------");
+        if($.getUrlParam("date")!=null) todayDate=$.getUrlParam("date")
+        //console.log(param)
+
+       
+
+        // 将原始数据组合成一个按车(带上房号)排序的数组,方便制表        
+        let byRouteArr=[];
+        for(let i=0;i<pmArr.length-1;i++){
+            if(pmArr[i]===undefined) continue;
+            for(let j=0;j<pmArr[i].length;j++){
+                let tempPrt=pmArr[i][j]
+                let r=i
+                r=i==0?"Joe":r;
+                byRouteArr.push([whichRoom(tempPrt),r,isWheelchair(tempPrt)]);
+            }
+        }
+        // 新建一个按名排序的数组
+        let byNameArr=[...byRouteArr]
+        byNameArr.sort()
+
+
+        //console.log(byRouteArr,byRouteArr.length)
+        
+        
+        let tableArr=[...byRouteArr];//制表时候用的表
+        createTable(byNameArr)
+
+        $("#date").click(function(){
+            const FORM_NUMBER=6;
+            $("#table").html("")
+            orderBy++;
+            console.log(orderBy%FORM_NUMBER)
+            if(orderBy%FORM_NUMBER==0){// by name only
+                createTable(byNameArr)
+                //console.log("byNameArr:"+byNameArr)
+            }else if(orderBy%FORM_NUMBER==1){// by route
+                createTable(byRouteArr)
+                //console.log("byRouteArr:"+byRouteArr)
+            }else if(orderBy%FORM_NUMBER==2){// by Room and name
+                createTable(byNameArr,true)
+                $("#table").addClass("table")
+                $("#table").removeClass("table_d")
+                //console.log("byNameArr:"+byNameArr)
+            }else if(orderBy%FORM_NUMBER==3){// by Sun Room
+                createTable(byNameArr,true)
+                $("#starRoom").hide()
+                $("#moonRoom").hide()
+                $("#date").text("☀Sun Room"+todayDate)
+                //console.log("byRouteArr:"+byRouteArr)
+            }else if(orderBy%FORM_NUMBER==4){// by Star Room
+                createTable(byNameArr,true)
+                $("#sunRoom").hide()
+                $("#moonRoom").hide()
+                $("#date").text("✨Star Room"+todayDate)
+                //console.log("byRouteArr:"+byRouteArr)
+            }else if(orderBy%FORM_NUMBER==5){// by Moon Room
+                createTable(byNameArr,true)
+                $("#starRoom").hide()
+                $("#sunRoom").hide()
+                $("#date").text("🌙Moon Room"+todayDate)
+                $("#otherPrt").hide()
+                //console.log("byRouteArr:"+byRouteArr)
+            }
+            
+        })
     })
-    /**Pop up Pm Route End**/
-
-
-})()
+</script>
