@@ -123,7 +123,7 @@
             tableHtml=sunTable+starTable+moonTable
             
         }else{
-            $("#date").html(todayDate)
+            $("#date").html(todayDate + `- ${$.getUrlParam("rt")} Route Sheet`)
             tableHtml = `<table style="border:1px">
                              <tr>
                                 <!--<th class="border border-dark ${bg_style}"></th>-->
