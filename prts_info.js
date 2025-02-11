@@ -308,6 +308,16 @@ let prtObjInfo = {
         "noAM": "", 
         "noPM": ""
     }, 
+    "Auyeung, Shum K": {
+        "id": "PC47742", 
+        "room": "2", 
+        "rt": "1", 
+        "comeDay": "", 
+        "address": "", 
+        "amTime": "", 
+        "noAM": "", 
+        "noPM": ""
+    }, 
     "Bajjalieh, Laila": {
         "id": "536349", 
         "room": "", 
