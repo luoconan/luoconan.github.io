@@ -217,7 +217,7 @@ let addrs={
 "2567 22nd Avenue":"10",
 "2595 43rd Avenue":"9",
 "2611 34th Avenue":"9",
-"2698 California Street Apt C":"8",
+"2698 California Street Apt C":"3",
 "2709 Balboa Street":"1",
 "2740 California Street":"8",
 "2770 Lombard Street":"3",
