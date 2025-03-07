@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update prt and address
+        
+    </title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.css">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+        #unSetUp {
+            margin-top: 20px;
+            color: #6ddc35;
+        }
+        label {
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Update prt and address</h2>
+        <div class="row">
+            <div class="col-md-6">
+            <!--    Attx day:<input type="text" id="day"><br>-->
+                <label>Old text</label>
+                <textarea class="form-control" id="text1" rows="10"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label>new Text</label>
+                <textarea class="form-control" id="text2" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <button id="btn1" class="btn btn-primary mr-2">btn1</button>
+                <button id="btn2" class="btn btn-danger">btn2</button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="result2"></div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12" id="result"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="js/jq.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="./prts_info.js"></script>
+    <script>
+        $(document).ready(function() {
+            let text1="",text2="";
+            let data=``;
+            let result=``;
+            $("#text1").val(data)
+
+            $("#btn1").click(function(){
+                data=$("#text1").val()
+                let datas=data.split("\n");
+                let tempArr=[]
+                for(let i=1,k=1;i<datas.length;i++){
+                    let tempPrt=datas[i].split("\t")
+                    let name=tempPrt[3]+", "+tempPrt[4];
+                    let rt=tempPrt[2];
+                    let room=tempPrt[13];
+                    room=room=="Sun"?"1":room=="Star"?"2":room=="Moon"?"3":""
+                    //console.log(tempPrt)
+                    try{
+                        
+                        prtObjInfo[name].room=room;
+                        prtObjInfo[name].cd=tempPrt[18].replaceAll(",","")
+
+                    }catch(e){
+                        console.log(i,name,k++)
+                        result+=name+"<br>"
+                        
+                    }
+                    
+                }
+                $("#text2").val(JSON.stringify(prtObjInfo))
+                $("#result").html(result)
+            })
+            $("#btn2").click(function(){
+                data=$("#text1").val()
+                let datas=data.split("\n");
+                let tempArr=[];
+                let addrStr=""
+                for(let i=1,k=1;i<datas.length;i++){
+                    let tempPrt=datas[i].split("\t")
+                    let address=tempPrt[6].split(", San Francisco")[0];
+                    let rt=tempPrt[2];
+                    
+                    rt=rt=="B"||rt=="?"?"":rt
+                    if(rt!="")
+                    tempArr.push(`"${address}":"${rt}"`)
+                    
+                    
+                    
+                }
+                $("#text2").val("{"+addrStr.join(",")+"}")
+                
+            })
+
+
+        });
+    </script>
+</body>
+</html>
