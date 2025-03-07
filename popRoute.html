@@ -207,7 +207,7 @@
         createTable(byNameArr)
 
         $("#date").click(function(){
-            const FORM_NUMBER=6;
+            const FORM_NUMBER=3;
             $("#table").html("")
             orderBy++;
             console.log(orderBy%FORM_NUMBER)
@@ -217,24 +217,31 @@
             }else if(orderBy%FORM_NUMBER==1){// by route
                 createTable(byRouteArr)
                 //console.log("byRouteArr:"+byRouteArr)
-            }else if(orderBy%FORM_NUMBER==2){// by Room and name
+            }else if(orderBy%FORM_NUMBER==2){// by Room and Route
+                let arr=[...byNameArr]
+                arr.sort((a,b)=>a[1]-b[1])
+                createTable(arr,true)
+                $("#table").addClass("table")
+                $("#table").removeClass("table_d")
+                //console.log("byNameArr:"+byNameArr)
+            }else if(orderBy%FORM_NUMBER==3){// by Room and name
                 createTable(byNameArr,true)
                 $("#table").addClass("table")
                 $("#table").removeClass("table_d")
                 //console.log("byNameArr:"+byNameArr)
-            }else if(orderBy%FORM_NUMBER==3){// by Sun Room
+            }else if(orderBy%FORM_NUMBER==4){// by Sun Room
                 createTable(byNameArr,true)
                 $("#starRoom").hide()
                 $("#moonRoom").hide()
                 $("#date").text("☀Sun Room"+todayDate)
                 //console.log("byRouteArr:"+byRouteArr)
-            }else if(orderBy%FORM_NUMBER==4){// by Star Room
+            }else if(orderBy%FORM_NUMBER==5){// by Star Room
                 createTable(byNameArr,true)
                 $("#sunRoom").hide()
                 $("#moonRoom").hide()
                 $("#date").text("✨Star Room"+todayDate)
                 //console.log("byRouteArr:"+byRouteArr)
-            }else if(orderBy%FORM_NUMBER==5){// by Moon Room
+            }else if(orderBy%FORM_NUMBER==6){// by Moon Room
                 createTable(byNameArr,true)
                 $("#starRoom").hide()
                 $("#sunRoom").hide()
