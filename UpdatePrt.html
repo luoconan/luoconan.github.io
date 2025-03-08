@@ -102,12 +102,12 @@
                     
                     rt=rt=="B"||rt=="?"?"":rt
                     if(rt!="")
-                    tempArr.push(`"${address}":"${rt}"`)
+                        tempArr.push(`"${address}":"${rt}"`)
                     
                     
                     
                 }
-                $("#text2").val("{"+addrStr.join(",")+"}")
+                $("#text2").val("{"+tempArr.join(",")+"}")
                 
             })
 
