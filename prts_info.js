@@ -1,4 +1,4 @@
-addrs={/*
+addrs={/*-
     "4735 California Street #2": "1",
     "748 43rd Avenue": "1",
     "1444 McAllister Street": "8",
@@ -4797,23 +4797,21 @@ prtObjInfo = {
 function getForDAR() {
     let res = {};
     Object.keys(prtObjInfo).forEach(prtName => {
-        //res={...res,{prtName:prtName.id}}
-        res[prtName.toUpperCase()] = prtObjInfo[prtName].id
+        res[prtName.toUpperCase()] = prtObjInfo[prtName].id;
     })
-    return res
+    return res;
 }
 
 function getPrtsArr() {
     let prts = [];
     Object.keys(prtObjInfo).forEach(prtInfo => {
-        let temp = {}
+        let temp = {};
         temp.name = prtInfo;
         Object.keys(prtObjInfo[prtInfo]).forEach(info => {
-            temp[info] = prtObjInfo[prtInfo][info]
-            //prts.push(prtInfo[info])
+            temp[info] = prtObjInfo[prtInfo][info];
         })
 
-        prts.push(temp)
+        prts.push(temp);
     })
     return prts;
 }
