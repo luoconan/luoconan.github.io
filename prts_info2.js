@@ -1,4 +1,4 @@
-let addrs={/*
+addrs={/*
     "4735 California Street #2": "1",
     "748 43rd Avenue": "1",
     "1444 McAllister Street": "8",
@@ -377,7 +377,7 @@ let addrs={/*
     "995 Brussels St": "6"
     }
 
-let prtObjInfo = {
+prtObjInfo = {
     "Abele, Arija": {
         "id": "189059",
         "room": "3",
