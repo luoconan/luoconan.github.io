@@ -2445,7 +2445,7 @@ prtObjInfo = {
     },
     "Leung, Frank F": {
         "id": "PC11631",
-        "room": "1",
+        "room": "2",
         "rt": "",
         "comeDay": "2",
         "address": "",
@@ -2488,7 +2488,7 @@ prtObjInfo = {
     },
     "Leung, Leisly L": {
         "id": "PC11634",
-        "room": "1",
+        "room": "2",
         "rt": "",
         "comeDay": "2",
         "address": "",
@@ -4785,6 +4785,18 @@ prtObjInfo = {
     "Liu, Kuo Liang": {
         "room": "1",
         "cd": "25"
+    },
+    "Broadnax, Eugene":{
+        "room":"3"
+    },
+    "Savage, Nicole":{
+        "room":"3"
+    },
+    "Auyeung, Shum K":{
+        "room":"2"
+    },
+    "Chen, Zong Liang":{
+        "room":"2"
     }
 }
 function getForDAR() {
