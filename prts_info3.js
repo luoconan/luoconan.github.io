@@ -845,7 +845,7 @@ prtObjInfo = {
         "cd": ""
     },
     "Chan, Virginia C": {
-        "id": "PC38161",
+        "id": "PC40672",
         "room": "1",
         "rt": "",
         "comeDay": "1",
