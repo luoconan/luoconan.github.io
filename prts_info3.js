@@ -4774,7 +4774,7 @@ prtObjInfo = {
         "noAM": "",
         "noPM": "",
         "cd": "12345"
-    },
+    },/*
     "Wang, Zhao Zhi":{
         "id":"PC47130",
     },
@@ -4810,7 +4810,7 @@ prtObjInfo = {
     "Auyoung, Tim":{
         "id":"PC48896",
         "room":""
-    }
+    }*/
 }
 function getForDAR() {
     let res = {};
