@@ -4809,7 +4809,7 @@ prtObjInfo = {
     },
     "Auyoung, Tim":{
         "id":"PC48896",
-        "room":
+        "room":""
     }
 }
 function getForDAR() {
