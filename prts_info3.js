@@ -1,4 +1,4 @@
-addrs={/*-*
+addrs={/*
     "4735 California Street #2": "1",
     "748 43rd Avenue": "1",
     "1444 McAllister Street": "8",
@@ -601,7 +601,7 @@ prtObjInfo = {
         "noAM": "",
         "noPM": ""
     },
-    "Cabrera de Interiano, Elva": {
+    "Cabrera De Interiano, Elva": {
         "id": "693551",
         "room": "3",
         "rt": "6",
@@ -845,7 +845,7 @@ prtObjInfo = {
         "cd": ""
     },
     "Chan, Virginia C": {
-        "id": "PC40672",
+        "id": "PC38161",
         "room": "1",
         "rt": "",
         "comeDay": "1",
@@ -2445,7 +2445,7 @@ prtObjInfo = {
     },
     "Leung, Frank F": {
         "id": "PC11631",
-        "room": "2",
+        "room": "1",
         "rt": "",
         "comeDay": "2",
         "address": "",
@@ -2488,7 +2488,7 @@ prtObjInfo = {
     },
     "Leung, Leisly L": {
         "id": "PC11634",
-        "room": "2",
+        "room": "1",
         "rt": "",
         "comeDay": "2",
         "address": "",
@@ -4774,14 +4774,9 @@ prtObjInfo = {
         "noAM": "",
         "noPM": "",
         "cd": "12345"
-    },/*
-    "Wang, Zhao Zhi":{
-        "id":"PC47130",
     },
     "Huynh, Muoi Trieu T": {
-        "id":"PC45977",
-        "room": "1",
-        "comeDay":"1"
+        "room": "1"
     },
     "Cheung, Kitlin": {
         "room": "1",
@@ -4790,27 +4785,7 @@ prtObjInfo = {
     "Liu, Kuo Liang": {
         "room": "1",
         "cd": "25"
-    },
-    "Broadnax, Eugene":{
-        "room":"3"
-    },
-    "Savage, Nicole":{
-        "room":"3"
-    },
-    "Auyeung, Shum K":{
-        "room":"2"
-    },
-    "Chen, Zong Liang":{
-        "room":"2"
-    },
-    "Savage, Nicole":{
-        "id":"PC44641",
-        "room":"3"
-    },
-    "Auyoung, Tim":{
-        "id":"PC48896",
-        "room":""
-    }*/
+    }
 }
 function getForDAR() {
     let res = {};
