@@ -601,7 +601,7 @@ prtObjInfo = {
         "noAM": "",
         "noPM": ""
     },
-    "Cabrera De Interiano, Elva": {
+    "Cabrera de Interiano, Elva": {
         "id": "693551",
         "room": "3",
         "rt": "6",
@@ -4775,8 +4775,13 @@ prtObjInfo = {
         "noPM": "",
         "cd": "12345"
     },
+    "Wang, Zhao Zhi":{
+        "id":"PC47130",
+    },
     "Huynh, Muoi Trieu T": {
-        "room": "1"
+        "id":"PC45977",
+        "room": "1",
+        "comeDay":"1"
     },
     "Cheung, Kitlin": {
         "room": "1",
@@ -4801,6 +4806,10 @@ prtObjInfo = {
     "Savage, Nicole":{
         "id":"PC44641",
         "room":"3"
+    },
+    "Auyoung, Tim":{
+        "id":"PC48896",
+        "room":
     }
 }
 function getForDAR() {
