@@ -149,7 +149,7 @@ $(document).ready(function(){
                 var data = rowData[j];
                 let fontCenter=(j==0||j==1||j==4||j==7)?"text-align: center;":"";
                 let isEscort="",escortId="";
-                if (j==1 || j==5){
+                if (j!=8){
                     isEscort=`editable `
                     escortId=j==1?("escort_"+i):("additional_note"+i)
                 }
