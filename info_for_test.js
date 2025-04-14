@@ -562,6 +562,1257 @@ addrs={/*
     }
 
 prtObjInfo = {
+  "Abele, Arija": {
+    "id": "189059"
+  },
+  "Abesamis, Purificacion K": {
+    "id": "PC10990"
+  },
+  "Acupuncture, Group": {
+    "id": "PC9511"
+  },
+  "Agemso, Woubishet": {
+    "id": "490099"
+  },
+  "Aldana, Eugenia": {
+    "id": "490014"
+  },
+  "Allen, Jerre T": {
+    "id": "PC53539"
+  },
+  "Amezcua, Margaret M": {
+    "id": "PC49168"
+  },
+  "Anies, Cristeta": {
+    "id": "693470"
+  },
+  "Arias, Lydia": {
+    "id": "664978"
+  },
+  "Aubrey, Corrine": {
+    "id": "PC27357"
+  },
+  "Auyoung, Tim": {
+    "id": "PC48896"
+  },
+  "Bajjalieh, Laila": {
+    "id": "536349"
+  },
+  "Bartosavage, Mary": {
+    "id": "PC35093"
+  },
+  "Beck, Ora": {
+    "id": "632940"
+  },
+  "Bello, Christopher": {
+    "id": "693509"
+  },
+  "Bian, John": {
+    "id": "645728"
+  },
+  "Bishop Robinson, Jacqueline": {
+    "id": "173290"
+  },
+  "Blake, Dera": {
+    "id": "693517"
+  },
+  "Bolden, Joseph": {
+    "id": "534373"
+  },
+  "Bonilla, Yolanda": {
+    "id": "188622"
+  },
+  "Bonner, Patricia": {
+    "id": "PC7598"
+  },
+  "Bray, Georgina Margaret": {
+    "id": "PC44640"
+  },
+  "Briggs, Sharon": {
+    "id": "490028"
+  },
+  "Broadnax, Eugene": {
+    "id": "PC51764"
+  },
+  "Bugayong, Gerardo D": {
+    "id": "PC52756"
+  },
+  "Bunag, Imelda": {
+    "id": "PC45113"
+  },
+  "Bunag, Relio": {
+    "id": "PC43122"
+  },
+  "Cabrera de Interiano, Elva": {
+    "id": "693551"
+  },
+  "Cafferty, Ellen F": {
+    "id": "PC52569"
+  },
+  "Campbell, Stephan": {
+    "id": "PC7599"
+  },
+  "Canizalez, Graciela": {
+    "id": "173296"
+  },
+  "Caric, Aldo": {
+    "id": "PC31460"
+  },
+  "Carlsson, Sally S": {
+    "id": "PC11080"
+  },
+  "Carroll, Robert A": {
+    "id": "PC11081"
+  },
+  "Carroll-Iturralde, Ruth": {
+    "id": "490043"
+  },
+  "Cassidy, Betty": {
+    "id": "693572"
+  },
+  "Chamberlin, C": {
+    "id": "PC8563"
+  },
+  "Chan": {
+    "id": "PC8564"
+  },
+  "Chan, Albert N": {
+    "id": "PC27355"
+  },
+  "Chan, Chung Wing": {
+    "id": "501606"
+  },
+  "Chan, David L": {
+    "id": "693589"
+  },
+  "Chan, David": {
+    "id": "PC11090"
+  },
+  "Chan, Elaine": {
+    "id": "PC53882"
+  },
+  "Chan, Kwan Har": {
+    "id": "501011"
+  },
+  "Chan, Patricia": {
+    "id": "180900"
+  },
+  "Chan, Patrick": {
+    "id": "PC13426"
+  },
+  "Chan, Phillip": {
+    "id": "180886"
+  },
+  "Chan, Shirlena": {
+    "id": "193244"
+  },
+  "Chan, Shun Chow": {
+    "id": "PC44639"
+  },
+  "Chan, Sook Wah": {
+    "id": "173301"
+  },
+  "Chan, Suk Ching": {
+    "id": "PC8544"
+  },
+  "Chan, Sylvia W": {
+    "id": "PC11099"
+  },
+  "Chan, Virginia C": {
+    "id": "PC40672"
+  },
+  "Chang, Judy": {
+    "id": "PC7569"
+  },
+  "Chao, Kwoh Chin": {
+    "id": "693601"
+  },
+  "Chau, Polo": {
+    "id": "633043"
+  },
+  "Chau, Simon": {
+    "id": "PC8459"
+  },
+  "Chavez Lopez, Humberto": {
+    "id": "490079"
+  },
+  "Chen, Annie": {
+    "id": "PC21267"
+  },
+  "Chen, Buoy Lan": {
+    "id": "PC8509"
+  },
+  "Chen, Shun Hui": {
+    "id": "490081"
+  },
+  "Chen, Yan Fang": {
+    "id": "181660"
+  },
+  "Chen, Yiqun": {
+    "id": "PC11141"
+  },
+  "Chen, Zong Liang": {
+    "id": "PC49286"
+  },
+  "Chen, Zuo Ren": {
+    "id": "PC8510"
+  },
+  "Cheng, Guang Shun": {
+    "id": "PC11147"
+  },
+  "Cheng, James": {
+    "id": "PC8986"
+  },
+  "Cheung, William": {
+    "id": "633044"
+  },
+  "Chiang, Kuo Hsiun": {
+    "id": "PC27880"
+  },
+  "Chin, Ang Lin": {
+    "id": "PC8511"
+  },
+  "Chin, Anita": {
+    "id": "PC14702"
+  },
+  "Chou, Sio Cheong": {
+    "id": "PC8512"
+  },
+  "Chow, James": {
+    "id": "PC36911"
+  },
+  "Chow, Wan Chung": {
+    "id": "PC35428"
+  },
+  "Chow, Yau Soong": {
+    "id": "PC11182"
+  },
+  "Chow, Yuliang": {
+    "id": "PC11183"
+  },
+  "Choy, Pui Wai": {
+    "id": "PC16213"
+  },
+  "Chryst, Genn": {
+    "id": "PC10374"
+  },
+  "Chu, Chen Xiao": {
+    "id": "490373"
+  },
+  "Chu, Clyde Y": {
+    "id": "693624"
+  },
+  "Chu, Kan": {
+    "id": "173304"
+  },
+  "Chu, Kenneth K": {
+    "id": "633045"
+  },
+  "Chu, Kwai Lan": {
+    "id": "501607"
+  },
+  "Chu, Pak": {
+    "id": "PC11186"
+  },
+  "Chu, Yin": {
+    "id": "693625"
+  },
+  "Chung, Ann": {
+    "id": "645941"
+  },
+  "Chung, Isaac I": {
+    "id": "PC11196"
+  },
+  "Cordova, Julia": {
+    "id": "PC14280"
+  },
+  "Cornel, Rebecca": {
+    "id": "490378"
+  },
+  "Cruz, Ruben D": {
+    "id": "PC11212"
+  },
+  "Dam, Lisa": {
+    "id": "PC13422"
+  },
+  "Dam, Lynn": {
+    "id": "PC13423"
+  },
+  "Damming, Gerarda": {
+    "id": "PC33283"
+  },
+  "Dang, Tony T": {
+    "id": "693664"
+  },
+  "Dao, Ngoc Tu": {
+    "id": "693665"
+  },
+  "Dao, Tran Tu": {
+    "id": "693666"
+  },
+  "Deguzman, Evangelina": {
+    "id": "693680"
+  },
+  "DeMato, Jerry": {
+    "id": "PC53540"
+  },
+  "Diaz, Humberto": {
+    "id": "187920"
+  },
+  "Diaz, Norma": {
+    "id": "PC8682"
+  },
+  "Dokko, Daniel": {
+    "id": "PC26392"
+  },
+  "Dokko, Kyungwon": {
+    "id": "PC19092"
+  },
+  "Doyle, Thomas": {
+    "id": "187656"
+  },
+  "Doyle, Tom": {
+    "id": "693698"
+  },
+  "Duong, Ban": {
+    "id": "693703"
+  },
+  "Easter, Darnell": {
+    "id": "PC35535"
+  },
+  "Fan, Hongyu": {
+    "id": "693731"
+  },
+  "Fang, Yue Hua": {
+    "id": "PC11294"
+  },
+  "Fangli, Li": {
+    "id": "PC53495"
+  },
+  "Ferrell, Wanda": {
+    "id": "693735"
+  },
+  "Fischer, Felizitas M": {
+    "id": "693736"
+  },
+  "Fong, Lincoln": {
+    "id": "PC32060"
+  },
+  "Fung, Lai King": {
+    "id": "693757"
+  },
+  "Fung, Yuk Leung": {
+    "id": "PC11312"
+  },
+  "Furlough, Loyce": {
+    "id": "PC13387"
+  },
+  "GAO, YI REN": {
+    "id": "PC10682"
+  },
+  "Garcia, Agustin": {
+    "id": "693766"
+  },
+  "Garcia, Dora J": {
+    "id": "173312"
+  },
+  "Garcia Maldonado, Aurelia": {
+    "id": "693773"
+  },
+  "Godinez, Luis": {
+    "id": "490397"
+  },
+  "Golchini, Hassan": {
+    "id": "PC51205"
+  },
+  "Gormally, Mary  Sr.": {
+    "id": "PC8518"
+  },
+  "Grant, Teri": {
+    "id": "173313"
+  },
+  "Gu, Guan Qun": {
+    "id": "194426"
+  },
+  "Guerra Ayala, Alma": {
+    "id": "490404"
+  },
+  "Guevara, Judith Teresa": {
+    "id": "490406"
+  },
+  "Guleng, Ben": {
+    "id": "PC33112"
+  },
+  "Ha, Tong Han Han": {
+    "id": "PC44638"
+  },
+  "Harper, Linda": {
+    "id": "PC27638"
+  },
+  "Harris, Janet": {
+    "id": "693837"
+  },
+  "Hau, Yuet": {
+    "id": "PC43194"
+  },
+  "He, Ting Gui": {
+    "id": "693841"
+  },
+  "He, Yu": {
+    "id": "693842"
+  },
+  "Head, Sherrie": {
+    "id": "173019"
+  },
+  "Hellam, Ruben A": {
+    "id": "PC11389"
+  },
+  "Hernandez, Marcia": {
+    "id": "PC8519"
+  },
+  "Hernandez, Victoria": {
+    "id": "491464"
+  },
+  "Hills, Ellen": {
+    "id": "PC33482"
+  },
+  "Ho, Anna": {
+    "id": "PC40671"
+  },
+  "Ho, Kim Yee": {
+    "id": "PC11401"
+  },
+  "Ho, Sandy": {
+    "id": "PC50473"
+  },
+  "Horne, Ronald": {
+    "id": "693877"
+  },
+  "Huang, Chien Chien": {
+    "id": "PC23529"
+  },
+  "Huang, Jing Hua": {
+    "id": "PC11441"
+  },
+  "Huang, Shao Ming": {
+    "id": "492775"
+  },
+  "Huang, Shu Fen": {
+    "id": "492789"
+  },
+  "Huang, Wei Liang": {
+    "id": "PC27228"
+  },
+  "Huang, Wendy W": {
+    "id": "PC39047"
+  },
+  "Huang, Ying J": {
+    "id": "PC39048"
+  },
+  "Huang Tam, Gui Ying": {
+    "id": "PC8500"
+  },
+  "Hubbard, Charlotte": {
+    "id": "PC30590"
+  },
+  "Hung, Mei Sheung": {
+    "id": "PC8523"
+  },
+  "Huynh, Hi": {
+    "id": "PC8524"
+  },
+  "Huynh, Muoi Trieu T": {
+    "id": "PC45977"
+  },
+  "Hwang, Soon": {
+    "id": "PC11053"
+  },
+  "Jackson, Kevin": {
+    "id": "693904"
+  },
+  "James, Annie": {
+    "id": "173024"
+  },
+  "Jesse, Pena": {
+    "id": "PC9200"
+  },
+  "Jiminez, Gloria": {
+    "id": "PC13144"
+  },
+  "Jin, Xue Lian": {
+    "id": "693917"
+  },
+  "Johnson, Willie J": {
+    "id": "PC8525"
+  },
+  "Jones, Elaine": {
+    "id": "693920"
+  },
+  "Kelly, Dorothy Jane": {
+    "id": "PC11509"
+  },
+  "Kerfoot, Lori J": {
+    "id": "PC11511"
+  },
+  "Keung, Ping Wan": {
+    "id": "PC11514"
+  },
+  "Kim, Ho": {
+    "id": "PC26734"
+  },
+  "Kim, Lily": {
+    "id": "501613"
+  },
+  "Kim, Mi Young": {
+    "id": "PC33258"
+  },
+  "Kong, Fung Kuen": {
+    "id": "173352"
+  },
+  "Kovaleva, Irina": {
+    "id": "PC25309"
+  },
+  "Kovaleva, Irina S": {
+    "id": "PC27361"
+  },
+  "Kukol, Joanne": {
+    "id": "PC30908"
+  },
+  "Kwan, Peo Line": {
+    "id": "PC11540"
+  },
+  "Kwok, Lulu": {
+    "id": "PC9617"
+  },
+  "Kwong, Chang Lin": {
+    "id": "693958"
+  },
+  "Kwong, Charlie L": {
+    "id": "PC37503"
+  },
+  "Kwong, Chi Min": {
+    "id": "555550"
+  },
+  "Kwong, Yuk Lin Ng": {
+    "id": "PC34662"
+  },
+  "Kwong Chang, Lin Hing": {
+    "id": "PC11548"
+  },
+  "Lam, Thomas": {
+    "id": "PC8530"
+  },
+  "Lau, Cheng Kun": {
+    "id": "PC30593"
+  },
+  "Lau, Kitwan": {
+    "id": "PC8531"
+  },
+  "Lau, Yuk Yu": {
+    "id": "PC20377"
+  },
+  "Lea, Lai Chuen": {
+    "id": "173387"
+  },
+  "Lee, Alydia": {
+    "id": "PC16549"
+  },
+  "Lee, Anna": {
+    "id": "PC49405"
+  },
+  "Lee, Betty Lan-Yuen": {
+    "id": "693977"
+  },
+  "Lee, Choi Kuen": {
+    "id": "PC8532"
+  },
+  "Lee, Fung": {
+    "id": "173155"
+  },
+  "Lee, Gertrude": {
+    "id": "PC13594"
+  },
+  "Lee, Har Tam": {
+    "id": "536566"
+  },
+  "Lee, Lai Yee": {
+    "id": "693985"
+  },
+  "Lee, Lap Chow": {
+    "id": "693986"
+  },
+  "Lee, Larry": {
+    "id": "693987"
+  },
+  "Lee, Lisa C": {
+    "id": "PC53881"
+  },
+  "Lee, May Jean J": {
+    "id": "PC11607"
+  },
+  "Lee, Mui Chun": {
+    "id": "173319"
+  },
+  "Lee, Ngan Chu": {
+    "id": "693990"
+  },
+  "Lee, Shuk F Lee": {
+    "id": "PC8534"
+  },
+  "Lee, Sooja": {
+    "id": "693992"
+  },
+  "Lei, Hon Wan": {
+    "id": "PC11623"
+  },
+  "Leong, Steven": {
+    "id": "173320"
+  },
+  "Leung, Frank F": {
+    "id": "PC11631"
+  },
+  "Leung, Hoi Man": {
+    "id": "PC11632"
+  },
+  "Leung, Hung Chun": {
+    "id": "PC33540"
+  },
+  "Leung, Kwong Fat": {
+    "id": "491474"
+  },
+  "Leung, Leisly L": {
+    "id": "PC11634"
+  },
+  "Leung, Ricky H": {
+    "id": "PC11637"
+  },
+  "Leung, Ting See": {
+    "id": "188077"
+  },
+  "Leung, Wing Kwai": {
+    "id": "694006"
+  },
+  "Leung, Wing Sang": {
+    "id": "188075"
+  },
+  "Li, Kewu": {
+    "id": "PC30036"
+  },
+  "Li, WenPing": {
+    "id": "694010"
+  },
+  "Li, Yan Zhi": {
+    "id": "PC23066"
+  },
+  "Li, You H": {
+    "id": "PC35291"
+  },
+  "Li, Zhi Yuan": {
+    "id": "PC49377"
+  },
+  "Liang, Guo Zhi": {
+    "id": "PC9633"
+  },
+  "Liang, Huan Mei": {
+    "id": "PC8535"
+  },
+  "Liang, Minan": {
+    "id": "501143"
+  },
+  "Liang, Sai Huan": {
+    "id": "694014"
+  },
+  "Lin, Chao Ping": {
+    "id": "173321"
+  },
+  "Lipinski, Andrzej Richard": {
+    "id": "PC11708"
+  },
+  "Liu, Can Yao": {
+    "id": "694023"
+  },
+  "Liu, Hao": {
+    "id": "PC26224"
+  },
+  "Llerena, Sylvia": {
+    "id": "PC25007"
+  },
+  "Lo, To Chai": {
+    "id": "PC53685"
+  },
+  "Logan, Venitta": {
+    "id": "PC13057"
+  },
+  "Lu, Linda": {
+    "id": "694043"
+  },
+  "Lu, Xiong": {
+    "id": "694045"
+  },
+  "Lucas, Vivian": {
+    "id": "187297"
+  },
+  "Luk Chiu, Fung Hin": {
+    "id": "694049"
+  },
+  "Lum, Yung Ching": {
+    "id": "PC38863"
+  },
+  "Luong, Lau": {
+    "id": "PC53698"
+  },
+  "Luong, Vu Quan Q": {
+    "id": "PC11772"
+  },
+  "Luu, Muoi": {
+    "id": "PC8537"
+  },
+  "Luu, To": {
+    "id": "491467"
+  },
+  "Ly, Ha Bich": {
+    "id": "555882"
+  },
+  "Ly, Kha Chay": {
+    "id": "PC26647"
+  },
+  "Ly, Mui": {
+    "id": "694052"
+  },
+  "Ly, Trung": {
+    "id": "PC7572"
+  },
+  "Lyons, Gregory B. Brent": {
+    "id": "PC11780"
+  },
+  "Ma, Cui Hua": {
+    "id": "PC14948"
+  },
+  "Ma, Helen": {
+    "id": "PC17163"
+  },
+  "Ma, Rongan": {
+    "id": "694055"
+  },
+  "Mac, Tam Thuy": {
+    "id": "PC8538"
+  },
+  "Macdonald, Christopher": {
+    "id": "PC21137"
+  },
+  "Mai, Su Hang": {
+    "id": "PC24048"
+  },
+  "Manilla, Danilo": {
+    "id": "PC27356"
+  },
+  "Martinez, Antoinette": {
+    "id": "PC23199"
+  },
+  "Martinez, Lawrence Benedict": {
+    "id": "694085"
+  },
+  "Matosich, Helen A": {
+    "id": "694091"
+  },
+  "Matsuo, Emiko": {
+    "id": "694092"
+  },
+  "McCarthy, Steven": {
+    "id": "PC15386"
+  },
+  "McKean, Rosemary": {
+    "id": "536353"
+  },
+  "Mederos, Aquileo": {
+    "id": "PC10934"
+  },
+  "Melville, Ruth E": {
+    "id": "PC53892"
+  },
+  "Mengesha, Hiwan": {
+    "id": "694118"
+  },
+  "Miao, Bao Fei": {
+    "id": "PC24047"
+  },
+  "Miller, Marvin": {
+    "id": "694124"
+  },
+  "Miller, Thomas": {
+    "id": "PC8457"
+  },
+  "Mok, Nai Tin": {
+    "id": "PC35429"
+  },
+  "Montoya, Luis Alonzo": {
+    "id": "PC11846"
+  },
+  "Moore, Ernestine": {
+    "id": "192111"
+  },
+  "Morley, Marilyn": {
+    "id": "694154"
+  },
+  "Mosier, Jessica": {
+    "id": "PC44642"
+  },
+  "Moskvychov, Svyatoslav G": {
+    "id": "PC29006"
+  },
+  "Mui, So Shung": {
+    "id": "173327"
+  },
+  "Murdock, maisie": {
+    "id": "PC41039"
+  },
+  "Needes, Norman": {
+    "id": "PC12578"
+  },
+  "Ng, Kwai": {
+    "id": "694172"
+  },
+  "Ng, Ping Jan": {
+    "id": "694174"
+  },
+  "Ng, Po San": {
+    "id": "694175"
+  },
+  "Ng, Sai Mun": {
+    "id": "646480"
+  },
+  "Ng, Siu H Yu": {
+    "id": "PC11869"
+  },
+  "Nguyen, Kimtuyen": {
+    "id": "PC8540"
+  },
+  "Nguyen, Lap Hoang": {
+    "id": "PC14281"
+  },
+  "Nguyen, Nhanh Thi": {
+    "id": "PC14282"
+  },
+  "Nudelman, Irina": {
+    "id": "694190"
+  },
+  "Nunn, Sue Tsin": {
+    "id": "694192"
+  },
+  "O'Connor, Frances": {
+    "id": "694199"
+  },
+  "O'Connor, Marian": {
+    "id": "PC8541"
+  },
+  "Ornano, Julia": {
+    "id": "597822"
+  },
+  "Ornano-Lopez, Maria Del Pilar": {
+    "id": "PC8542"
+  },
+  "Pal, Gary": {
+    "id": "PC13934"
+  },
+  "Pan, Wiley": {
+    "id": "501151"
+  },
+  "Pascal, Fabian": {
+    "id": "694228"
+  },
+  "Pascual, Corozan": {
+    "id": "PC10922"
+  },
+  "Peed, Leatrice": {
+    "id": "694236"
+  },
+  "Penry, Paul E": {
+    "id": "PC11962"
+  },
+  "Perkins, Michael C": {
+    "id": "694243"
+  },
+  "Perry, Stephen": {
+    "id": "PC21872"
+  },
+  "Peterson, Samuel": {
+    "id": "694245"
+  },
+  "Pho, Lina": {
+    "id": "PC8543"
+  },
+  "Pizzorno, Mary": {
+    "id": "537567"
+  },
+  "Poag, David": {
+    "id": "PC42992"
+  },
+  "Poon, Ming Hoi": {
+    "id": "PC52005"
+  },
+  "Porter, Gregory": {
+    "id": "694260"
+  },
+  "Pugh, Michael": {
+    "id": "PC18970"
+  },
+  "Quach, Miles": {
+    "id": "694264"
+  },
+  "Ramos, Gladys": {
+    "id": "694275"
+  },
+  "Randleston, Edward C.": {
+    "id": "694276"
+  },
+  "Rapisura, Herminia": {
+    "id": "694280"
+  },
+  "Read Note, Special Order": {
+    "id": "PC20160"
+  },
+  "Rhodes, Sarah": {
+    "id": "PC41503"
+  },
+  "Rich-French, JennyLynn": {
+    "id": "PC27362"
+  },
+  "Richardson, Mark L": {
+    "id": "694295"
+  },
+  "Rodriguez, Carmelo S": {
+    "id": "PC22474"
+  },
+  "Rodriguez, Helen": {
+    "id": "PC39046"
+  },
+  "Romero, Judith": {
+    "id": "694318"
+  },
+  "Salunga, Marissa": {
+    "id": "PC10280"
+  },
+  "Sapp, Adges": {
+    "id": "PC32779"
+  },
+  "Savage, Nicole": {
+    "id": "PC44641"
+  },
+  "Scott, Sharon": {
+    "id": "PC37854"
+  },
+  "Shahib, Anita": {
+    "id": "PC44643"
+  },
+  "Shen, Chang Rong": {
+    "id": "694359"
+  },
+  "Sherman, Doris": {
+    "id": "PC21988"
+  },
+  "Siu, Wah Bik B": {
+    "id": "PC12100"
+  },
+  "Smiley, Patricia": {
+    "id": "597820"
+  },
+  "Special Trip, Read Note": {
+    "id": "PC25157"
+  },
+  "Stamps, Ivory": {
+    "id": "694391"
+  },
+  "Su Hang, Mai": {
+    "id": "PC23147"
+  },
+  "Sun, Ruilian": {
+    "id": "173331"
+  },
+  "Swimmer, John": {
+    "id": "PC9620"
+  },
+  "Takikawa, Noriko": {
+    "id": "PC19110"
+  },
+  "Tam, Sin King": {
+    "id": "PC53504"
+  },
+  "Tam, Wai Ken": {
+    "id": "490313"
+  },
+  "Tan, Eileen": {
+    "id": "PC8545"
+  },
+  "Tan, Raymond": {
+    "id": "694409"
+  },
+  "Tang, Alice": {
+    "id": "694410"
+  },
+  "Tang, Ann": {
+    "id": "PC13421"
+  },
+  "Tang, Kok Fang": {
+    "id": "490311"
+  },
+  "Taylor, Peggy": {
+    "id": "694416"
+  },
+  "The, Siang Hoei": {
+    "id": "PC12157"
+  },
+  "Tieu, Minh": {
+    "id": "694428"
+  },
+  "Todd, Terrence Donald": {
+    "id": "PC12160"
+  },
+  "Tran, Anh": {
+    "id": "PC8453"
+  },
+  "Tran, Hong Thu": {
+    "id": "PC12174"
+  },
+  "Tran, Lien T": {
+    "id": "PC24413"
+  },
+  "Tran, Phouc": {
+    "id": "PC8551"
+  },
+  "Tsui, Shuk Jee": {
+    "id": "PC33163"
+  },
+  "Tu, David": {
+    "id": "490307"
+  },
+  "Turner, Robert": {
+    "id": "PC26226"
+  },
+  "Umeukeje, Alice": {
+    "id": "635789"
+  },
+  "Umeukeje, Timothy": {
+    "id": "PC8552"
+  },
+  "Urrutia, Marta Lilia": {
+    "id": "PC20378"
+  },
+  "Vaccari, Vivian": {
+    "id": "694444"
+  },
+  "Vanderhorst, Malcolm": {
+    "id": "PC26050"
+  },
+  "Vasquez, Leticia": {
+    "id": "663298"
+  },
+  "Vass, Tatiana": {
+    "id": "173339"
+  },
+  "Villegas, Mireya": {
+    "id": "PC49169"
+  },
+  "Wan, Lai Ming": {
+    "id": "PC43907"
+  },
+  "Wan, Lai Yin": {
+    "id": "490300"
+  },
+  "Wan, Seeyen": {
+    "id": "PC30702"
+  },
+  "Wan Sue, Lo Gee": {
+    "id": "PC52803"
+  },
+  "Wang, Caishao": {
+    "id": "PC8553"
+  },
+  "Wang, Chun Ling": {
+    "id": "490299"
+  },
+  "Wang, Dao Gang": {
+    "id": "195604"
+  },
+  "Wang, Judy W": {
+    "id": "PC12251"
+  },
+  "Wang, XiaoHua": {
+    "id": "PC53505"
+  },
+  "Wang, You Lan": {
+    "id": "694480"
+  },
+  "Wang, Zhao Zhi": {
+    "id": "PC47130"
+  },
+  "Wang Chang, Fung Hwa": {
+    "id": "PC53686"
+  },
+  "Washington, Betty": {
+    "id": "694487"
+  },
+  "Washington, Virginia": {
+    "id": "PC13233"
+  },
+  "Waters, Reno": {
+    "id": "PC26517"
+  },
+  "Watt, Kwok Yan Hong": {
+    "id": "PC37504"
+  },
+  "White, Dale": {
+    "id": "PC24282"
+  },
+  "Williams, Michael": {
+    "id": "694511"
+  },
+  "Wilson, Cregg": {
+    "id": "PC8479"
+  },
+  "Wilton, Donald R": {
+    "id": "PC14415"
+  },
+  "Wong, Bill Kwok": {
+    "id": "PC8555"
+  },
+  "Wong, Fung Ying": {
+    "id": "694519"
+  },
+  "Wong, Gam Fee": {
+    "id": "PC8456"
+  },
+  "Wong, Henry H": {
+    "id": "PC16301"
+  },
+  "Wong, Iris": {
+    "id": "694520"
+  },
+  "Wong, Lan Ying": {
+    "id": "PC24363"
+  },
+  "Wong, May Oi": {
+    "id": "694522"
+  },
+  "Wong, May Seung": {
+    "id": "PC29479"
+  },
+  "Wong, Michelle": {
+    "id": "PC48894"
+  },
+  "Wong, Shou Chu": {
+    "id": "648560"
+  },
+  "Wong, Wai C": {
+    "id": "PC8556"
+  },
+  "Wong, Yue Yao": {
+    "id": "PC25144"
+  },
+  "Woo, May": {
+    "id": "195073"
+  },
+  "Woo, Mu Jie Xie": {
+    "id": "PC12313"
+  },
+  "Woods, Renita": {
+    "id": "694528"
+  },
+  "Wu, Gan": {
+    "id": "694532"
+  },
+  "Xu, Anne": {
+    "id": "490281"
+  },
+  "Xu, Gen Su": {
+    "id": "694535"
+  },
+  "Xu, ZiYin": {
+    "id": "694537"
+  },
+  "Yadambat, Baatar": {
+    "id": "694538"
+  },
+  "Yan, Xin Fa": {
+    "id": "PC30591"
+  },
+  "Yancey, Norbert": {
+    "id": "694540"
+  },
+  "Yang, Feng Lan": {
+    "id": "PC12366"
+  },
+  "Ye, Hui Juan": {
+    "id": "PC23067"
+  },
+  "Ye, Wei Hua": {
+    "id": "694546"
+  },
+  "Ye, Yibin": {
+    "id": "PC12385"
+  },
+  "Yeoh, Khian Heng": {
+    "id": "PC8558"
+  },
+  "Yeung, Linying L": {
+    "id": "PC12391"
+  },
+  "Yeung, Wai Y": {
+    "id": "PC44637"
+  },
+  "Yim, Wai Hing": {
+    "id": "694549"
+  },
+  "Yin, Shan": {
+    "id": "PC15863"
+  },
+  "Yu, Birui": {
+    "id": "694550"
+  },
+  "Yu, Hua Sheng": {
+    "id": "PC12413"
+  },
+  "Yu, Johnny": {
+    "id": "PC52873"
+  },
+  "Yu, Kwai Ha": {
+    "id": "694552"
+  },
+  "Yu, Rui Guo": {
+    "id": "PC37686"
+  },
+  "Yu, Thomas": {
+    "id": "195228"
+  },
+  "Yu, Yi Jun": {
+    "id": "PC14750"
+  },
+  "Yu, Yong Dong": {
+    "id": "PC27360"
+  },
+  "Yuan, Fu Mei": {
+    "id": "PC12426"
+  },
+  "Yuan, Shun": {
+    "id": "694555"
+  },
+  "Zavaleta, Dora": {
+    "id": "PC12433"
+  },
+  "Zeng, HanYing": {
+    "id": "694564"
+  },
+  "Zhang, De Zhen": {
+    "id": "694565"
+  },
+  "Zhou, Xing Hua": {
+    "id": "PC12485"
+  },
+  "Zhu, Cui Liang": {
+    "id": "694569"
+  },
+  "Zuckman, Jon": {
+    "id": "185191"
+  }
 }
 function getForDAR() {
     let res = {};
