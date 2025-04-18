@@ -80,8 +80,9 @@
         return tempPrt;
     }
     function isWheelchair(prt){
-
-        return "-";
+        let reStr="⚠️";
+        if(prt.indexOf("Warning</b>")==-1) reStr="-"
+        return reStr;
     }
 
     function createTable(arr,isRoom){
@@ -192,7 +193,7 @@
                 let tempPrt=pmArr[i][j]
                 let r=i
                 r=i==0?"Joe":r;
-                byRouteArr.push([whichRoom(tempPrt),r,isWheelchair(tempPrt)]);
+                byRouteArr.push([whichRoom(tempPrt.replace("__<b>Warning</b>","")),r,isWheelchair(tempPrt)]);
             }
         }
         // 新建一个按名排序的数组
