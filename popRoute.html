@@ -92,7 +92,7 @@
         if(isRoom){
             //$("#date").html(".")
             let tempTableHtml1 = `<table style="border:1px"><tr><th colspan="3" style="text-align: center"> </th></tr>`
-            let tempTableHtml2 = roomName=>`<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt&nbsp;@${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th></tr>`;
+            let tempTableHtml2 = roomName=>`<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt&nbsp;@${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">W</th></tr>`;
             
             let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2("Sun");            
             let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2("Star");
@@ -104,7 +104,8 @@
                 let prtTr=`<tr style="color:black">
                     <!--<td>${i}</td>-->
                     <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
-                    <td class="border border-dark">${arr[i][1]}</td>`
+                    <td class="border border-dark">${arr[i][1]}</td>
+                    <td class="border border-dark">${arr[i][2]}</td>`
                 
                 if(room=="☀"){
                     sunTable+=prtTr;
