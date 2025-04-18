@@ -92,7 +92,7 @@
         if(isRoom){
             //$("#date").html(".")
             let tempTableHtml1 = `<table style="border:1px"><tr><th colspan="3" style="text-align: center"> </th></tr>`
-            let tempTableHtml2 = roomName=>`<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt&nbsp;@${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">W</th></tr>`;
+            let tempTableHtml2 = roomName=>`<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt&nbsp;@${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">⚠️</th></tr>`;
             
             let sunTable=`<div class="childTable" id="sunRoom">`+tempTableHtml1+tempTableHtml2("Sun");            
             let starTable=`<div class="childTable" id="starRoom">`+tempTableHtml1+tempTableHtml2("Star");
@@ -126,48 +126,87 @@
             
         }else{
             $("#date").html(todayDate + $.getUrlParam("rt"))
-            tableHtml = `<table style="border:1px">
+            let isMedication=$.getUrlParam("rt").indexOf("Medication List")!==-1
+            if(isMedication){
+                let arr2=(function(){
+                    let tempArr=[...arr];
+                    for(let i=0;i<tempArr.length;i++){
+                        tempArr[i][0]=tempArr[i][0].replace("☀","")
+                        tempArr[i][0]=tempArr[i][0].replace("✨","")
+                        tempArr[i][0]=tempArr[i][0].replace("🌙","")
+                        tempArr[i][0]=tempArr[i][0].replace("😄","")
+                    }
+                    return tempArr.sort()
+                })()
+                
+                tableHtml=`<table style="border:1px">
+                            <tr>
+                                <!--<th class="border border-dark ${bg_style}"></th>-->
+                                <th class="border border-dark ${bg_style}">Prt</th>
+                                <th class="border border-dark ${bg_style}">Rt#</th>
+                                <th class="border border-dark ${bg_style}">⚠️</th>
+                                <th class="border border-dark ${bg_style}" style="width:300px;">Signature</th>
+                            </tr>`
+                let row=arr.length
+                for(let i=0;i<row;i++){
+                    tableHtml += `<tr style="color:black">
+                        <!--<td>${i}</td>-->
+                        <td class="border border-dark">${arr2[i][0].replace("{@}","")}</td>
+                        <td class="border border-dark">${arr2[i][1]}</td>
+                        <td class="border border-dark">${arr2[i][2]}</td>
+                        <td class="border border-dark"> </td>`
+                    
+                }
+        
+        
+                tableHtml+="</table>"
+
+            }else{
+                tableHtml = `<table style="border:1px">
                              <tr>
                                 <!--<th class="border border-dark ${bg_style}"></th>-->
                                 <th class="border border-dark ${bg_style}">Prt</th>
                                 <th class="border border-dark ${bg_style}">Rt#</th>
-                                <th class="border border-dark ${bg_style}">W</th>
+                                <th class="border border-dark ${bg_style}">⚠️</th>
       
                                 <th class="border border-dark ${bg_style}">&nbsp;</th>
                                 <!--<th class="border border-dark ${bg_style}"></th>-->
                                 <th class="border border-dark ${bg_style}">Prt</th>
                                 <th class="border border-dark ${bg_style}">Rt#</th>
-                                <th class="border border-dark ${bg_style}">W</th>
+                                <th class="border border-dark ${bg_style}">⚠️</th>
                              </tr>`;
     
-            let row=parseInt(arr.length/2+.6)
-            for(let i=0;i<row;i++){
-                let r = parseInt(i + row);
-                //left side
-                tableHtml += `<tr style="color:black">
-                    <!--<td>${i}</td>-->
-                    <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
-                    <td class="border border-dark">${arr[i][1]}</td>
-                    <td class="border border-dark">${arr[i][2]}</td>
-                    <td class="border border-dark ${bg_style}"></td>`
-                //right side
-                
-                let r_prt="",r_rtNum="",r_wheelchair=""
-                if(r<arr.length){
-                    r_prt=arr[r][0];
-                    r_rtNum=arr[r][1];
-                    r_wheelchair=arr[r][2]
+                let row=parseInt(arr.length/2+.6)
+                for(let i=0;i<row;i++){
+                    let r = parseInt(i + row);
+                    //left side
+                    tableHtml += `<tr style="color:black">
+                        <!--<td>${i}</td>-->
+                        <td class="border border-dark">${arr[i][0].replace("{@}","")}</td>
+                        <td class="border border-dark">${arr[i][1]}</td>
+                        <td class="border border-dark">${arr[i][2]}</td>
+                        <td class="border border-dark ${bg_style}"></td>`
+                    //right side
                     
+                    let r_prt="",r_rtNum="",r_wheelchair=""
+                    if(r<arr.length){
+                        r_prt=arr[r][0];
+                        r_rtNum=arr[r][1];
+                        r_wheelchair=arr[r][2]
+                        
+                    }
+                    tableHtml+=`<!--<td>${r}</td>-->
+                        <td class="border border-dark">${r_prt.replace("{@}","")}</td>
+                        <td class="border border-dark">${r_rtNum}</td>
+                        <td class="border border-dark">${r_wheelchair}</td>
+                    `
                 }
-                tableHtml+=`<!--<td>${r}</td>-->
-                    <td class="border border-dark">${r_prt.replace("{@}","")}</td>
-                    <td class="border border-dark">${r_rtNum}</td>
-                    <td class="border border-dark">${r_wheelchair}</td>
-                `
+        
+        
+                tableHtml+="</table>"
             }
-    
-    
-            tableHtml+="</table>"
+            
+            
         }
         $("#table").html(tableHtml)
         $("#table").removeClass("table")
