@@ -1,0 +1,157 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+  background: #333;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 20px);
+}
+
+.timeline-container {
+  width: 70%;
+  overflow-x: auto;
+  background: #333;
+}
+
+.display-panel {
+  width: 30%;
+  background: #333;
+  border-left: 1px solid #555;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.display-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #fff;
+}
+
+.display-table td {
+  padding: 8px;
+  border-bottom: 1px solid #555;
+}
+
+.display-table td:first-child {
+  font-weight: bold;
+  width: 40%;
+}
+
+.display-content {
+  line-height: 1.5;
+}
+
+.timeline-header {
+  position: sticky;
+  top: 0;
+  background: #444;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 100px;
+  border-bottom: 1px solid #555;
+  color: #fff;
+}
+
+.time-tick {
+  position: absolute;
+  width: 1px;
+  height: 10px;
+  background: #bbb;
+}
+
+.time-label {
+  position: absolute;
+  font-size: 12px;
+  transform: translateX(-50%);
+  top: 15px;
+  color: #bbb;
+}
+
+.driver-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-bottom: 1px solid #555;
+  background: #444;
+}
+
+.driver-label {
+  width: 100px;
+  flex-shrink: 0;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  background: #444;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  align-self: stretch;
+  color: #fff;
+}
+
+.passenger-container {
+  flex-grow: 1;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.passenger-lane {
+  position: absolute;
+  height: 20px;
+}
+
+.passenger-block {
+  position: absolute;
+  height: 16px;
+  background: #d4a017; /* 土黄色 (noaction) */
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+  padding: 0 5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.passenger-block.status-onroad {
+  background: #4fc3f7; /* 浅蓝色 (onroad) */
+}
+
+.passenger-block.status-finished {
+  background: #66bb6a; /* 绿色 (finished) */
+}
+
+.passenger-block.status-canceled {
+  background: #b0bec5; /* 浅灰色 (canceled) */
+}
+
+.passenger-block.selected {
+  border: 3px solid #ab47bc; /* 紫红色边框 */
+  height: 19px; /* 高度增加 5px */
+  line-height: 13px; /* 调整行高以垂直居中 */
+  font-weight: bold; /* 字体加粗 */
+}
+
+.passenger-block.same-id {
+  border: 3px solid #0288d1; /* 深蓝色边框 */
+  height: 14px;
+  line-height: 8px;
+  font-weight: bold; /* 字体加粗 */
+}
+
+.passenger-block.overlap {
+  background: #d4a017; /* 土黄色，与 noaction 一致 */
+}
