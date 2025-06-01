@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>司机行程时间轴</title>
+  <title>Trip Sheet</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,11 +13,13 @@
       <div class="drivers"></div>
     </div>
     <div class="display-panel">
-      <table class="display-table">
-        <tbody class="display-content"></tbody>
-      </table>
+      <div class="search-wrapper">
+        <h3>Filter</h3>
+        <input type="text" id="searchInput" name="searchInput" placeholder="Filter the PRT Name">
+      </div>
+      <div class="display-content"></div>
     </div>
   </div>
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

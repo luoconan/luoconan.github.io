@@ -30,11 +30,52 @@ body {
   overflow-y: auto;
 }
 
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #555;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.search-wrapper h3 {
+  flex: 0 0 auto;
+  font-size: 16px;
+  color: #f0f0f0;
+  font-weight: bold;
+  margin: 0 10px 0 0;
+  line-height: 32px;
+}
+
+#searchInput {
+  flex: 3;
+  min-width: 0;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
+  transition: border-color 0.3s;
+}
+
+#searchInput::placeholder {
+  color: #bbb;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: #ab47bc;
+}
+
 .display-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
   color: #fff;
+  box-sizing: border-box;
 }
 
 .display-table td {
@@ -45,6 +86,63 @@ body {
 .display-table td:first-child {
   font-weight: bold;
   width: 40%;
+}
+
+.other-trips-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #fff;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+.other-trips-table th,
+.other-trips-table td {
+  padding: 8px;
+  border-bottom: 1px solid #555;
+  text-align: left;
+}
+
+.other-trips-table th {
+  font-weight: bold;
+  background: #444;
+}
+
+.other-trips-table.lunch-table th:nth-child(1),
+.other-trips-table.lunch-table td:nth-child(1) {
+  width: 40%; /* Driver */
+}
+
+.other-trips-table.lunch-table th:nth-child(2),
+.other-trips-table.lunch-table td:nth-child(2) {
+  width: 60%; /* Lunch Time */
+}
+
+.other-trips-table:not(.lunch-table) th:nth-child(1),
+.other-trips-table:not(.lunch-table) td:nth-child(1) {
+  width: 20%; /* Driver */
+}
+
+.other-trips-table:not(.lunch-table) th:nth-child(2),
+.other-trips-table:not(.lunch-table) td:nth-child(2) {
+  width: 15%; /* PU Time */
+}
+
+.other-trips-table:not(.lunch-table) th:nth-child(3),
+.other-trips-table:not(.lunch-table) td:nth-child(3) {
+  width: 30%; /* P/U Address */
+}
+
+.other-trips-table:not(.lunch-table) th:nth-child(4),
+.other-trips-table:not(.lunch-table) td:nth-child(4) {
+  width: 35%; /* D/O Address */
+}
+
+.other-trips-table tr.highlight {
+  background: #fff9c4;
+  color: #000;
+  font-weight: bold;
 }
 
 .display-content {
@@ -114,7 +212,7 @@ body {
 .passenger-block {
   position: absolute;
   height: 16px;
-  background: #d4a017; /* 土黄色 (noaction) */
+  background: #d4a017;
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -126,32 +224,36 @@ body {
   cursor: pointer;
 }
 
-.passenger-block.status-onroad {
-  background: #4fc3f7; /* 浅蓝色 (onroad) */
+.passenger-block.status-onboard {
+  background: #4fc3f7;
 }
 
 .passenger-block.status-finished {
-  background: #66bb6a; /* 绿色 (finished) */
+  background: #66bb6a;
 }
 
-.passenger-block.status-canceled {
-  background: #b0bec5; /* 浅灰色 (canceled) */
+.passenger-block.status-cancelled {
+  background: #b0bec5;
+}
+
+.passenger-block.id-lunch {
+  background: #9c27b0;
 }
 
 .passenger-block.selected {
-  border: 3px solid #ab47bc; /* 紫红色边框 */
-  height: 19px; /* 高度增加 5px */
-  line-height: 13px; /* 调整行高以垂直居中 */
-  font-weight: bold; /* 字体加粗 */
+  border: 3px solid #ab47bc;
+  height: 19px;
+  line-height: 13px;
+  font-weight: bold;
 }
 
 .passenger-block.same-id {
-  border: 3px solid #0288d1; /* 深蓝色边框 */
+  border: 3px solid #0288d1;
   height: 14px;
   line-height: 8px;
-  font-weight: bold; /* 字体加粗 */
+  font-weight: bold;
 }
 
 .passenger-block.overlap {
-  background: #d4a017; /* 土黄色，与 noaction 一致 */
+  background: #d4a017;
 }

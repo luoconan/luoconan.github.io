@@ -2,8 +2,7 @@ let drivers = [];
 
 // 监听 postMessage
 window.addEventListener('message', (event) => {
-  // 支持 site1.com 和本地测试
-  const allowedOrigins = ['http://site1.com', 'http://127.0.0.1:5500','https://provider.nemtplatform.com/trips','https://provider.nemtplatform.com'];
+  const allowedOrigins = ['http://site1.com', 'http://127.0.0.1:5500', 'https://provider.nemtplatform.com/trips', 'https://provider.nemtplatform.com'];
   if (!allowedOrigins.includes(event.origin)) {
     console.warn('Received message from untrusted origin:', event.origin);
     return;
@@ -12,25 +11,24 @@ window.addEventListener('message', (event) => {
   if (message.type === 'tripsData') {
     try {
       drivers = message.data;
-      // 验证数据格式
       if (!Array.isArray(drivers) || !drivers.every(d => d.id && Array.isArray(d.passengers))) {
         throw new Error('Invalid drivers format');
       }
       console.log('Received drivers via postMessage:', drivers);
-      renderDrivers(); // 重新渲染
+      renderDrivers();
     } catch (e) {
       console.error('Error parsing received trips data:', e);
       drivers = [];
-      renderDrivers(); // 渲染空提示
+      renderDrivers();
     }
   }
 }, false);
 
 // 时间轴配置
-const totalWidth = 1000; // 总宽度（像素）
-const driverLabelWidth = 100; // 司机标签宽度（像素）
-const timelineWidth = totalWidth; // 时间轴宽度（像素）
-const laneHeight = 20; // 每条乘客轨道高度（像素）
+const totalWidth = 1000;
+const driverLabelWidth = 100;
+const timelineWidth = totalWidth;
+const laneHeight = 20;
 
 // 解析 "HHMM" 格式时间为毫秒，假设虚拟日期
 function parseTime(timeStr) {
@@ -55,10 +53,9 @@ function getTimeRange() {
   let maxTime = -Infinity;
   if (!drivers || !Array.isArray(drivers) || drivers.length === 0) {
     console.error('No valid drivers data');
-    // 显示等待提示
     const driversContainer = document.querySelector(".drivers");
     if (driversContainer) {
-      driversContainer.innerHTML = '<p style="color: #fff; text-align: center;">Waiting for trips data from check.html...</p>';
+      driversContainer.innerHTML = '<p style="color: #fff; text-align: center;">Waiting for trips data from NEMT...</p>';
     }
     return { minTime: new Date(2025, 4, 30, 7, 0).getTime(), maxTime: new Date(2025, 4, 30, 18, 0).getTime() };
   }
@@ -140,6 +137,31 @@ function assignLanes(passengers) {
   return flatLanes;
 }
 
+// 过滤行程根据输入
+function filterTrips(searchText) {
+  const blocks = document.querySelectorAll(".passenger-block");
+  if (!searchText) {
+    blocks.forEach(block => {
+      block.style.opacity = "1";
+    });
+    return;
+  }
+
+  const keywords = searchText.toLowerCase()
+    .replace(/,/g, ' ')
+    .replace(/-/g, ' ')
+    .trim()
+    .split(/\s+/);
+
+  blocks.forEach(block => {
+    const passengerId = block.dataset.id.toLowerCase()
+      .replace(/,/g, ' ')
+      .replace(/-/g, ' ');
+    const matches = keywords.every(keyword => passengerId.includes(keyword));
+    block.style.opacity = matches ? "1" : "0.2";
+  });
+}
+
 // 生成时间轴刻度
 function renderTimelineHeader(minTime, maxTime) {
   const header = document.querySelector(".timeline-header");
@@ -208,13 +230,17 @@ function renderDrivers() {
       const block = document.createElement("div");
       block.className = "passenger-block";
       block.dataset.id = p.id;
-      const status = p.status;
-      if (status === 1 || status === "onroad") {
-        block.classList.add("status-onroad");
-      } else if (status === 2 || status === "finished") {
-        block.classList.add("status-finished");
-      } else if (status === 3 || status === "canceled") {
-        block.classList.add("status-canceled");
+      if (p.id === "Lunch") {
+        block.classList.add("id-lunch");
+      } else {
+        const status = p.status;
+        if (status === 1 || status === "onBoard") {
+          block.classList.add("status-onboard");
+        } else if (status === 2 || status === "finished") {
+          block.classList.add("status-finished");
+        } else if (status === 3 || status === "cancelled") {
+          block.classList.add("status-cancelled");
+        }
       }
       const pickupTime = parseTime(p.pickup);
       const dropoffTime = parseTime(p.dropoff);
@@ -241,66 +267,130 @@ function renderDrivers() {
         const displayContent = document.querySelector(".display-content");
         if (displayContent) {
           displayContent.innerHTML = '';
-          // 添加司机信息
           const driverHeader = document.createElement("h2");
           driverHeader.textContent = `Driver: ${driver.id || 'Unknown Driver'}`;
           driverHeader.style.color = '#fff';
           displayContent.appendChild(driverHeader);
-          // 添加表格内容
-          for (const [key, value] of Object.entries(p)) {
-            if (key !== "lane") {
-              const row = document.createElement("tr");
-              const keyCell = document.createElement("td");
-              const valueCell = document.createElement("td");
-              keyCell.textContent = key === "id" ? "name" : key;
-              if (key === "status") {
-                const statusMap = {
-                  0: "noaction",
-                  1: "onroad",
-                  2: "finished",
-                  3: "canceled",
-                  "noaction": "noaction",
-                  "onroad": "onroad",
-                  "finished": "finished",
-                  "canceled": "canceled"
-                };
-                valueCell.textContent = statusMap[value] || value;
-              } else {
-                valueCell.textContent = value;
+          const mainTable = document.createElement("table");
+          mainTable.className = "display-table";
+          if (p.id === "Lunch") {
+            // Lunch 只显示 Driver 和 Lunch Time
+            const row1 = document.createElement("tr");
+            const keyCell1 = document.createElement("td");
+            const valueCell1 = document.createElement("td");
+            keyCell1.textContent = "Driver";
+            valueCell1.textContent = driver.id || 'Unknown Driver';
+            row1.appendChild(keyCell1);
+            row1.appendChild(valueCell1);
+            mainTable.appendChild(row1);
+            const row2 = document.createElement("tr");
+            const keyCell2 = document.createElement("td");
+            const valueCell2 = document.createElement("td");
+            keyCell2.textContent = "Lunch Time";
+            valueCell2.textContent = `${p.pickup}-${p.dropoff}`;
+            row2.appendChild(keyCell2);
+            row2.appendChild(valueCell2);
+            mainTable.appendChild(row2);
+          } else {
+            // 非 Lunch 显示所有字段
+            for (const [key, value] of Object.entries(p)) {
+              if (key !== "lane") {
+                const row = document.createElement("tr");
+                const keyCell = document.createElement("td");
+                const valueCell = document.createElement("td");
+                keyCell.textContent = key === "id" ? "name" : key;
+                if (key === "status") {
+                  const statusMap = {
+                    0: "noAction",
+                    1: "onBoard",
+                    2: "finished",
+                    3: "cancelled",
+                    "noaction": "noAction",
+                    "onboard": "onBoard",
+                    "finished": "finished",
+                    "cancelled": "cancelled"
+                  };
+                  valueCell.textContent = statusMap[value] || value;
+                } else {
+                  valueCell.textContent = value;
+                }
+                row.appendChild(keyCell);
+                row.appendChild(valueCell);
+                mainTable.appendChild(row);
               }
-              row.appendChild(keyCell);
-              row.appendChild(valueCell);
-              displayContent.appendChild(row);
             }
           }
-          // 添加分隔线
+          displayContent.appendChild(mainTable);
           const hr = document.createElement("hr");
           hr.style.borderColor = '#555';
           displayContent.appendChild(hr);
-          // 添加其他司机行程
           const otherTripsHeader = document.createElement("h2");
           otherTripsHeader.textContent = "Other Trips";
           otherTripsHeader.style.color = '#fff';
           displayContent.appendChild(otherTripsHeader);
+          const otherTripsTable = document.createElement("table");
+          otherTripsTable.className = "other-trips-table";
+          const thead = document.createElement("thead");
+          const headerRow = document.createElement("tr");
+          if (p.id === "Lunch") {
+            ["Driver", "Lunch Time"].forEach(text => {
+              const th = document.createElement("th");
+              th.textContent = text;
+              headerRow.appendChild(th);
+            });
+          } else {
+            ["Driver", "PU Time", "P/U Address", "D/O Address"].forEach(text => {
+              const th = document.createElement("th");
+              th.textContent = text;
+              headerRow.appendChild(th);
+            });
+          }
+          thead.appendChild(headerRow);
+          otherTripsTable.appendChild(thead);
+          const tbody = document.createElement("tbody");
           let hasOtherTrips = false;
           drivers.forEach(otherDriver => {
-            if (otherDriver.id !== driver.id && otherDriver.passengers) {
+            if (otherDriver.passengers) {
               otherDriver.passengers.forEach(otherP => {
                 if (otherP.id === p.id) {
-                  const tripInfo = document.createElement("h3");
-                  tripInfo.textContent = `${otherDriver.id}: ${otherP.pickup}`;
-                  tripInfo.style.color = '#fff';
-                  displayContent.appendChild(tripInfo);
+                  const row = document.createElement("tr");
+                  if (otherP.pickup === p.pickup && otherP.dropoff === p.dropoff && otherDriver.id === driver.id) {
+                    row.classList.add("highlight");
+                  }
+                  row.dataset.pickup = otherP.pickup;
+                  row.dataset.dropoff = otherP.dropoff;
+                  const driverCell = document.createElement("td");
+                  driverCell.textContent = otherDriver.id || 'Unknown Driver';
+                  row.appendChild(driverCell);
+                  if (p.id === "Lunch") {
+                    const lunchTimeCell = document.createElement("td");
+                    lunchTimeCell.textContent = `${otherP.pickup}-${otherP.dropoff}`;
+                    row.appendChild(lunchTimeCell);
+                  } else {
+                    const pickupCell = document.createElement("td");
+                    pickupCell.textContent = otherP.pickup || 'Unknown';
+                    row.appendChild(pickupCell);
+                    const puAddressCell = document.createElement("td");
+                    puAddressCell.textContent = otherP.puaddress || '';
+                    row.appendChild(puAddressCell);
+                    const doAddressCell = document.createElement("td");
+                    doAddressCell.textContent = otherP.doaddress || '';
+                    row.appendChild(doAddressCell);
+                  }
+                  tbody.appendChild(row);
                   hasOtherTrips = true;
                 }
               });
             }
           });
+          otherTripsTable.appendChild(tbody);
           if (!hasOtherTrips) {
             const noTrips = document.createElement("h3");
             noTrips.textContent = 'No other trips';
             noTrips.style.color = '#fff';
             displayContent.appendChild(noTrips);
+          } else {
+            displayContent.appendChild(otherTripsTable);
           }
         } else {
           console.error('Display content not found');
@@ -315,11 +405,17 @@ function renderDrivers() {
     driversContainer.appendChild(driverRow);
   });
   console.log('Rendering complete');
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      filterTrips(e.target.value);
+    });
+  }
 }
 
 // 初始化
 document.addEventListener("DOMContentLoaded", () => {
   console.log('DOM loaded, starting render');
-  // 初始渲染，显示等待提示
   renderDrivers();
 });
