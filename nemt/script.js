@@ -1,4 +1,4 @@
-let drivers = [];
+let drivers = [];//
 
 // 监听 postMessage
 window.addEventListener('message', (event) => {
@@ -62,11 +62,13 @@ function getTimeRange() {
   drivers.forEach(driver => {
     if (driver.passengers && Array.isArray(driver.passengers)) {
       driver.passengers.forEach(p => {
-        const pickup = parseTime(p.pickup);
-        const dropoff = parseTime(p.dropoff);
-        if (pickup !== 0 && dropoff !== 0) {
-          minTime = Math.min(minTime, pickup);
-          maxTime = Math.max(maxTime, dropoff);
+        if (p.id !== "Lunch") { // 仅考虑非 Lunch 行程
+          const pickup = parseTime(p.pickup);
+          const dropoff = parseTime(p.dropoff);
+          if (pickup !== 0 && dropoff !== 0) {
+            minTime = Math.min(minTime, pickup);
+            maxTime = Math.max(maxTime, dropoff);
+          }
         }
       });
     }
@@ -205,6 +207,12 @@ function renderDrivers() {
       console.warn(`Invalid driver data:`, driver);
       return;
     }
+    // 检查司机是否有非 Lunch 行程
+    const hasNonLunchTrips = driver.passengers.some(p => p.id !== "Lunch");
+    if (!hasNonLunchTrips) {
+      console.log(`Skipping driver ${driver.id} with no non-Lunch trips`);
+      return;
+    }
     const driverRow = document.createElement("div");
     driverRow.className = "driver-row";
 
@@ -274,7 +282,6 @@ function renderDrivers() {
           const mainTable = document.createElement("table");
           mainTable.className = "display-table";
           if (p.id === "Lunch") {
-            // Lunch 只显示 Driver 和 Lunch Time
             const row1 = document.createElement("tr");
             const keyCell1 = document.createElement("td");
             const valueCell1 = document.createElement("td");
@@ -292,7 +299,6 @@ function renderDrivers() {
             row2.appendChild(valueCell2);
             mainTable.appendChild(row2);
           } else {
-            // 非 Lunch 显示所有字段
             for (const [key, value] of Object.entries(p)) {
               if (key !== "lane") {
                 const row = document.createElement("tr");
@@ -330,6 +336,9 @@ function renderDrivers() {
           displayContent.appendChild(otherTripsHeader);
           const otherTripsTable = document.createElement("table");
           otherTripsTable.className = "other-trips-table";
+          if (p.id === "Lunch") {
+            otherTripsTable.classList.add("lunch-table");
+          }
           const thead = document.createElement("thead");
           const headerRow = document.createElement("tr");
           if (p.id === "Lunch") {
