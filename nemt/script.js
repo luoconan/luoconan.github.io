@@ -1,8 +1,8 @@
-let drivers = [];//
+let drivers = [];///
 
 // 监听 postMessage
 window.addEventListener('message', (event) => {
-  const allowedOrigins = ['http://site1.com', 'http://127.0.0.1:5500', 'https://provider.nemtplatform.com/trips', 'https://provider.nemtplatform.com'];
+  const allowedOrigins = ['http://127.0.0.1:5500', 'https://provider.nemtplatform.com/trips', 'https://provider.nemtplatform.com'];
   if (!allowedOrigins.includes(event.origin)) {
     console.warn('Received message from untrusted origin:', event.origin);
     return;
@@ -15,11 +15,38 @@ window.addEventListener('message', (event) => {
         throw new Error('Invalid drivers format');
       }
       console.log('Received drivers via postMessage:', drivers);
-      renderDrivers();
+      // 保存到 localStorage，包括当前时间戳
+      const cacheData = {
+        drivers: drivers,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('cachedTripsData', JSON.stringify(cacheData));
+      renderDrivers(false); // 新数据，不显示 Old Data 标题
     } catch (e) {
       console.error('Error parsing received trips data:', e);
       drivers = [];
-      renderDrivers();
+      // 尝试加载缓存数据
+      const cachedData = localStorage.getItem('cachedTripsData');
+      if (cachedData) {
+        try {
+          const parsedCache = JSON.parse(cachedData);
+          drivers = parsedCache.drivers;
+          if (Array.isArray(drivers) && drivers.every(d => d.id && Array.isArray(d.passengers))) {
+            console.log('Loaded cached drivers from localStorage:', drivers);
+            renderDrivers(true, parsedCache.timestamp); // 缓存数据，显示 Old Data 标题和时间
+          } else {
+            drivers = [];
+            renderDrivers(false);
+          }
+        } catch (cacheError) {
+          console.error('Error parsing cached trips data:', cacheError);
+          drivers = [];
+          renderDrivers(false);
+        }
+      } else {
+        drivers = [];
+        renderDrivers(false);
+      }
     }
   }
 }, false);
@@ -62,7 +89,7 @@ function getTimeRange() {
   drivers.forEach(driver => {
     if (driver.passengers && Array.isArray(driver.passengers)) {
       driver.passengers.forEach(p => {
-        if (p.id !== "Lunch") { // 仅考虑非 Lunch 行程
+        if (p.id !== "Lunch") {
           const pickup = parseTime(p.pickup);
           const dropoff = parseTime(p.dropoff);
           if (pickup !== 0 && dropoff !== 0) {
@@ -164,14 +191,55 @@ function filterTrips(searchText) {
   });
 }
 
+// 处理时间轴显示的 ID（仅限时间轴）
+function formatDisplayName(id) {
+  // 先提取逗号前的部分
+  let baseName = id.includes(',') ? id.split(',')[0].trim() : id;
+  // 匹配任意位置的 emoji
+  const emojiRegex = /([\p{Emoji_Presentation}\p{Emoji}\u200D]+)/u;
+  const match = id.match(emojiRegex); // 在完整 ID 上匹配 emoji
+  if (match) {
+    const emoji = match[1];
+    // 提取第一个单词（假设为姓氏）
+    const firstWordMatch = baseName.match(/^\S+/);
+    const firstWord = firstWordMatch ? firstWordMatch[0] : baseName;
+    // 将 emoji 移到前面，仅显示姓氏
+    return `${emoji}${firstWord.replace(emojiRegex, '')}`.trim();
+  }
+  return baseName.includes(' ') ? baseName.split(' ')[0].trim() : baseName;
+}
+
+// 格式化时间戳为 MM/dd/YYYY hh:mm:ss
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
 // 生成时间轴刻度
-function renderTimelineHeader(minTime, maxTime) {
+function renderTimelineHeader(minTime, maxTime, showOldData, timestamp) {
   const header = document.querySelector(".timeline-header");
   if (!header) {
     console.error('Timeline header not found');
     return;
   }
   header.innerHTML = '';
+  if (showOldData && timestamp) {
+    const oldDataTitle = document.createElement("h3");
+    oldDataTitle.textContent = `Old Data (${formatTimestamp(timestamp)})`;
+    oldDataTitle.style.color = '#fff';
+    oldDataTitle.style.position = 'absolute';
+    oldDataTitle.style.top = '5px';
+    oldDataTitle.style.right = '5px';
+    oldDataTitle.style.margin = '0';
+    oldDataTitle.style.fontSize = '14px';
+    header.appendChild(oldDataTitle);
+  }
   const duration = (maxTime - minTime) / (1000 * 60 * 60);
   const tickInterval = 1000 * 60 * 60;
   for (let i = 0; i <= Math.ceil(duration); i++) {
@@ -192,7 +260,7 @@ function renderTimelineHeader(minTime, maxTime) {
 }
 
 // 渲染司机和乘客
-function renderDrivers() {
+function renderDrivers(showOldData = false, timestamp = null) {
   const driversContainer = document.querySelector(".drivers");
   if (!driversContainer) {
     console.error('Drivers container not found');
@@ -200,14 +268,13 @@ function renderDrivers() {
   }
   driversContainer.innerHTML = '';
   const { minTime, maxTime } = getTimeRange();
-  renderTimelineHeader(minTime, maxTime);
+  renderTimelineHeader(minTime, maxTime, showOldData, timestamp);
 
   drivers.forEach(driver => {
     if (!driver || !driver.passengers) {
       console.warn(`Invalid driver data:`, driver);
       return;
     }
-    // 检查司机是否有非 Lunch 行程
     const hasNonLunchTrips = driver.passengers.some(p => p.id !== "Lunch");
     if (!hasNonLunchTrips) {
       console.log(`Skipping driver ${driver.id} with no non-Lunch trips`);
@@ -260,7 +327,7 @@ function renderDrivers() {
       const dropoffPixel = timeToPixel(dropoffTime, minTime, maxTime) + driverLabelWidth;
       block.style.left = `${pickupPixel}px`;
       block.style.width = `${dropoffPixel - pickupPixel}px`;
-      block.textContent = p.id.includes(',') ? p.id.split(',')[0].trim() : p.id;
+      block.textContent = formatDisplayName(p.id); // 时间轴显示格式化名称
       block.title = `${p.id}\n${p.pickup}-${p.dropoff}`;
       block.addEventListener("click", () => {
         document.querySelectorAll(".passenger-block").forEach(b => {
@@ -318,7 +385,7 @@ function renderDrivers() {
                   };
                   valueCell.textContent = statusMap[value] || value;
                 } else {
-                  valueCell.textContent = value;
+                  valueCell.textContent = value; // 右侧表格保持原始 id
                 }
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
@@ -414,17 +481,30 @@ function renderDrivers() {
     driversContainer.appendChild(driverRow);
   });
   console.log('Rendering complete');
-
-  const searchInput = document.getElementById("searchInput");
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      filterTrips(e.target.value);
-    });
-  }
 }
 
 // 初始化
 document.addEventListener("DOMContentLoaded", () => {
   console.log('DOM loaded, starting render');
-  renderDrivers();
+  // 页面加载时尝试使用缓存数据
+  const cachedData = localStorage.getItem('cachedTripsData');
+  if (cachedData) {
+    try {
+      const parsedCache = JSON.parse(cachedData);
+      drivers = parsedCache.drivers;
+      if (Array.isArray(drivers) && drivers.every(d => d.id && Array.isArray(d.passengers))) {
+        console.log('Loaded cached drivers from localStorage on init:', drivers);
+        renderDrivers(true, parsedCache.timestamp); // 显示 Old Data 标题和时间
+      } else {
+        drivers = [];
+        renderDrivers(false);
+      }
+    } catch (e) {
+      console.error('Error parsing cached trips data on init:', e);
+      drivers = [];
+      renderDrivers(false);
+    }
+  } else {
+    renderDrivers(false);
+  }
 });
