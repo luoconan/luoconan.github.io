@@ -1,4 +1,4 @@
-addrs={/*
+addrs={/*//
     "4735 California St #2": "1",
     "748 43rd Ave": "1",
     "1444 McAllister St": "8",
@@ -562,7 +562,7 @@ addrs={/*
     }
 
 prtObjInfo = {
-  "Bray, Georgina  Margaret": {
+  "Bray, Georgina Margaret": {
     "room": "3"
   },
   "Carroll-Iturralde, Ruth": {
@@ -590,6 +590,9 @@ prtObjInfo = {
     "room": "3"
   },
   "Amezcua, Margaret M": {
+    "room": "3"
+  },
+  "Amezcua, Margaret": {
     "room": "3"
   },
   "Chan, Albert N": {
@@ -932,6 +935,9 @@ prtObjInfo = {
     "room": "3"
   },
   "Cabrera de Interiano, Elva": {
+    "room": "3"
+  },
+  "Cabrera De Interiano, Elva": {
     "room": "3"
   },
   "Cassidy, Betty": {
@@ -1473,6 +1479,12 @@ prtObjInfo = {
   },
   "Kelly, Dorothy J": {
     "room": ""
+  },
+  "Green, Jenny":{
+      "room": "3"
+  },
+  "Dao, Nha Binh": {
+    "room": "1"
   }
 }
 function getForDAR() {
