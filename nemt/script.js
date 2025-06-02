@@ -1,4 +1,4 @@
-let drivers = [];///
+let drivers = [];
 
 // 监听 postMessage
 window.addEventListener('message', (event) => {
@@ -106,7 +106,7 @@ function getTimeRange() {
   }
   const minDate = new Date(minTime);
   const maxDate = new Date(maxTime);
-  const minHour = Math.floor(minDate.getHours())+1;
+  const minHour = Math.floor(minDate.getHours());
   const maxHour = Math.ceil(maxDate.getHours())+1;
   const startTime = new Date(minDate).setHours(minHour, 0, 0, 0);
   const endTime = new Date(maxDate).setHours(maxHour, 0, 0, 0);
