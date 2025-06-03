@@ -1,4 +1,4 @@
-let drivers = [];
+let drivers = []; //
 
 // 监听 postMessage
 window.addEventListener('message', (event) => {
@@ -179,14 +179,24 @@ function filterTrips(searchText) {
   const keywords = searchText.toLowerCase()
     .replace(/,/g, ' ')
     .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim()
     .split(/\s+/);
 
   blocks.forEach(block => {
-    const passengerId = block.dataset.id.toLowerCase()
+    // 清理 dataset.id，保留 emoji
+    let passengerId = block.dataset.id.toLowerCase()
       .replace(/,/g, ' ')
-      .replace(/-/g, ' ');
-    const matches = keywords.every(keyword => passengerId.includes(keyword));
+      .replace(/-/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // 移除 emoji 后的 ID，用于匹配不含 emoji 的关键字
+    const idWithoutEmoji = passengerId.replace(/[\p{Emoji_Presentation}\p{Emoji}\u200D]+/gu, '').trim();
+    // 检查是否所有关键字都在 passengerId（含 emoji）或 idWithoutEmoji 中
+    const matches = keywords.every(keyword => {
+      // 允许关键字包含 emoji 或纯文本
+      return passengerId.includes(keyword) || idWithoutEmoji.includes(keyword);
+    });
     block.style.opacity = matches ? "1" : "0.2";
   });
 }
@@ -197,7 +207,7 @@ function formatDisplayName(id) {
   let baseName = id.includes(',') ? id.split(',')[0].trim() : id;
   // 匹配任意位置的 emoji
   const emojiRegex = /([\p{Emoji_Presentation}\p{Emoji}\u200D]+)/u;
-  const match = id.match(emojiRegex); // 在完整 ID 上匹配 emoji
+  const match = id.match(emojiRegex); // 在完整 ID 上匹配
   if (match) {
     const emoji = match[1];
     // 提取第一个单词（假设为姓氏）
@@ -481,6 +491,13 @@ function renderDrivers(showOldData = false, timestamp = null) {
     driversContainer.appendChild(driverRow);
   });
   console.log('Rendering complete');
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      filterTrips(e.target.value);
+    });
+  }
 }
 
 // 初始化
