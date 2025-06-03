@@ -1,4 +1,4 @@
-addrs={/*///
+addrs={/*/
     "4735 California St #2": "1",
     "748 43rd Ave": "1",
     "1444 McAllister St": "8",
@@ -608,7 +608,7 @@ prtObjInfo = {
     "room": "1"
   },
   "Chow, James": {
-    "room": "1"
+    "room": "2"
   },
   "Ha, Tong Han Han": {
     "room": "1"
@@ -1250,7 +1250,7 @@ prtObjInfo = {
     "room": "2"
   },
   "Ly, Mui": {
-    "room": "1"
+    "room": "2"
   },
   "Ma, Cui Hua": {
     "room": "1"
