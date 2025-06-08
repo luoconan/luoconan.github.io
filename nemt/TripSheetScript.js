@@ -1,5 +1,44 @@
+import { md5 } from './MD5.js';
+
 let drivers = [];
 const workerUrl = 'https://tripsheetdata.conanluo.workers.dev/get';
+
+// 设置 localStorage 带过期时间
+function setWithExpiry(key, value, ttl) {
+  const now = new Date();
+  const item = {
+    value: value,
+    expires: now.getTime() + ttl // ttl 以毫秒为单位
+  };
+  localStorage.setItem(key, JSON.stringify(item));
+}
+
+// 获取 localStorage 数据并检查是否过期
+function getWithExpiry(key) {
+  const itemStr = localStorage.getItem(key);
+  if (!itemStr) {
+    return null;
+  }
+  // 兼容旧格式：直接存储的哈希值
+  try {
+    const item = JSON.parse(itemStr);
+    // 检查是否是对象且有 expires 属性
+    if (item && typeof item === 'object' && 'expires' in item && 'value' in item) {
+      const now = new Date();
+      if (now.getTime() > item.expires) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return item.value;
+    }
+    // 如果不是 JSON 对象，假设是旧格式的哈希值
+    return itemStr;
+  } catch (e) {
+    // 解析失败，假设 itemStr 是旧格式的哈希值
+    console.warn(`Invalid JSON in localStorage for key "${key}", treating as legacy hash:`, itemStr);
+    return itemStr;
+  }
+}
 
 // 格式化时间为 MM/DD/YYYY HH:mm:ss
 function formatDateTime(timestamp) {
@@ -11,6 +50,51 @@ function formatDateTime(timestamp) {
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
   return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+// 显示授权码弹框
+function showAuthModal() {
+  const modal = document.createElement('div');
+  modal.className = 'auth-modal';
+  modal.innerHTML = `
+    <div class="auth-modal-content">
+      <h2>Please Enter Authorization code</h2>
+      <input type="password" id="authCodeInput" placeholder="Authorization code">
+      <button class="myButton" id="authSubmitBtn">Submit</button>
+      <p id="authError" style="color: red; display: none;">Authorization code Wrong, Try again! </p>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const authInput = document.getElementById('authCodeInput');
+  const errorMsg = document.getElementById('authError');
+
+  submitBtn.addEventListener('click', () => {
+    const code = authInput.value.trim();
+    const hashedCode = md5(code);
+    if (hashedCode === 'bf15e467a5a10db8929fc01df0c55047') {
+      // 设置 半 小时过期（0.5 * 60 * 60 * 1000 毫秒）
+      setWithExpiry('pw', hashedCode, 30 * 60 * 1000);
+      document.body.removeChild(modal);
+      initializeApp();
+    } else {
+      errorMsg.style.display = 'block';
+      authInput.value = '';
+    }
+  });
+
+  authInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      submitBtn.click();
+    }
+  });
+}
+
+// 初始化应用
+function initializeApp() {
+  fetchTripsData();
+  setInterval(fetchTripsData, 30000);
 }
 
 // 从 Cloudflare Worker 获取数据
@@ -302,7 +386,7 @@ function renderDrivers() {
       const pickupTime = parseTime(p.pickup);
       const dropoffTime = parseTime(p.dropoff);
       if (pickupTime === 0 || dropoffTime === 0) {
-        console.warn(`Skipping invalid trip:`, p);
+        console.warn(`Invalid trip:`, p);
         return;
       }
       const pickupPixel = timeToPixel(pickupTime, minTime, maxTime) + driverLabelWidth;
@@ -474,8 +558,13 @@ function renderDrivers() {
 
 // 初始化
 document.addEventListener("DOMContentLoaded", () => {
-  console.log('DOM loaded, starting render');
-  fetchTripsData();
-  // 每 30 秒重新获取数据
-  setInterval(fetchTripsData, 30000);
+  console.log('DOM loaded, checking auth');
+  const storedPw = getWithExpiry('pw');
+  if (!storedPw) {
+    showAuthModal();
+  } else if (storedPw === 'bf15e467a5a10db8929fc01df0c55047') { 
+    initializeApp();
+  } else {
+    showAuthModal();
+  }
 });
