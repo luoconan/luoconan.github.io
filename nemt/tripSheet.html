@@ -7,7 +7,10 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="updateTime">Update Time: <span id="updateTime" style="color: beige;"></span></div>
+  <div class="updateTime">
+    <button class="myButton" onclick="localStorage.setItem('pw','');location.reload()">log out</button>
+    Update Time: <span id="updateTime" style="color: beige;"></span>
+  </div>
   <div class="container">
     <div class="timeline-container">
       <div class="timeline-header"></div>
@@ -21,6 +24,7 @@
       <div class="display-content"></div>
     </div>
   </div>
+  <script type="module" src="MD5.js"></script>
   <script type="module" src="TripSheetScript.js"></script>
 </body>
 </html>
