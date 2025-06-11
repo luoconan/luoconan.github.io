@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -13,7 +13,7 @@ body {
 .container {
   display: flex;
   width: 100%;
-  height: calc(100vh - 20px);
+  height: calc(100vh - 100px);
 }
 
 .timeline-container {
@@ -111,7 +111,7 @@ body {
 
 .other-trips-table.lunch-table th:nth-child(1),
 .other-trips-table.lunch-table td:nth-child(1) {
-  width: 40%; /* Driver */
+  width: 40%; /* Route */
 }
 
 .other-trips-table.lunch-table th:nth-child(2),
@@ -121,7 +121,7 @@ body {
 
 .other-trips-table:not(.lunch-table) th:nth-child(1),
 .other-trips-table:not(.lunch-table) td:nth-child(1) {
-  width: 20%; /* Driver */
+  width: 20%; /* Route */
 }
 
 .other-trips-table:not(.lunch-table) th:nth-child(2),
@@ -258,81 +258,139 @@ body {
   background: #d4a017;
 }
 
+.passenger-block.dragging {
+  opacity: 0.5;
+  border: 2px dashed #fff;
+}
+
+.driver-row.drag-over {
+  background: #555;
+}
+
 .updateTime {
   color: lightblue;
 }
 
-/* 授权弹框样式 */
-.auth-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+.input-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease-in;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.auth-modal-content {
-  background: linear-gradient(135deg, #555, #333);
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  text-align: center;
-  width: 350px;
-  color: #fff;
-  animation: slideIn 0.3s ease-out;
+.textarea-wrapper {
+  flex: 1;
+  min-width: 300px;
 }
 
-.auth-modal-content h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
+.textarea-wrapper h3 {
   color: #f0f0f0;
+  font-size: 16px;
+  margin-bottom: 5px;
 }
 
-.auth-modal-content input {
+textarea {
   width: 100%;
+  height: 100px;
   padding: 10px;
-  margin-bottom: 15px;
+  font-size: 14px;
   border: 1px solid #666;
-  border-radius: 5px;
+  border-radius: 4px;
   background: #444;
   color: #fff;
-  font-size: 16px;
+  resize: vertical;
 }
 
-.auth-modal-content input:focus {
+textarea::placeholder {
+  color: #bbb;
+}
+
+textarea:focus {
   outline: none;
-  border-color: #66bb6a;
-  box-shadow: 0 0 5px rgba(102, 187, 106, 0.5);
+  border-color: #ab47bc;
 }
 
-.myButton {
-  padding: 5px 5px;
-  margin-bottom: 5px;
-  background: #66bb6a;
+#planBtn {
+  padding: 10px 20px;
+  background: #ab47bc;
   border: none;
   border-radius: 5px;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
   transition: background 0.3s;
+  align-self: flex-start;
 }
 
-.myButton:hover {
-  background: #ffbbff;
+#planBtn:hover {
+  background: #9c27b0;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.editable-field {
+  cursor: pointer;
+  padding: 2px;
+  border-bottom: 1px dotted #bbb;
 }
 
-@keyframes slideIn {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.editable-field:hover {
+  background: #555;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 3px;
+  background: #444;
+  color: #fff;
+}
+
+.edit-textarea {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 3px;
+  background: #444;
+  color: #fff;
+  resize: vertical;
+  height: 60px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#confirmEditBtn, #deleteTripBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#confirmEditBtn {
+  background: #ab47bc;
+}
+
+#confirmEditBtn:hover {
+  background: #9c27b0;
+}
+
+#deleteTripBtn {
+  background: #e53935;
+}
+
+#deleteTripBtn:hover {
+  background: #d32f2f;
+}
+
+#errorMsg {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
 }

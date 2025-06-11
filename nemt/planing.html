@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planing</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="updateTime">Date: <span id="planDate"></span></div>
+  <div class="input-container">
+    <div class="textarea-wrapper">
+      <h3>prt Info</h3>
+      <textarea id="prtInfoInput" placeholder="Paste prt Info table here..."></textarea>
+    </div>
+    <div class="textarea-wrapper">
+      <h3>DAR</h3>
+      <textarea id="darInput" placeholder="Paste DAR table here..."></textarea>
+    </div>
+    <button id="planBtn">Plan</button>
+  </div>
+  <div id="errorMsg" style="color: red; display: none; margin-bottom: 10px;"></div>
+  <div class="container">
+    <div class="timeline-container">
+      <div class="timeline-header"></div>
+      <div class="drivers"></div>
+    </div>
+    <div class="display-panel">
+      <div class="search-wrapper">
+        <h3>Filter</h3>
+        <input type="text" id="searchInput" name="searchInput" placeholder="Filter the PRT Name">
+      </div>
+      <div class="display-content"></div>
+    </div>
+  </div>
+  <script type="module" src="planing.js"></script>
+</body>
+</html>
