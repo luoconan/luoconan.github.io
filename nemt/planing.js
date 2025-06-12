@@ -1,4 +1,4 @@
-let routes = [];
+let routes = [];//
 
 // 时间轴配置
 const totalWidth = 1000;
@@ -410,7 +410,7 @@ function generateTrips(prtInfoText, darText) {
           pickup: '0900',
           dropoff: '1000',
           puaddress: address,
-          doaddress: '3579 Geary Blvd San Francisco CA 94118',
+          doaddress: '3575 Geary Blvd San Francisco CA 94118',
           status: 'noAction',
           leg: 'a-leg',
           note: ''
@@ -420,7 +420,7 @@ function generateTrips(prtInfoText, darText) {
           id: patient,
           pickup: '1530',
           dropoff: '1630',
-          puaddress: '3579 Geary Blvd San Francisco CA 94118',
+          puaddress: '3575 Geary Blvd San Francisco CA 94118',
           doaddress: address,
           status: 'noAction',
           leg: 'b-leg',
