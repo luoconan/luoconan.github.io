@@ -1,4 +1,4 @@
-* {
+* {/**/
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -13,7 +13,8 @@ body {
 .container {
   display: flex;
   width: 100%;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 80px); /* 增加空间，避免遮挡 */
+  margin-top: 40px; /* 为 .updateTime 留出空间 */
 }
 
 .timeline-container {
@@ -38,6 +39,7 @@ body {
   padding: 8px;
   border-radius: 4px;
   margin-bottom: 10px;
+  margin-top: 10px; /* 减小上边距，与 .container 协调 */
 }
 
 .search-wrapper h3 {
@@ -280,6 +282,11 @@ body {
   top: 10px;
   left: 10px;
   font-size: 14px;
+  z-index: 10; /* 降低 z-index，足够显示但不遮挡内容 */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent; /* 透明背景 */
 }
 
 .input-container {
@@ -454,7 +461,7 @@ textarea:focus {
 }
 
 .myButton {
-  padding: 10px 24px;
+  padding: 6px 16px;
   background: #ab47bc;
   border: none;
   border-radius: 8px;
@@ -463,7 +470,6 @@ textarea:focus {
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s, transform 0.1s, box-shadow 0.2s;
-  margin-top: 10px;
 }
 
 .myButton:hover {
