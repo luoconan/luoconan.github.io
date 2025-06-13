@@ -1,4 +1,4 @@
-let routes = [];//
+let routes = [];
 
 // 时间轴配置
 const totalWidth = 1000;
@@ -50,7 +50,7 @@ function parseTime(timeStr) {
       console.error(`Invalid time format: ${timeStr}`);
       return 0;
     }
-    return new Date(2025, 4, 30, hours, minutes).getTime();
+    return new Date(2025, 4, 15, hours, minutes).getTime();
   } catch (e) {
     console.error(`Error parsing time ${timeStr}:`, e);
     return 0;
@@ -66,7 +66,7 @@ function adjustTime(timeStr, minutes) {
       console.error(`Invalid time format: ${timeStr}`);
       return timeStr;
     }
-    const date = new Date(2025, 4, 30, hours, minutesCurrent);
+    const date = new Date(2025, 4, 15, hours, minutesCurrent);
     date.setMinutes(date.getMinutes() + minutes);
     const newHours = date.getHours().toString().padStart(2, '0');
     const newMinutes = date.getMinutes().toString().padStart(2, '0');
@@ -94,8 +94,28 @@ function processAddress(address) {
   street = street.replace(/[,]/g, ''); // 移除逗号
   const zipMatch = trimmed.match(/\b\d{5}\b/);
   const zip = zipMatch ? zipMatch[0] : '';
+  console.log('Processed address:', address, { street: street.trim(), zip });
   return { street: street.trim(), zip };
 }
+
+// curr facility 地址映射表
+const facilityAddressMap = {
+  'Institute of Aging': '3575 Geary Blvd San Francisco 94118',
+  'Merced Residential Care Facility (259 Broad)': '259 Broad St San Francisco 94112',
+  'Merced Residential Care Facility (Girard)': '129 Girard St San Francisco 94134',
+  'Parkside Retirement Homes': '2447 19th Ave San Francisco 94116',
+  'Victorian Manor': '1444 McAllister St San Francisco 94115',
+  'Providence Place': '2456 Geary Blvd San Francisco 94115',
+  'Hayes Convalescent Hospital': '1250 Hayes St San Francisco 94117',
+  'Laurel Heights Community Care': '2740 California St San Francisco 94115',
+  'CENTRAL GARDENS POST ACUTE': '1355 Ellis St San Francisco 94115',
+  'Portola Gardens, LLC': '350 University St San Francisco 94134',
+  'MERCED THREE RESIDENTIAL CARE FACILITY (HAMPSHIRE)': '1420 Hampshire St San Francisco 94110',
+  'Jewish Home and Rehab Center': '302 Silver Ave San Francisco 94112',
+  'SF Health Care and Rehab Inc': '1477 Grove St San Francisco 94117',
+  'Gee Building': '1333 Bush St San Francisco 94109',
+  'Alma Via of San Francisco': '1 Thomas More Way San Francisco 94132'
+};
 
 // 导出 route 的 CSV 文件
 function exportRouteToCSV(route, date, prtMap, darMap) {
@@ -112,15 +132,17 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
     const prtRow = prtMap.get(patient) || {};
     const darRow = darMap.get(patient) || {};
     const space = prtRow['Service Type'] || 'Ambulatory';
-    const phoneRaw = darRow['Phone'] || '';
-    const phone = phoneRaw.replace(/Hm: /g, '').slice(0, 12);
+    let phone = darRow['Phone'] ? darRow['Phone'].replace(/Hm: /g, '').slice(0, 12) : '';
+    if (!phone) {
+      phone = prtRow['Phone'] ? prtRow['Phone'].slice(0, 12) : '000-000-0000';
+    }
     const pickupAddr = processAddress(passenger.puaddress);
     const dropoffAddr = processAddress(passenger.doaddress);
 
     const row = {
       Date: date,
       'Req Pickup': formatTimeToHHMM(passenger.pickup),
-      Appointment: formatTimeToHHMM(passenger.dropoff),
+      Appointment: '',
       Patient: passenger.id,
       Space: space,
       'Pickup Comment': passenger.note || '',
@@ -170,7 +192,7 @@ function getTimeRange() {
     if (driversContainer) {
       driversContainer.innerHTML = '<p style="color: #fff; text-align: center;">No trips planned...</p>';
     }
-    return { minTime: new Date(2025, 4, 30, 7, 0).getTime(), maxTime: new Date(2025, 4, 30, 18, 0).getTime() };
+    return { minTime: new Date(2025, 4, 15, 7, 0).getTime(), maxTime: new Date(2025, 4, 15, 18, 0).getTime() };
   }
   routes.forEach(route => {
     if (route.passengers && Array.isArray(route.passengers)) {
@@ -186,7 +208,7 @@ function getTimeRange() {
   });
   if (minTime === Infinity || maxTime === -Infinity) {
     console.error('No valid trip times found');
-    return { minTime: new Date(2025, 4, 30, 7, 0).getTime(), maxTime: new Date(2025, 4, 30, 18, 0).getTime() };
+    return { minTime: new Date(2025, 4, 15, 7, 0).getTime(), maxTime: new Date(2025, 4, 15, 18, 0).getTime() };
   }
   const minDate = new Date(minTime);
   const maxDate = new Date(maxTime);
@@ -378,7 +400,7 @@ function generateTrips(prtInfoText, darText) {
 
   // 提取日期
   const dateMatch = darLines[0].match(/(\w+,\s*(\d{2})\/(\d{2})\/(\d{4}))/);
-  const date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : '';
+  const date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}` : '--/--'; // 格式化为 MM/DD
 
   // 解析 DAR 数据
   const dar = parseTable(darLines.slice(1).join('\n'));
@@ -391,75 +413,122 @@ function generateTrips(prtInfoText, darText) {
   });
 
   const trips = [];
-  const processedPatients = new Set();
+  const seenPatientsForNormalTrips = new Set();
+
   dar.data.forEach(row => {
     if (row['Transpo'] === 'Y') {
       const patient = row['Patient'] || '';
-      const address = row['address'] || '';
+      let address = row['address'] || '';
+      const currFacility = row['curr facility'] || '';
+      const visitType = row['Visit Type'] || '';
       const patientKey = patient.toLowerCase();
       if (!patient || !address) {
         console.warn(`Skipping DAR row with missing patient or address:`, row);
         return;
       }
-      if (!processedPatients.has(patientKey)) {
-        processedPatients.add(patientKey);
-        // 正常行程（所有客人）
-        trips.push({
-          tripId: generateTripId(),
-          id: patient,
-          pickup: '0900',
-          dropoff: '1000',
-          puaddress: address,
-          doaddress: '3575 Geary Blvd San Francisco CA 94118',
-          status: 'noAction',
-          leg: 'a-leg',
-          note: ''
-        });
-        trips.push({
-          tripId: generateTripId(),
-          id: patient,
-          pickup: '1530',
-          dropoff: '1630',
-          puaddress: '3575 Geary Blvd San Francisco CA 94118',
-          doaddress: address,
-          status: 'noAction',
-          leg: 'b-leg',
-          note: ''
-        });
 
-        // EXTERNAL APPOINTMENT 额外行程
-        if (row['Visit Type'] === 'EXTERNAL APPOINTMENT') {
-          const apptTime = row['appt time'].replace(":", "") || '0900'; // 默认值
-          const apptNote = row['Appt Notes'] || '';
-          const pickupALeg = adjustTime(apptTime, -45); // appt time - 45min
-          const dropoffALeg = apptTime;
-          const pickupBLeg = adjustTime(dropoffALeg, 90); // a-leg dropoff + 1.5hr
-          const dropoffBLeg = adjustTime(pickupBLeg, 45); // b-leg pickup + 45min
-          // a-leg
+      // 如果 curr facility 不为空，替换 address
+      if (currFacility.trim() && facilityAddressMap[currFacility]) {
+        address = facilityAddressMap[currFacility];
+        console.log(`Replaced address for ${patientKey} with curr facility ${currFacility}: ${address}`);
+      }
+
+      console.log('Processing patient:', patientKey, 'Visit Type:', visitType, 'Address:', address, 'Curr Facility:', currFacility);
+
+      // 检查地址是否包含 3595 Geary 且 curr facility 为空
+      const isGeary3595AndNoFacility = address.toLowerCase().includes('3595 geary') && !currFacility.trim();
+
+      // 生成正常行程（非 EXTERNAL APPOINTMENT，且不满足 3595 Geary 条件）
+      if (!isGeary3595AndNoFacility && !seenPatientsForNormalTrips.has(patientKey)) {
+        seenPatientsForNormalTrips.add(patientKey);
+        const visitTypeLower = visitType.toLowerCase();
+        let aLegPickup = '0900';
+        let aLegDropoff = '1000';
+        let bLegPickup = '1530';
+        let bLegDropoff = '1630';
+        let generateALeg = !visitTypeLower.includes('noam');
+        let generateBLeg = !visitTypeLower.includes('nopm');
+
+        // 调整时间根据 Visit Type
+        if (visitTypeLower.includes('2nd')) {
+          aLegPickup = '1030';
+          aLegDropoff = '1100';
+          console.log('Adjusted a-leg for 2nd:', aLegPickup, aLegDropoff);
+        }
+        if (visitTypeLower.includes('early')) {
+          bLegPickup = '1400';
+          bLegDropoff = '1430';
+          console.log('Adjusted b-leg for early:', bLegPickup, bLegDropoff);
+        }
+
+        if (generateALeg) {
           trips.push({
             tripId: generateTripId(),
             id: patient,
-            pickup: pickupALeg,
-            dropoff: dropoffALeg,
+            pickup: aLegPickup,
+            dropoff: aLegDropoff,
             puaddress: address,
-            doaddress: apptNote,
+            doaddress: '3575 Geary Blvd San Francisco CA 94118',
             status: 'noAction',
-            leg: 'a-leg-ext',
+            leg: 'a-leg',
             note: ''
           });
-          // b-leg
+          console.log('Generated a-leg for:', patientKey);
+        } else {
+          console.log('Skipped a-leg due to noam for:', patientKey);
+        }
+
+        if (generateBLeg) {
           trips.push({
             tripId: generateTripId(),
             id: patient,
-            pickup: pickupBLeg,
-            dropoff: dropoffBLeg,
-            puaddress: apptNote,
+            pickup: bLegPickup,
+            dropoff: bLegDropoff,
+            puaddress: '3575 Geary Blvd San Francisco CA 94118',
             doaddress: address,
             status: 'noAction',
-            leg: 'b-leg-ext',
+            leg: 'b-leg',
             note: ''
           });
+          console.log('Generated b-leg for:', patientKey);
+        } else {
+          console.log('Skipped b-leg due to nopm for:', patientKey);
         }
+      }
+
+      // 生成 EXTERNAL APPOINTMENT 行程
+      if (visitType === 'EXTERNAL APPOINTMENT') {
+        const apptTime = row['appt time'].replace(":", "") || '0900'; // 默认值
+        const pickupALeg = adjustTime(apptTime, -45); // appt time - 45min
+        const dropoffALeg = apptTime;
+        const pickupBLeg = adjustTime(dropoffALeg, 90); // a-leg dropoff + 1.5hr
+        const dropoffBLeg = adjustTime(pickupBLeg, 45); // b-leg pickup + 45min
+        const apptNote = row['Appt Notes'] || '';
+        // a-leg
+        trips.push({
+          tripId: generateTripId(),
+          id: patient,
+          pickup: pickupALeg,
+          dropoff: dropoffALeg,
+          puaddress: address,
+          doaddress: apptNote,
+          status: 'noAction',
+          leg: 'a-leg-ext',
+          note: ''
+        });
+        // b-leg
+        trips.push({
+          tripId: generateTripId(),
+          id: patient,
+          pickup: pickupBLeg,
+          dropoff: dropoffBLeg,
+          puaddress: apptNote,
+          doaddress: address,
+          status: 'noAction',
+          leg: 'b-leg-ext',
+          note: ''
+        });
+        console.log('Generated external trips for:', patientKey, 'apptTime:', apptTime);
       }
     }
   });
@@ -496,19 +565,28 @@ function renderRoutes(prtMap, darMap, date) {
   // 查询 DOM 元素
   const driversContainer = document.querySelector(".drivers");
   const timelineHeader = document.querySelector(".timeline-header");
+  const displayPanel = document.querySelector(".display-panel");
+  const inputContainer = document.querySelector(".input-container");
+  const displayContent = document.querySelector(".display-content");
   console.log('Drivers container:', driversContainer);
   console.log('Timeline header:', timelineHeader);
+  console.log('Display panel:', displayPanel);
 
-  if (!driversContainer || !timelineHeader) {
-    console.error('Drivers container or timeline header not found');
-    showError('Failed to render trips: container not found. Check if <div class="drivers"> exists in HTML.');
+  if (!driversContainer || !timelineHeader || !displayPanel || !displayContent) {
+    console.error('Required DOM elements not found');
+    showError('Failed to render trips: container not found. Check HTML structure.');
     return;
   }
+
+  // 隐藏输入框，显示行程详情
+  inputContainer.style.display = 'none';
+  displayContent.style.display = 'block';
 
   // 清空旧 DOM
   console.log('Clearing drivers container and timeline header');
   driversContainer.innerHTML = '';
   timelineHeader.innerHTML = '';
+  displayContent.innerHTML = '';
 
   // 计算时间范围
   const { minTime, maxTime } = getTimeRange();
@@ -531,22 +609,24 @@ function renderRoutes(prtMap, darMap, date) {
       e.preventDefault();
       routeRow.classList.remove('drag-over');
       const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-      const { tripId } = data;
+      const { tripIds } = data;
 
-      // 查找行程
-      const tripData = findTripById(tripId);
-      if (!tripData) {
-        console.error('Trip not found for drag:', data);
-        return;
-      }
-      const { route: sourceRoute, passenger } = tripData;
+      // 查找并移动所有选中的行程
+      const targetRoute = routes.find(r => r.id === route.id);
+      tripIds.forEach(tripId => {
+        const tripData = findTripById(tripId);
+        if (!tripData) {
+          console.error('Trip not found for drag:', tripId);
+          return;
+        }
+        const { route: sourceRoute, passenger } = tripData;
 
-      // 从源路由移除
-      sourceRoute.passengers = sourceRoute.passengers.filter(p => p.tripId !== tripId);
+        // 从源路由移除
+        sourceRoute.passengers = sourceRoute.passengers.filter(p => p.tripId !== tripId);
 
-      // 添加到目标路由
-      let targetRoute = routes.find(r => r.id === route.id);
-      targetRoute.passengers.push(passenger);
+        // 添加到目标路由
+        targetRoute.passengers.push(passenger);
+      });
 
       // 重渲染
       console.log('Routes after drag:', routes);
@@ -600,11 +680,61 @@ function renderRoutes(prtMap, darMap, date) {
       block.dataset.pickup = p.pickup;
       block.dataset.dropoff = p.dropoff;
 
+      // 添加 external-appointment 类
+      if (p.leg === 'a-leg-ext' || p.leg === 'b-leg-ext') {
+        block.classList.add('external-appointment');
+      }
+
+      block.addEventListener('click', (e) => {
+        const isCtrlPressed = e.ctrlKey;
+        const isSelected = block.classList.contains('selected');
+
+        if (isCtrlPressed) {
+          if (isSelected) {
+            // 取消选中当前行程，保持其他选中状态
+            block.classList.remove('selected');
+          } else {
+            // 添加当前行程到选中
+            block.classList.add('selected');
+          }
+          // 清除所有 same-id 高亮
+          document.querySelectorAll(".passenger-block").forEach(b => {
+            b.classList.remove("same-id");
+          });
+          // 为当前点击的行程添加 same-id 高亮
+          document.querySelectorAll(".passenger-block").forEach(otherBlock => {
+            if (otherBlock.dataset.id === p.id && !otherBlock.classList.contains('selected') && otherBlock !== block) {
+              otherBlock.classList.add("same-id");
+            }
+          });
+        } else {
+          // 非 Ctrl 点击，清空所有选中和高亮，只选中当前行程
+          document.querySelectorAll(".passenger-block").forEach(b => {
+            b.classList.remove("selected", "same-id");
+          });
+          block.classList.add("selected");
+          // 高亮所有关联行程
+          document.querySelectorAll(".passenger-block").forEach(otherBlock => {
+            if (otherBlock.dataset.id === p.id && otherBlock !== block) {
+              otherBlock.classList.add("same-id");
+            }
+          });
+        }
+      });
+
       block.addEventListener('dragstart', (e) => {
         block.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', JSON.stringify({
-          tripId: p.tripId
-        }));
+        // 收集拖拽的 tripIds
+        const selectedBlocks = document.querySelectorAll(".passenger-block.selected");
+        let tripIds;
+        if (selectedBlocks.length > 0) {
+          // 如果有选中的行程，拖拽所有选中的行程
+          tripIds = Array.from(selectedBlocks).map(b => b.dataset.tripId);
+        } else {
+          // 否则只拖拽当前行程
+          tripIds = [block.dataset.tripId];
+        }
+        e.dataTransfer.setData('text/plain', JSON.stringify({ tripIds }));
       });
 
       block.addEventListener('dragend', () => {
@@ -638,188 +768,216 @@ function renderRoutes(prtMap, darMap, date) {
       console.log(`Rendering trip: tripId=${p.tripId}, id=${p.id}, pickup=${p.pickup} at ${pickupPixel}px, dropoff=${p.dropoff} at ${dropoffPixel}px`);
 
       block.addEventListener("click", () => {
-        document.querySelectorAll(".passenger-block").forEach(b => {
-          b.classList.remove("selected", "same-id");
-        });
-        block.classList.add("selected");
-        document.querySelectorAll(".passenger-block").forEach(otherBlock => {
-          if (otherBlock.dataset.id === p.id && otherBlock !== block) {
-            otherBlock.classList.add("same-id");
-          }
-        });
-        const displayContent = document.querySelector(".display-content");
-        if (displayContent) {
-          displayContent.innerHTML = '';
-          const routeHeader = document.createElement("h2");
-          routeHeader.textContent = `Route: ${route.id || 'Unknown Route'}`;
-          routeHeader.style.color = '#fff';
-          displayContent.appendChild(routeHeader);
+        displayContent.innerHTML = '';
+        const routeHeader = document.createElement("h2");
+        routeHeader.textContent = `Route: ${route.id || 'Unknown Route'}`;
+        routeHeader.style.color = '#fff';
+        displayContent.appendChild(routeHeader);
 
-          const mainTable = document.createElement("table");
-          mainTable.className = "display-table";
-          const editableFields = ['id', 'pickup', 'dropoff', 'puaddress', 'doaddress', 'leg', 'note'];
-          const inputs = {};
+        const mainTable = document.createElement("table");
+        mainTable.className = "display-table";
+        const editableFields = ['id', 'pickup', 'dropoff', 'puaddress', 'doaddress', 'note', 'leg'];
+        const inputs = {};
 
-          editableFields.forEach(field => {
-            const row = document.createElement("tr");
-            const keyCell = document.createElement("td");
-            const valueCell = document.createElement("td");
-            keyCell.textContent = field === 'id' ? 'Name' : field.charAt(0).toUpperCase() + field.slice(1);
-            const valueSpan = document.createElement("span");
-            valueSpan.className = "editable-field";
-            valueSpan.textContent = passenger[field] || '';
-            valueCell.appendChild(valueSpan);
-            row.appendChild(keyCell);
-            row.appendChild(valueCell);
-            mainTable.appendChild(row);
+        editableFields.forEach((field, index) => {
+          const row = document.createElement("tr");
+          const keyCell = document.createElement("td");
+          const valueCell = document.createElement("td");
+          keyCell.textContent = field === 'id' ? 'Name' : field.charAt(0).toUpperCase() + field.slice(1);
+          const valueSpan = document.createElement("span");
+          valueSpan.className = "editable-field";
+          valueSpan.textContent = passenger[field] || '';
+          valueCell.appendChild(valueSpan);
+          row.appendChild(keyCell);
+          row.appendChild(valueCell);
+          mainTable.appendChild(row);
 
-            valueSpan.addEventListener('click', () => {
-              const input = field === 'note' || field === 'puaddress' || field === 'doaddress' ?
-                document.createElement('textarea') : document.createElement('input');
-              input.className = field === 'note' ? 'edit-textarea' : 'edit-input';
-              input.value = passenger[field] || '';
-              inputs[field] = input;
-              valueCell.replaceChild(input, valueSpan);
-              input.focus();
+          valueSpan.addEventListener('click', () => {
+            const input = field === 'note' || field === 'puaddress' || field === 'doaddress' ?
+              document.createElement('textarea') : document.createElement('input');
+            input.className = field === 'note' ? 'edit-textarea' : 'edit-input';
+            input.value = passenger[field] || '';
+            inputs[field] = input;
+            valueCell.replaceChild(input, valueSpan);
+            input.focus();
 
-              input.addEventListener('blur', () => {
-                let newValue = input.value.trim();
-                if ((field === 'pickup' || field === 'dropoff') && newValue && !isValidTimeFormat(newValue)) {
-                  showError(`Invalid ${field} format: must be HHMM (e.g., 0900)`);
-                  newValue = passenger[field]; // 恢复原值
+            // 添加 Tab 键监听
+            const tabHandler = (e) => {
+              if (e.key === 'Tab') {
+                e.preventDefault();
+                const nextField = editableFields[(index + 1) % editableFields.length];
+                const nextSpan = document.querySelector(`[data-field="${nextField}"]`);
+                if (nextSpan) {
+                  nextSpan.click();
                 }
-                passenger[field] = newValue;
-                block.dataset[field] = newValue;
-                if (field === 'id') {
-                  block.dataset.id = newValue;
-                }
-                valueSpan.textContent = newValue || '';
-                valueCell.replaceChild(valueSpan, input);
-                console.log(`Updated ${field} to ${newValue} for tripId=${p.tripId}:`, passenger);
-              });
-
-              input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                  input.blur();
-                }
-              });
-            });
-          });
-
-          displayContent.appendChild(mainTable);
-
-          const confirmBtn = document.createElement("button");
-          confirmBtn.id = "confirmEditBtn";
-          confirmBtn.textContent = "Confirm Edit";
-          confirmBtn.addEventListener('click', () => {
-            // 验证 pickup 和 dropoff
-            if (!isValidTimeFormat(passenger.pickup) || !isValidTimeFormat(passenger.dropoff)) {
-              showError('Invalid pickup or dropoff time format: must be HHMM (e.g., 0900)');
-              return;
-            }
-
-            // 更新 routes 中的行程
-            console.log('Before update: tripId=', p.tripId, ':', passenger);
-            for (let i = 0; i < routes.length; i++) {
-              if (JSON.stringify(routes[i]).includes(`"${p.tripId}"`)) {
-                let tempPassengers = routes[i].passengers;
-                for (let j = 0; j < tempPassengers.length; j++) {
-                  if (JSON.stringify(tempPassengers[j]).includes(`"${p.tripId}"`)) {
-                    tempPassengers[j] = { ...passenger };
-                    console.log('Updated passenger at index', j, ':', tempPassengers[j]);
-                    break;
-                  }
-                }
-                break;
               }
-            }
+            };
+            input.addEventListener('keydown', tabHandler);
 
-            console.log('After update: tripId=', p.tripId, ':', passenger);
-            console.log('Routes after update:', routes);
-            clearError();
-            renderRoutes(prtMap, darMap, date);
+            input.addEventListener('blur', () => {
+              let newValue = input.value.trim();
+              if ((field === 'pickup' || field === 'dropoff') && newValue && !isValidTimeFormat(newValue)) {
+                showError(`Invalid ${field} format: must be HHMM (e.g., 0900)`);
+                newValue = passenger[field]; // 恢复原值
+              }
+              passenger[field] = newValue;
+              block.dataset[field] = newValue;
+              if (field === 'id') {
+                block.dataset.id = newValue;
+              }
+              valueSpan.textContent = newValue || '';
+              valueCell.replaceChild(valueSpan, input);
+              input.removeEventListener('keydown', tabHandler); // 移除 Tab 监听
+              console.log(`Updated ${field} to ${newValue} for tripId=${p.tripId}:`, passenger);
+            });
+
+            input.addEventListener('keypress', (e) => {
+              if (e.key === 'Enter') {
+                input.blur();
+              }
+            });
+
+            // 设置 data-field 以便 Tab 切换
+            valueSpan.dataset.field = field;
           });
-          displayContent.appendChild(confirmBtn);
+        });
 
-          const hr = document.createElement("hr");
-          hr.style.borderColor = '#555';
-          displayContent.appendChild(hr);
-          const otherTripsHeader = document.createElement("h2");
-          otherTripsHeader.textContent = "Other Trips";
-          otherTripsHeader.style.color = '#fff';
-          displayContent.appendChild(otherTripsHeader);
-          const otherTripsTable = document.createElement("table");
-          otherTripsTable.className = "other-trips-table";
-          if (p.id === "Lunch") {
-            otherTripsTable.classList.add("lunch-table");
+        displayContent.appendChild(mainTable);
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "button-container";
+
+        const confirmBtn = document.createElement("button");
+        confirmBtn.id = "confirmEditBtn";
+        confirmBtn.textContent = "Confirm Edit";
+        confirmBtn.addEventListener('click', () => {
+          // 验证 pickup 和 dropoff
+          if (!isValidTimeFormat(passenger.pickup) || !isValidTimeFormat(passenger.dropoff)) {
+            showError('Invalid pickup or dropoff time format: must be HHMM (e.g., 0900)');
+            return;
           }
-          const thead = document.createElement("thead");
-          const headerRow = document.createElement("tr");
-          if (p.id === "Lunch") {
-            ["Route", "Lunch Time"].forEach(text => {
-              const th = document.createElement("th");
-              th.textContent = text;
-              headerRow.appendChild(th);
-            });
-          } else {
-            ["Route", "PU Time", "P/U Address", "D/O Address"].forEach(text => {
-              const th = document.createElement("th");
-              th.textContent = text;
-              headerRow.appendChild(th);
-            });
-          }
-          thead.appendChild(headerRow);
-          otherTripsTable.appendChild(thead);
-          const tbody = document.createElement("tbody");
-          let hasOtherTrips = false;
-          routes.forEach(otherRoute => {
-            if (otherRoute.passengers) {
-              otherRoute.passengers.forEach(otherP => {
-                if (otherP.id === p.id) {
-                  const row = document.createElement("tr");
-                  if (otherP.tripId === p.tripId && otherRoute.id === route.id) {
-                    row.classList.add("highlight");
-                  }
-                  row.dataset.id = otherP.id;
-                  row.dataset.tripId = otherP.tripId;
-                  row.dataset.pickup = otherP.pickup;
-                  row.dataset.dropoff = otherP.dropoff;
-                  const routeCell = document.createElement("td");
-                  routeCell.textContent = otherRoute.id || 'Unknown Route';
-                  row.appendChild(routeCell);
-                  if (p.id === "Lunch") {
-                    const lunchTimeCell = document.createElement("td");
-                    lunchTimeCell.textContent = `${otherP.pickup}-${otherP.dropoff}`;
-                    row.appendChild(lunchTimeCell);
-                  } else {
-                    const pickupCell = document.createElement("td");
-                    pickupCell.textContent = otherP.pickup || 'Unknown';
-                    row.appendChild(pickupCell);
-                    const puAddressCell = document.createElement("td");
-                    puAddressCell.textContent = otherP.puaddress || '';
-                    row.appendChild(puAddressCell);
-                    const doAddressCell = document.createElement("td");
-                    doAddressCell.textContent = otherP.doaddress || '';
-                    row.appendChild(doAddressCell);
-                  }
-                  tbody.appendChild(row);
-                  hasOtherTrips = true;
+
+          // 更新 routes 中的行程
+          console.log('Before update: tripId=', p.tripId, ':', passenger);
+          for (let i = 0; i < routes.length; i++) {
+            if (JSON.stringify(routes[i]).includes(`"${p.tripId}"`)) {
+              let tempPassengers = routes[i].passengers;
+              for (let j = 0; j < tempPassengers.length; j++) {
+                if (JSON.stringify(tempPassengers[j]).includes(`"${p.tripId}"`)) {
+                  tempPassengers[j] = { ...passenger };
+                  console.log('Updated passenger at index', j, ':', tempPassengers[j]);
+                  break;
                 }
-              });
+              }
+              break;
             }
-          });
-          otherTripsTable.appendChild(tbody);
-          if (!hasOtherTrips) {
-            const noTrips = document.createElement("h3");
-            noTrips.textContent = 'No other trips';
-            noTrips.style.color = '#fff';
-            displayContent.appendChild(noTrips);
-          } else {
-            displayContent.appendChild(otherTripsTable);
           }
+
+          console.log('After update: tripId=', p.tripId, ':', passenger);
+          console.log('Routes after update:', routes);
+          clearError();
+          renderRoutes(prtMap, darMap, date);
+        });
+        buttonContainer.appendChild(confirmBtn);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.id = "deleteTripBtn";
+        deleteBtn.textContent = "Delete Trip";
+        deleteBtn.addEventListener('click', () => {
+          // 从 routes 中删除行程
+          console.log('Deleting tripId=', p.tripId);
+          for (let i = 0; i < routes.length; i++) {
+            if (JSON.stringify(routes[i]).includes(`"${p.tripId}"`)) {
+              routes[i].passengers = routes[i].passengers.filter(t => t.tripId !== p.tripId);
+              console.log('Deleted trip from route:', routes[i].id);
+              break;
+            }
+          }
+
+          console.log('Routes after deletion:', routes);
+          clearError();
+          renderRoutes(prtMap, darMap, date);
+          displayContent.innerHTML = '<p style="color: #fff;">Trip deleted. Select another trip to edit.</p>';
+        });
+        buttonContainer.appendChild(deleteBtn);
+
+        displayContent.appendChild(buttonContainer);
+
+        const hr = document.createElement("hr");
+        hr.style.borderColor = '#555';
+        displayContent.appendChild(hr);
+        const otherTripsHeader = document.createElement("h2");
+        otherTripsHeader.textContent = "Other Trips";
+        otherTripsHeader.style.color = '#fff';
+        displayContent.appendChild(otherTripsHeader);
+        const otherTripsTable = document.createElement("table");
+        otherTripsTable.className = "other-trips-table";
+        if (p.id === "Lunch") {
+          otherTripsTable.classList.add("lunch-table");
+        }
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        if (p.id === "Lunch") {
+          ["Route", "Lunch Time"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerRow.appendChild(th);
+          });
         } else {
-          console.error('Display content not found');
-          showError('Failed to render trip details');
+          ["Route", "PU Time", "P/U Address", "D/O Address"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerRow.appendChild(th);
+          });
+        }
+        thead.appendChild(headerRow);
+        otherTripsTable.appendChild(thead);
+        const tbody = document.createElement("tbody");
+        let hasOtherTrips = false;
+        routes.forEach(otherRoute => {
+          if (otherRoute.passengers) {
+            otherRoute.passengers.forEach(otherP => {
+              if (otherP.id === p.id) {
+                const row = document.createElement("tr");
+                if (otherP.tripId === p.tripId && otherRoute.id === route.id) {
+                  row.classList.add("highlight");
+                }
+                row.dataset.id = otherP.id;
+                row.dataset.tripId = otherP.tripId;
+                row.dataset.pickup = otherP.pickup;
+                row.dataset.dropoff = otherP.dropoff;
+                const routeCell = document.createElement("td");
+                routeCell.textContent = otherRoute.id || 'Unknown Route';
+                row.appendChild(routeCell);
+                if (p.id === "Lunch") {
+                  const lunchTimeCell = document.createElement("td");
+                  lunchTimeCell.textContent = `${otherP.pickup}-${otherP.dropoff}`;
+                  row.appendChild(lunchTimeCell);
+                } else {
+                  const pickupCell = document.createElement("td");
+                  pickupCell.textContent = otherP.pickup || 'Unknown';
+                  row.appendChild(pickupCell);
+                  const puAddressCell = document.createElement("td");
+                  puAddressCell.textContent = otherP.puaddress || '';
+                  row.appendChild(puAddressCell);
+                  const doAddressCell = document.createElement("td");
+                  doAddressCell.textContent = otherP.doaddress || '';
+                  row.appendChild(doAddressCell);
+                }
+                tbody.appendChild(row);
+                hasOtherTrips = true;
+              }
+            });
+          }
+        });
+        otherTripsTable.appendChild(tbody);
+        if (!hasOtherTrips) {
+          const noTrips = document.createElement("h3");
+          noTrips.textContent = 'No other trips';
+          noTrips.style.color = '#fff';
+          displayContent.appendChild(noTrips);
+        } else {
+          displayContent.appendChild(otherTripsTable);
         }
       });
       lane.appendChild(block);
@@ -839,17 +997,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const prtInfoInput = document.getElementById('prtInfoInput');
   const darInput = document.getElementById('darInput');
   const planDateSpan = document.getElementById('planDate');
+  const searchInput = document.getElementById('searchInput');
 
   console.log('Plan Button:', planBtn);
   console.log('prt Info Input:', prtInfoInput);
   console.log('DAR Input:', darInput);
   console.log('Plan Date Span:', planDateSpan);
+  console.log('Search Input:', searchInput);
 
-  if (!planBtn || !prtInfoInput || !darInput || !planDateSpan) {
+  if (!planBtn || !prtInfoInput || !darInput || !planDateSpan || !searchInput) {
     console.error('Input fields or plan button not found');
     showError('Page initialization failed: input fields or plan button missing');
     return;
   }
+
+  // 初始化显示：隐藏行程详情，显示输入框
+  const inputContainer = document.querySelector('.input-container');
+  const displayContent = document.querySelector('.display-content');
+  if (inputContainer && displayContent) {
+    inputContainer.style.display = 'block';
+    displayContent.style.display = 'none';
+  } else {
+    console.error('Input container or display content not found');
+  }
+
+  // 搜索功能
+  searchInput.addEventListener('input', () => {
+    filterTrips(searchInput.value.trim());
+  });
 
   let prtMap, darMap, date;
   planBtn.addEventListener('click', () => {
@@ -872,13 +1047,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     console.log('Initial routes:', routes);
-    planDateSpan.textContent = date || 'Unknown Date';
+    planDateSpan.textContent = `Date: ${date}`; // 显示 Date: MM/DD
     renderRoutes(prtMap, darMap, date);
-    const inputContainer = document.querySelector('.input-container');
-    if (inputContainer) {
-      inputContainer.style.display = 'none';
-    } else {
-      console.error('Input container not found');
-    }
   });
 });
