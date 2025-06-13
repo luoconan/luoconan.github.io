@@ -196,6 +196,9 @@ body {
   z-index: 1;
   align-self: stretch;
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .passenger-container {
@@ -240,8 +243,12 @@ body {
   background: #9c27b0;
 }
 
+.passenger-block.external-appointment {
+  background: #FF69B4; /* 粉红色 */
+}
+
 .passenger-block.selected {
-  border: 3px solid #ab47bc;
+  border: 3px solid #00008B; /* 深蓝色 */
   height: 19px;
   line-height: 13px;
   font-weight: bold;
@@ -269,18 +276,22 @@ body {
 
 .updateTime {
   color: lightblue;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 14px;
 }
 
 .input-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .textarea-wrapper {
-  flex: 1;
-  min-width: 300px;
+  width: 100%;
 }
 
 .textarea-wrapper h3 {
@@ -291,7 +302,7 @@ body {
 
 textarea {
   width: 100%;
-  height: 100px;
+  height: 150px;
   padding: 10px;
   font-size: 14px;
   border: 1px solid #666;
@@ -311,7 +322,7 @@ textarea:focus {
 }
 
 #planBtn {
-  padding: 10px 20px;
+  padding: 10px;
   background: #ab47bc;
   border: none;
   border-radius: 5px;
@@ -319,7 +330,7 @@ textarea:focus {
   font-size: 16px;
   cursor: pointer;
   transition: background 0.3s;
-  align-self: flex-start;
+  width: 100%;
 }
 
 #planBtn:hover {
@@ -364,16 +375,13 @@ textarea:focus {
   margin-top: 10px;
 }
 
-#confirmEditBtn, #deleteTripBtn {
+#confirmEditBtn {
   padding: 8px 16px;
   border: none;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-}
-
-#confirmEditBtn {
   background: #ab47bc;
 }
 
@@ -382,6 +390,12 @@ textarea:focus {
 }
 
 #deleteTripBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
   background: #e53935;
 }
 
@@ -389,8 +403,164 @@ textarea:focus {
   background: #d32f2f;
 }
 
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #333;
+  color: #fff;
+}
+
+.auth-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: #444;
+  padding: 15px;
+  border-radius: 4px;
+  width: 280px;
+  color: #fff;
+  font-size: 14px;
+  z-index: 10000 !important;
+}
+
+.auth-modal h2 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #f0f0f0;
+}
+
+#authCodeInput {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
+}
+
+#authCodeInput:focus {
+  outline: none;
+  border-color: #ab47bc;
+}
+
+.myButton {
+  padding: 10px 24px;
+  background: #ab47bc;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s, box-shadow 0.2s;
+  margin-top: 10px;
+}
+
+.myButton:hover {
+  background: #9c27b0;
+  transform: scale(1.03);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.myButton:active {
+  transform: scale(0.97);
+}
+
+.export-csv-btn {
+  padding: 5px 3px;
+  background: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+
+.export-csv-btn:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+
+.export-csv-btn:active {
+  transform: scale(0.97);
+}
+
+.logout-btn {
+  padding: 8px 16px;
+  background: #e53935;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.logout-btn:hover {
+  background: #d32f2f;
+}
+
 #errorMsg {
   color: red;
   font-size: 14px;
   margin-bottom: 10px;
+}
+
+.tripsheet {
+  width: 100%;
+  background: #444;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tripsheet h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #f0f0f0;
+}
+
+.tripsheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tripsheet th,
+.tripsheet td {
+  padding: 8px;
+  border: 1px solid #555;
+  text-align: left;
+}
+
+.tripsheet th {
+  background: #555;
+  font-weight: bold;
+}
+
+.tripsheet tr:nth-child(even) {
+  background: #4a4a4a;
+}
+
+.tripsheet tr:hover {
+  background: #5a5a5a;
 }
