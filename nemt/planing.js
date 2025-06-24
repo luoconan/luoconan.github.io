@@ -41,7 +41,7 @@ function isValidTimeFormat(timeStr) {
   return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
 }
 
-// 解析 "HHMM" 格式时间为毫秒，假设虚拟日期
+// 解析 "HHMM" 格式时间为毫秒，假设当天日期
 function parseTime(timeStr) {
   try {
     const hours = parseInt(timeStr.slice(0, 2), 10);
@@ -100,21 +100,21 @@ function processAddress(address) {
 
 // curr facility 地址映射表
 const facilityAddressMap = {
-  'Institute of Aging': '3575 Geary Blvd San Francisco 94118',
-  'Merced Residential Care Facility (259 Broad)': '259 Broad St San Francisco 94112',
-  'Merced Residential Care Facility (Girard)': '129 Girard St San Francisco 94134',
-  'Parkside Retirement Homes': '2447 19th Ave San Francisco 94116',
-  'Victorian Manor': '1444 McAllister St San Francisco 94115',
-  'Providence Place': '2456 Geary Blvd San Francisco 94115',
-  'Hayes Convalescent Hospital': '1250 Hayes St San Francisco 94117',
-  'Laurel Heights Community Care': '2740 California St San Francisco 94115',
-  'CENTRAL GARDENS POST ACUTE': '1355 Ellis St San Francisco 94115',
-  'Portola Gardens, LLC': '350 University St San Francisco 94134',
-  'MERCED THREE RESIDENTIAL CARE FACILITY (HAMPSHIRE)': '1420 Hampshire St San Francisco 94110',
-  'Jewish Home and Rehab Center': '302 Silver Ave San Francisco 94112',
-  'SF Health Care and Rehab Inc': '1477 Grove St San Francisco 94117',
-  'Gee Building': '1333 Bush St San Francisco 94109',
-  'Alma Via of San Francisco': '1 Thomas More Way San Francisco 94132'
+  'Institute of Aging': '3575 Geary Blvd San Francisco CA 94118',
+  'Merced Residential Care Facility (259 Broad)': '259 Broad St San Francisco CA 94112',
+  'Merced Residential Care Facility (Girard)': '129 Girard St San Francisco CA 94134',
+  'Parkside Retirement Homes': '2447 19th Ave San Francisco CA 94116',
+  'Victorian Manor': '1444 McAllister St San Francisco CA 94115',
+  'Providence Place': '2456 Geary Blvd San Francisco CA 94115',
+  'Hayes Convalescent Hospital': '1250 Hayes St San Francisco CA 94117',
+  'Laurel Heights Community Care': '2740 California St San Francisco CA 94115',
+  'CENTRAL GARDENS POST ACUTE': '1355 Ellis St San Francisco CA 94115',
+  'Portola Gardens, LLC': '350 University St San Francisco CA 94134',
+  'MERCED THREE RESIDENTIAL CARE FACILITY (HAMPSHIRE)': '1420 Hampshire St San Francisco CA 94110',
+  'Jewish Home and Rehab Center': '302 Silver Ave San Francisco CA 94112',
+  'SF Health Care and Rehab Inc': '1477 Grove St San Francisco CA 94117',
+  'Gee Building': '1333 Bush St San Francisco CA 94109',
+  'Alma Via of San Francisco': '1 Thomas More Way San Francisco CA 94132'
 };
 
 // 导出 route 的 CSV 文件
@@ -126,6 +126,10 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
     'Dropoff Address', 'Dropoff Address1', 'Dropoff City', 'Dropoff State', 'Dropoff Zip', 'Trip ID'
   ];
   const rows = [];
+
+  // 转换日期为 MM/DD/YYYY
+  const dateParts = date.split('/');
+  const fullDate = dateParts.length === 2 ? `${date}/${new Date().getFullYear()}` : date;
 
   route.passengers.forEach(passenger => {
     const patient = passenger.id.toLowerCase();
@@ -140,9 +144,9 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
     const dropoffAddr = processAddress(passenger.doaddress);
 
     const row = {
-      Date: date,
+      Date: fullDate, // 使用 MM/DD/YYYY
       'Req Pickup': formatTimeToHHMM(passenger.pickup),
-      Appointment: '',
+      Appointment: formatTimeToHHMM(passenger.dropoff), // 使用 dropoff 作为 Appointment
       Patient: passenger.id,
       Space: space,
       'Pickup Comment': passenger.note || '',
@@ -400,7 +404,7 @@ function generateTrips(prtInfoText, darText) {
 
   // 提取日期
   const dateMatch = darLines[0].match(/(\w+,\s*(\d{2})\/(\d{2})\/(\d{4}))/);
-  const date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}` : '--/--'; // 格式化为 MM/DD
+  const date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : `--/--/${new Date().getFullYear()}`; // 完整 MM/DD/YYYY
 
   // 解析 DAR 数据
   const dar = parseTable(darLines.slice(1).join('\n'));
@@ -1047,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     console.log('Initial routes:', routes);
-    planDateSpan.textContent = `Date: ${date}`; // 显示 Date: MM/DD
+    planDateSpan.textContent = `Date: ${date.split('/').slice(0, 2).join('/')}`; // 显示 Date: MM/DD
     renderRoutes(prtMap, darMap, date);
   });
 });
