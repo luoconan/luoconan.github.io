@@ -1,4 +1,6 @@
+// version: v2.1.10
 let routes = [];
+let prtMap, darMap, date;
 
 // 时间轴配置
 const totalWidth = 1000;
@@ -39,6 +41,12 @@ function isValidTimeFormat(timeStr) {
   const hours = parseInt(timeStr.slice(0, 2), 10);
   const minutes = parseInt(timeStr.slice(2, 4), 10);
   return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+}
+
+// 验证电话号码格式
+function isValidPhoneFormat(phoneStr) {
+  const regex = /^\d{3}-\d{3}-\d{4}$/;
+  return regex.test(phoneStr);
 }
 
 // 解析 "HHMM" 格式时间为毫秒，假设当天日期
@@ -91,11 +99,21 @@ function processAddress(address) {
   const trimmed = address.trim();
   const sanFranciscoIndex = trimmed.toLowerCase().indexOf('san francisco');
   let street = sanFranciscoIndex !== -1 ? trimmed.slice(0, sanFranciscoIndex).trim() : trimmed;
-  street = street.replace(/[,]/g, ''); // 移除逗号
+  street = street.replace(/[,]/g, '');
   const zipMatch = trimmed.match(/\b\d{5}\b/);
   const zip = zipMatch ? zipMatch[0] : '';
   console.log('Processed address:', address, { street: street.trim(), zip });
   return { street: street.trim(), zip };
+}
+
+// 获取电话号码
+function getPassengerPhone(patient, prtMap, darMap) {
+  const patientKey = patient.toLowerCase();
+  let phone = darMap.get(patientKey)?.['Phone']?.replace(/Hm: /g, '').slice(0, 12) || '';
+  if (!phone) {
+    phone = prtMap.get(patientKey)?.['Phone']?.slice(0, 12) || '000-000-0000';
+  }
+  return phone;
 }
 
 // curr facility 地址映射表
@@ -117,7 +135,7 @@ const facilityAddressMap = {
   'Alma Via of San Francisco': '1 Thomas More Way San Francisco CA 94132'
 };
 
-// 导出 route 的 CSV 文件
+// 导出 route 的 CSV 文件（单个路由）
 function exportRouteToCSV(route, date, prtMap, darMap) {
   const headers = [
     'Date', 'Req Pickup', 'Appointment', 'Patient', 'Space', 'Pickup Comment', 'Dropoff Comment', 'Type',
@@ -127,26 +145,23 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
   ];
   const rows = [];
 
-  // 转换日期为 MM/DD/YYYY
   const dateParts = date.split('/');
   const fullDate = dateParts.length === 2 ? `${date}/${new Date().getFullYear()}` : date;
 
   route.passengers.forEach(passenger => {
+    if (passenger.status === 'deleted') return; // 排除已删除的行程
     const patient = passenger.id.toLowerCase();
     const prtRow = prtMap.get(patient) || {};
     const darRow = darMap.get(patient) || {};
     const space = prtRow['Service Type'] || 'Ambulatory';
-    let phone = darRow['Phone'] ? darRow['Phone'].replace(/Hm: /g, '').slice(0, 12) : '';
-    if (!phone) {
-      phone = prtRow['Phone'] ? prtRow['Phone'].slice(0, 12) : '000-000-0000';
-    }
+    const phone = getPassengerPhone(patient, prtMap, darMap);
     const pickupAddr = processAddress(passenger.puaddress);
     const dropoffAddr = processAddress(passenger.doaddress);
 
     const row = {
-      Date: fullDate, // 使用 MM/DD/YYYY
+      Date: fullDate,
       'Req Pickup': formatTimeToHHMM(passenger.pickup),
-      Appointment: formatTimeToHHMM(passenger.dropoff), // 使用 dropoff 作为 Appointment
+      Appointment: formatTimeToHHMM(passenger.dropoff),
       Patient: passenger.id,
       Space: space,
       'Pickup Comment': passenger.note || '',
@@ -183,6 +198,83 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
   link.click();
   document.body.removeChild(link);
   console.log(`Exported CSV for ${route.id}: ${fileName}`);
+}
+
+// 导出所有行程的 CSV 文件（排除 unschedule）
+function exportAllTrips(date, prtMap, darMap) {
+  const headers = [
+    'Date', 'Req Pickup', 'Appointment', 'Patient', 'Space', 'Pickup Comment', 'Dropoff Comment', 'Type',
+    'Pickup Phone', 'Dropoff Phone', 'Authorization', 'Funding Source', 'Distance', 'Run',
+    'Pickup Address', 'Pickup Address1', 'Pickup City', 'Pickup State', 'Pickup Zip',
+    'Dropoff Address', 'Dropoff Address1', 'Dropoff City', 'Dropoff State', 'Dropoff Zip', 'Trip ID'
+  ];
+  const rows = [];
+
+  const dateParts = date.split('/');
+  const fullDate = dateParts.length === 2 ? `${date}/${new Date().getFullYear()}` : date;
+
+  routes.forEach(route => {
+    if (route.id === 'unschedule') return; // 排除 unschedule 路由
+    route.passengers.forEach(passenger => {
+      if (passenger.status === 'deleted') return; // 排除已删除的行程
+      const patient = passenger.id.toLowerCase();
+      const prtRow = prtMap.get(patient) || {};
+      const darRow = darMap.get(patient) || {};
+      const space = prtRow['Service Type'] || 'Ambulatory';
+      const phone = getPassengerPhone(patient, prtMap, darMap);
+      const pickupAddr = processAddress(passenger.puaddress);
+      const dropoffAddr = processAddress(passenger.doaddress);
+      const routeNumber = route.id.replace('Route ', '');
+
+      const row = {
+        Date: fullDate,
+        'Req Pickup': formatTimeToHHMM(passenger.pickup),
+        Appointment: formatTimeToHHMM(passenger.dropoff),
+        Patient: passenger.id,
+        Space: space,
+        'Pickup Comment': passenger.note || '',
+        'Dropoff Comment': `@van${routeNumber}`,
+        Type: '',
+        'Pickup Phone': phone,
+        'Dropoff Phone': '',
+        Authorization: '',
+        'Funding Source': 'PACE - IOA',
+        Distance: '',
+        Run: '',
+        'Pickup Address': pickupAddr.street,
+        'Pickup Address1': '',
+        'Pickup City': 'San Francisco',
+        'Pickup State': 'CA',
+        'Pickup Zip': pickupAddr.zip,
+        'Dropoff Address': dropoffAddr.street,
+        'Dropoff Address1': '',
+        'Dropoff City': 'San Francisco',
+        'Dropoff State': 'CA',
+        'Dropoff Zip': dropoffAddr.zip,
+        'Trip ID': ''
+      };
+      rows.push(headers.map(header => `"${(row[header] || '').replace(/"/g, '""')}"`).join(','));
+    });
+  });
+
+  const now = new Date();
+  const MM = String(now.getMonth() + 1).padStart(2, '0');
+  const DD = String(now.getDate()).padStart(2, '0');
+  const YYYY = now.getFullYear();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  const fileName = `${MM}${DD}${YYYY}${hh}${mm}${ss}.csv`;
+
+  const csvContent = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  console.log(`Exported all trips to ${fileName}`);
 }
 
 // 计算时间范围
@@ -357,6 +449,7 @@ function findTripById(tripId) {
       return { route, passenger };
     }
   }
+  console.error(`Trip not found: ${tripId}`);
   return null;
 }
 
@@ -379,14 +472,80 @@ function parseTable(text) {
   return { headers, data };
 }
 
+// 创建拖拽选择表格
+function createRouteSelectionTable(x, y) {
+  const table = document.createElement('table');
+  table.className = 'route-selection-table';
+  table.style.position = 'fixed';
+  const maxX = window.innerWidth - 160;
+  const maxY = window.innerHeight - 160;
+  table.style.left = `${Math.min(x + 10, maxX)}px`;
+  table.style.top = `${Math.min(y, maxY)}px`;
+  table.style.zIndex = '1000';
+
+  const routesList = Array.from({ length: 13 }, (_, i) => `Route ${i}`).concat('unschedule');
+  let routeIndex = 0;
+
+  for (let i = 0; i < 5; i++) {
+    const row = document.createElement('tr');
+    for (let j = 0; j < 3; j++) {
+      if (routeIndex < routesList.length) {
+        const cell = document.createElement('td');
+        const routeId = routesList[routeIndex];
+        cell.className = 'route-selection-cell';
+        cell.dataset.routeId = routeId;
+        cell.textContent = routeId === 'unschedule' ? 'UN' : routeId.replace('Route ', '');
+        cell.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          cell.classList.add('drag-over');
+        });
+        cell.addEventListener('dragleave', () => {
+          cell.classList.remove('drag-over');
+        });
+        cell.addEventListener('drop', (e) => {
+          e.preventDefault();
+          cell.classList.remove('drag-over');
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          const { tripIds } = data;
+          console.log(`Dropping trips ${tripIds} to ${routeId}`);
+          const targetRoute = routes.find(r => r.id === routeId);
+          if (!targetRoute) {
+            console.error(`Target route ${routeId} not found`);
+            return;
+          }
+          tripIds.forEach(tripId => {
+            const tripData = findTripById(tripId);
+            if (!tripData) {
+              console.error(`Trip ${tripId} not found during drop`);
+              return;
+            }
+            const { route: sourceRoute, passenger } = tripData;
+            console.log(`Moving trip ${tripId} from ${sourceRoute.id} to ${routeId}`);
+            sourceRoute.passengers = sourceRoute.passengers.filter(p => p.tripId !== tripId);
+            targetRoute.passengers.push(passenger);
+          });
+          document.body.removeChild(table);
+          console.log('Routes after table drop:', JSON.stringify(routes));
+          renderRoutes(prtMap, darMap, date);
+        });
+        row.appendChild(cell);
+        routeIndex++;
+      }
+    }
+    table.appendChild(row);
+  }
+
+  document.body.appendChild(table);
+  console.log(`Created route selection table at (${x}, ${y})`);
+  return table;
+}
+
 // 生成行程并分配到路由
 function generateTrips(prtInfoText, darText) {
   clearError();
-  // 重置 tripId 计数器
   tripIdCounter = 0;
-  // 解析 prt Info
   const prtInfo = parseTable(prtInfoText);
-  const prtMap = new Map();
+  prtMap = new Map();
   prtInfo.data.forEach(row => {
     if (row['Name']) {
       prtMap.set(row['Name'].toLowerCase(), row);
@@ -394,7 +553,6 @@ function generateTrips(prtInfoText, darText) {
   });
   console.log('prt Info Map:', prtMap);
 
-  // 解析 DAR
   const darLines = darText.trim().split('\n').map(line => line.trim());
   if (darLines.length < 3) {
     showError('Invalid DAR format: at least 3 lines required');
@@ -402,14 +560,12 @@ function generateTrips(prtInfoText, darText) {
     return { date: '', routes: [], darMap: new Map() };
   }
 
-  // 提取日期
   const dateMatch = darLines[0].match(/(\w+,\s*(\d{2})\/(\d{2})\/(\d{4}))/);
-  const date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : `--/--/${new Date().getFullYear()}`; // 完整 MM/DD/YYYY
+  date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : `--/--/${new Date().getFullYear()}`;
 
-  // 解析 DAR 数据
   const dar = parseTable(darLines.slice(1).join('\n'));
   console.log('DAR Data:', dar);
-  const darMap = new Map();
+  darMap = new Map();
   dar.data.forEach(row => {
     if (row['Patient']) {
       darMap.set(row['Patient'].toLowerCase(), row);
@@ -431,7 +587,6 @@ function generateTrips(prtInfoText, darText) {
         return;
       }
 
-      // 如果 curr facility 不为空，替换 address
       if (currFacility.trim() && facilityAddressMap[currFacility]) {
         address = facilityAddressMap[currFacility];
         console.log(`Replaced address for ${patientKey} with curr facility ${currFacility}: ${address}`);
@@ -439,10 +594,8 @@ function generateTrips(prtInfoText, darText) {
 
       console.log('Processing patient:', patientKey, 'Visit Type:', visitType, 'Address:', address, 'Curr Facility:', currFacility);
 
-      // 检查地址是否包含 3595 Geary 且 curr facility 为空
       const isGeary3595AndNoFacility = address.toLowerCase().includes('3595 geary') && !currFacility.trim();
 
-      // 生成正常行程（非 EXTERNAL APPOINTMENT，且不满足 3595 Geary 条件）
       if (!isGeary3595AndNoFacility && !seenPatientsForNormalTrips.has(patientKey)) {
         seenPatientsForNormalTrips.add(patientKey);
         const visitTypeLower = visitType.toLowerCase();
@@ -453,7 +606,6 @@ function generateTrips(prtInfoText, darText) {
         let generateALeg = !visitTypeLower.includes('noam');
         let generateBLeg = !visitTypeLower.includes('nopm');
 
-        // 调整时间根据 Visit Type
         if (visitTypeLower.includes('2nd')) {
           aLegPickup = '1030';
           aLegDropoff = '1100';
@@ -475,7 +627,8 @@ function generateTrips(prtInfoText, darText) {
             doaddress: '3575 Geary Blvd San Francisco CA 94118',
             status: 'noAction',
             leg: 'a-leg',
-            note: ''
+            note: '',
+            phone: getPassengerPhone(patient, prtMap, darMap)
           });
           console.log('Generated a-leg for:', patientKey);
         } else {
@@ -492,7 +645,8 @@ function generateTrips(prtInfoText, darText) {
             doaddress: address,
             status: 'noAction',
             leg: 'b-leg',
-            note: ''
+            note: '',
+            phone: getPassengerPhone(patient, prtMap, darMap)
           });
           console.log('Generated b-leg for:', patientKey);
         } else {
@@ -500,15 +654,13 @@ function generateTrips(prtInfoText, darText) {
         }
       }
 
-      // 生成 EXTERNAL APPOINTMENT 行程
       if (visitType === 'EXTERNAL APPOINTMENT') {
-        const apptTime = row['appt time'].replace(":", "") || '0900'; // 默认值
-        const pickupALeg = adjustTime(apptTime, -45); // appt time - 45min
+        const apptTime = row['appt time'].replace(":", "") || '0900';
+        const pickupALeg = adjustTime(apptTime, -45);
         const dropoffALeg = apptTime;
-        const pickupBLeg = adjustTime(dropoffALeg, 90); // a-leg dropoff + 1.5hr
-        const dropoffBLeg = adjustTime(pickupBLeg, 45); // b-leg pickup + 45min
+        const pickupBLeg = adjustTime(dropoffALeg, 90);
+        const dropoffBLeg = adjustTime(pickupBLeg, 45);
         const apptNote = row['Appt Notes'] || '';
-        // a-leg
         trips.push({
           tripId: generateTripId(),
           id: patient,
@@ -518,9 +670,9 @@ function generateTrips(prtInfoText, darText) {
           doaddress: apptNote,
           status: 'noAction',
           leg: 'a-leg-ext',
-          note: ''
+          note: '',
+          phone: getPassengerPhone(patient, prtMap, darMap)
         });
-        // b-leg
         trips.push({
           tripId: generateTripId(),
           id: patient,
@@ -530,21 +682,20 @@ function generateTrips(prtInfoText, darText) {
           doaddress: address,
           status: 'noAction',
           leg: 'b-leg-ext',
-          note: ''
+          note: '',
+          phone: getPassengerPhone(patient, prtMap, darMap)
         });
         console.log('Generated external trips for:', patientKey, 'apptTime:', apptTime);
       }
     }
   });
 
-  // 初始化所有路由（包括空路由）
   const routeMap = new Map();
   for (let i = 0; i <= 12; i++) {
     routeMap.set(`Route ${i}`, { id: `Route ${i}`, passengers: [] });
   }
   routeMap.set('unschedule', { id: 'unschedule', passengers: [] });
 
-  // 分配行程
   trips.forEach(trip => {
     const patient = trip.id.toLowerCase();
     const prtRow = prtMap.get(patient);
@@ -558,15 +709,13 @@ function generateTrips(prtInfoText, darText) {
     routeMap.get(routeId).passengers.push(trip);
   });
 
-  // 转换为数组
-  const routes = Array.from(routeMap.values());
-  console.log('Generated routes:', routes);
+  routes = Array.from(routeMap.values());
+  console.log('Generated routes:', JSON.stringify(routes));
   return { date, routes, darMap };
 }
 
 // 渲染路由和乘客
 function renderRoutes(prtMap, darMap, date) {
-  // 查询 DOM 元素
   const driversContainer = document.querySelector(".drivers");
   const timelineHeader = document.querySelector(".timeline-header");
   const displayPanel = document.querySelector(".display-panel");
@@ -582,17 +731,13 @@ function renderRoutes(prtMap, darMap, date) {
     return;
   }
 
-  // 隐藏输入框，显示行程详情
   inputContainer.style.display = 'none';
   displayContent.style.display = 'block';
 
-  // 清空旧 DOM
-  console.log('Clearing drivers container and timeline header');
   driversContainer.innerHTML = '';
   timelineHeader.innerHTML = '';
   displayContent.innerHTML = '';
 
-  // 计算时间范围
   const { minTime, maxTime } = getTimeRange();
   renderTimelineHeader(minTime, maxTime);
 
@@ -601,7 +746,6 @@ function renderRoutes(prtMap, darMap, date) {
     routeRow.className = "driver-row";
     routeRow.dataset.routeId = route.id;
 
-    // 允许拖放
     routeRow.addEventListener('dragover', (e) => {
       e.preventDefault();
       routeRow.classList.add('drag-over');
@@ -615,25 +759,25 @@ function renderRoutes(prtMap, darMap, date) {
       const data = JSON.parse(e.dataTransfer.getData('text/plain'));
       const { tripIds } = data;
 
-      // 查找并移动所有选中的行程
       const targetRoute = routes.find(r => r.id === route.id);
       tripIds.forEach(tripId => {
         const tripData = findTripById(tripId);
         if (!tripData) {
-          console.error('Trip not found for drag:', tripId);
+          console.error(`Trip ${tripId} not found during row drop`);
           return;
         }
         const { route: sourceRoute, passenger } = tripData;
-
-        // 从源路由移除
+        console.log(`Moving trip ${tripId} from ${sourceRoute.id} to ${route.id}`);
         sourceRoute.passengers = sourceRoute.passengers.filter(p => p.tripId !== tripId);
-
-        // 添加到目标路由
         targetRoute.passengers.push(passenger);
       });
 
-      // 重渲染
-      console.log('Routes after drag:', routes);
+      const selectionTable = document.querySelector('.route-selection-table');
+      if (selectionTable) {
+        document.body.removeChild(selectionTable);
+      }
+
+      console.log('Routes after row drop:', JSON.stringify(routes));
       renderRoutes(prtMap, darMap, date);
     });
 
@@ -641,7 +785,6 @@ function renderRoutes(prtMap, darMap, date) {
     routeLabel.className = "driver-label";
     routeLabel.textContent = route.id || 'Unknown Route';
 
-    // 添加 Export CSV 按钮
     const exportBtn = document.createElement("button");
     exportBtn.className = "export-csv-btn";
     exportBtn.textContent = "Export CSV";
@@ -663,7 +806,6 @@ function renderRoutes(prtMap, darMap, date) {
     console.log(`Route ${route.id} maxLane: ${maxLane}, height: ${passengerContainer.style.height}`);
 
     passengersWithLanes.forEach(p => {
-      // 获取原始 passenger 对象
       const tripData = findTripById(p.tripId);
       if (!tripData) {
         console.error('Trip not found for rendering, tripId=', p.tripId);
@@ -684,9 +826,20 @@ function renderRoutes(prtMap, darMap, date) {
       block.dataset.pickup = p.pickup;
       block.dataset.dropoff = p.dropoff;
 
-      // 添加 external-appointment 类
-      if (p.leg === 'a-leg-ext' || p.leg === 'b-leg-ext') {
+      // 优先检查 deleted 状态
+      if (p.status === 'deleted') {
+        block.classList.add("status-cancelled");
+      } else if (p.id === "Lunch") {
+        block.classList.add("id-lunch");
+      } else if (p.leg === 'a-leg-ext' || p.leg === 'b-leg-ext') {
         block.classList.add('external-appointment');
+      } else {
+        const status = p.status;
+        if (status === 1 || status === "onBoard") {
+          block.classList.add("status-onboard");
+        } else if (status === 2 || status === "finished") {
+          block.classList.add("status-finished");
+        }
       }
 
       block.addEventListener('click', (e) => {
@@ -695,29 +848,23 @@ function renderRoutes(prtMap, darMap, date) {
 
         if (isCtrlPressed) {
           if (isSelected) {
-            // 取消选中当前行程，保持其他选中状态
             block.classList.remove('selected');
           } else {
-            // 添加当前行程到选中
             block.classList.add('selected');
           }
-          // 清除所有 same-id 高亮
           document.querySelectorAll(".passenger-block").forEach(b => {
             b.classList.remove("same-id");
           });
-          // 为当前点击的行程添加 same-id 高亮
           document.querySelectorAll(".passenger-block").forEach(otherBlock => {
             if (otherBlock.dataset.id === p.id && !otherBlock.classList.contains('selected') && otherBlock !== block) {
               otherBlock.classList.add("same-id");
             }
           });
         } else {
-          // 非 Ctrl 点击，清空所有选中和高亮，只选中当前行程
           document.querySelectorAll(".passenger-block").forEach(b => {
             b.classList.remove("selected", "same-id");
           });
           block.classList.add("selected");
-          // 高亮所有关联行程
           document.querySelectorAll(".passenger-block").forEach(otherBlock => {
             if (otherBlock.dataset.id === p.id && otherBlock !== block) {
               otherBlock.classList.add("same-id");
@@ -728,35 +875,25 @@ function renderRoutes(prtMap, darMap, date) {
 
       block.addEventListener('dragstart', (e) => {
         block.classList.add('dragging');
-        // 收集拖拽的 tripIds
         const selectedBlocks = document.querySelectorAll(".passenger-block.selected");
         let tripIds;
         if (selectedBlocks.length > 0) {
-          // 如果有选中的行程，拖拽所有选中的行程
           tripIds = Array.from(selectedBlocks).map(b => b.dataset.tripId);
         } else {
-          // 否则只拖拽当前行程
           tripIds = [block.dataset.tripId];
         }
         e.dataTransfer.setData('text/plain', JSON.stringify({ tripIds }));
+        createRouteSelectionTable(e.clientX, e.clientY);
       });
 
       block.addEventListener('dragend', () => {
         block.classList.remove('dragging');
+        const selectionTable = document.querySelector('.route-selection-table');
+        if (selectionTable) {
+          document.body.removeChild(selectionTable);
+        }
       });
 
-      if (p.id === "Lunch") {
-        block.classList.add("id-lunch");
-      } else {
-        const status = p.status;
-        if (status === 1 || status === "onBoard") {
-          block.classList.add("status-onboard");
-        } else if (status === 2 || status === "finished") {
-          block.classList.add("status-finished");
-        } else if (status === 3 || status === "cancelled") {
-          block.classList.add("status-cancelled");
-        }
-      }
       const pickupTime = parseTime(p.pickup);
       const dropoffTime = parseTime(p.dropoff);
       if (pickupTime === 0 || dropoffTime === 0) {
@@ -780,14 +917,14 @@ function renderRoutes(prtMap, darMap, date) {
 
         const mainTable = document.createElement("table");
         mainTable.className = "display-table";
-        const editableFields = ['id', 'pickup', 'dropoff', 'puaddress', 'doaddress', 'note', 'leg'];
+        const editableFields = ['id', 'pickup', 'dropoff', 'puaddress', 'doaddress', 'phone', 'note', 'leg'];
         const inputs = {};
 
         editableFields.forEach((field, index) => {
           const row = document.createElement("tr");
           const keyCell = document.createElement("td");
           const valueCell = document.createElement("td");
-          keyCell.textContent = field === 'id' ? 'Name' : field.charAt(0).toUpperCase() + field.slice(1);
+          keyCell.textContent = field === 'id' ? 'Name' : field === 'phone' ? 'Phone' : field.charAt(0).toUpperCase() + field.slice(1);
           const valueSpan = document.createElement("span");
           valueSpan.className = "editable-field";
           valueSpan.textContent = passenger[field] || '';
@@ -805,7 +942,6 @@ function renderRoutes(prtMap, darMap, date) {
             valueCell.replaceChild(input, valueSpan);
             input.focus();
 
-            // 添加 Tab 键监听
             const tabHandler = (e) => {
               if (e.key === 'Tab') {
                 e.preventDefault();
@@ -822,7 +958,10 @@ function renderRoutes(prtMap, darMap, date) {
               let newValue = input.value.trim();
               if ((field === 'pickup' || field === 'dropoff') && newValue && !isValidTimeFormat(newValue)) {
                 showError(`Invalid ${field} format: must be HHMM (e.g., 0900)`);
-                newValue = passenger[field]; // 恢复原值
+                newValue = passenger[field];
+              } else if (field === 'phone' && newValue && !isValidPhoneFormat(newValue)) {
+                showError(`Invalid phone format: must be XXX-XXX-XXXX (e.g., 123-456-7890)`);
+                newValue = passenger[field];
               }
               passenger[field] = newValue;
               block.dataset[field] = newValue;
@@ -831,7 +970,7 @@ function renderRoutes(prtMap, darMap, date) {
               }
               valueSpan.textContent = newValue || '';
               valueCell.replaceChild(valueSpan, input);
-              input.removeEventListener('keydown', tabHandler); // 移除 Tab 监听
+              input.removeEventListener('keydown', tabHandler);
               console.log(`Updated ${field} to ${newValue} for tripId=${p.tripId}:`, passenger);
             });
 
@@ -841,7 +980,6 @@ function renderRoutes(prtMap, darMap, date) {
               }
             });
 
-            // 设置 data-field 以便 Tab 切换
             valueSpan.dataset.field = field;
           });
         });
@@ -855,13 +993,15 @@ function renderRoutes(prtMap, darMap, date) {
         confirmBtn.id = "confirmEditBtn";
         confirmBtn.textContent = "Confirm Edit";
         confirmBtn.addEventListener('click', () => {
-          // 验证 pickup 和 dropoff
           if (!isValidTimeFormat(passenger.pickup) || !isValidTimeFormat(passenger.dropoff)) {
             showError('Invalid pickup or dropoff time format: must be HHMM (e.g., 0900)');
             return;
           }
+          if (passenger.phone && !isValidPhoneFormat(passenger.phone)) {
+            showError('Invalid phone format: must be XXX-XXX-XXXX (e.g., 123-456-7890)');
+            return;
+          }
 
-          // 更新 routes 中的行程
           console.log('Before update: tripId=', p.tripId, ':', passenger);
           for (let i = 0; i < routes.length; i++) {
             if (JSON.stringify(routes[i]).includes(`"${p.tripId}"`)) {
@@ -877,33 +1017,43 @@ function renderRoutes(prtMap, darMap, date) {
             }
           }
 
-          console.log('After update: tripId=', p.tripId, ':', passenger);
-          console.log('Routes after update:', routes);
+          console.log('Routes after update:', JSON.stringify(routes));
           clearError();
           renderRoutes(prtMap, darMap, date);
         });
         buttonContainer.appendChild(confirmBtn);
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.id = "deleteTripBtn";
-        deleteBtn.textContent = "Delete Trip";
-        deleteBtn.addEventListener('click', () => {
-          // 从 routes 中删除行程
-          console.log('Deleting tripId=', p.tripId);
+        const toggleDeleteBtn = document.createElement("button");
+        toggleDeleteBtn.id = "toggleDeleteBtn";
+        toggleDeleteBtn.textContent = passenger.status === 'deleted' ? "Add Back" : "Delete Trip";
+        toggleDeleteBtn.className = passenger.status === 'deleted' ? "add-back-btn" : "delete-trip-btn";
+        toggleDeleteBtn.addEventListener('click', () => {
+          console.log(`${passenger.status === 'deleted' ? 'Restoring' : 'Marking as deleted'} tripId=`, p.tripId);
           for (let i = 0; i < routes.length; i++) {
             if (JSON.stringify(routes[i]).includes(`"${p.tripId}"`)) {
-              routes[i].passengers = routes[i].passengers.filter(t => t.tripId !== p.tripId);
-              console.log('Deleted trip from route:', routes[i].id);
+              let tempPassengers = routes[i].passengers;
+              for (let j = 0; j < tempPassengers.length; j++) {
+                if (JSON.stringify(tempPassengers[j]).includes(`"${p.tripId}"`)) {
+                  if (passenger.status === 'deleted') {
+                    delete tempPassengers[j].status; // 恢复正常状态
+                    console.log('Restored trip:', tempPassengers[j]);
+                  } else {
+                    tempPassengers[j].status = 'deleted'; // 标记为已删除
+                    console.log('Marked trip as deleted:', tempPassengers[j]);
+                  }
+                  break;
+                }
+              }
               break;
             }
           }
 
-          console.log('Routes after deletion:', routes);
+          console.log('Routes after toggle delete:', JSON.stringify(routes));
           clearError();
           renderRoutes(prtMap, darMap, date);
-          displayContent.innerHTML = '<p style="color: #fff;">Trip deleted. Select another trip to edit.</p>';
+          displayContent.innerHTML = '<p style="color: #fff;">Trip ' + (passenger.status === 'deleted' ? 'restored' : 'marked as deleted') + '. Select another trip to edit.</p>';
         });
-        buttonContainer.appendChild(deleteBtn);
+        buttonContainer.appendChild(toggleDeleteBtn);
 
         displayContent.appendChild(buttonContainer);
 
@@ -1002,20 +1152,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const darInput = document.getElementById('darInput');
   const planDateSpan = document.getElementById('planDate');
   const searchInput = document.getElementById('searchInput');
+  const exportAllBtn = document.getElementById('exportAllBtn');
 
   console.log('Plan Button:', planBtn);
   console.log('prt Info Input:', prtInfoInput);
   console.log('DAR Input:', darInput);
   console.log('Plan Date Span:', planDateSpan);
   console.log('Search Input:', searchInput);
+  console.log('Export All Button:', exportAllBtn);
 
-  if (!planBtn || !prtInfoInput || !darInput || !planDateSpan || !searchInput) {
-    console.error('Input fields or plan button not found');
-    showError('Page initialization failed: input fields or plan button missing');
+  if (!planBtn || !prtInfoInput || !darInput || !planDateSpan || !searchInput || !exportAllBtn) {
+    console.error('Input fields, plan button, or export all button not found');
+    showError('Page initialization failed: required elements missing');
     return;
   }
 
-  // 初始化显示：隐藏行程详情，显示输入框
   const inputContainer = document.querySelector('.input-container');
   const displayContent = document.querySelector('.display-content');
   if (inputContainer && displayContent) {
@@ -1025,12 +1176,18 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error('Input container or display content not found');
   }
 
-  // 搜索功能
   searchInput.addEventListener('input', () => {
     filterTrips(searchInput.value.trim());
   });
 
-  let prtMap, darMap, date;
+  exportAllBtn.addEventListener('click', () => {
+    if (!routes || routes.length === 0) {
+      showError('No trips available to export');
+      return;
+    }
+    exportAllTrips(date, prtMap, darMap);
+  });
+
   planBtn.addEventListener('click', () => {
     console.log('Plan button clicked');
     const prtInfoText = prtInfoInput.value.trim();
@@ -1050,8 +1207,8 @@ document.addEventListener("DOMContentLoaded", () => {
         prtMap.set(row['Name'].toLowerCase(), row);
       }
     });
-    console.log('Initial routes:', routes);
-    planDateSpan.textContent = `Date: ${date.split('/').slice(0, 2).join('/')}`; // 显示 Date: MM/DD
+    console.log('Initial routes:', JSON.stringify(routes));
+    planDateSpan.textContent = `Date: ${date.split('/').slice(0, 2).join('/')}`;
     renderRoutes(prtMap, darMap, date);
   });
 });
