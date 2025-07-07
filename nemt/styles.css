@@ -1,4 +1,5 @@
-* {/**/
+/* version: v2.1.6 */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -13,8 +14,8 @@ body {
 .container {
   display: flex;
   width: 100%;
-  height: calc(100vh - 80px); /* 增加空间，避免遮挡 */
-  margin-top: 40px; /* 为 .updateTime 留出空间 */
+  height: calc(100vh - 80px);
+  margin-top: 40px;
 }
 
 .timeline-container {
@@ -39,7 +40,7 @@ body {
   padding: 8px;
   border-radius: 4px;
   margin-bottom: 10px;
-  margin-top: 10px; /* 减小上边距，与 .container 协调 */
+  margin-top: 10px;
 }
 
 .search-wrapper h3 {
@@ -70,6 +71,29 @@ body {
 #searchInput:focus {
   outline: none;
   border-color: #ab47bc;
+}
+
+#exportAllBtn {
+  padding: 5px 3px;
+  background: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+#exportAllBtn:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+
+#exportAllBtn:active {
+  transform: scale(0.97);
 }
 
 .display-table {
@@ -113,32 +137,32 @@ body {
 
 .other-trips-table.lunch-table th:nth-child(1),
 .other-trips-table.lunch-table td:nth-child(1) {
-  width: 40%; /* Route */
+  width: 40%;
 }
 
 .other-trips-table.lunch-table th:nth-child(2),
 .other-trips-table.lunch-table td:nth-child(2) {
-  width: 60%; /* Lunch Time */
+  width: 60%;
 }
 
 .other-trips-table:not(.lunch-table) th:nth-child(1),
 .other-trips-table:not(.lunch-table) td:nth-child(1) {
-  width: 20%; /* Route */
+  width: 20%;
 }
 
 .other-trips-table:not(.lunch-table) th:nth-child(2),
 .other-trips-table:not(.lunch-table) td:nth-child(2) {
-  width: 15%; /* PU Time */
+  width: 15%;
 }
 
 .other-trips-table:not(.lunch-table) th:nth-child(3),
 .other-trips-table:not(.lunch-table) td:nth-child(3) {
-  width: 30%; /* P/U Address */
+  width: 30%;
 }
 
 .other-trips-table:not(.lunch-table) th:nth-child(4),
 .other-trips-table:not(.lunch-table) td:nth-child(4) {
-  width: 35%; /* D/O Address */
+  width: 35%;
 }
 
 .other-trips-table tr.highlight {
@@ -246,11 +270,11 @@ body {
 }
 
 .passenger-block.external-appointment {
-  background: #FF69B4; /* 粉红色 */
+  background: #FF69B4;
 }
 
 .passenger-block.selected {
-  border: 3px solid #00008B; /* 深蓝色 */
+  border: 3px solid #00008B;
   height: 19px;
   line-height: 13px;
   font-weight: bold;
@@ -276,17 +300,37 @@ body {
   background: #555;
 }
 
+.route-selection-table {
+  border-collapse: collapse;
+  background: #444;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.route-selection-cell {
+  width: 50px;
+  height: 30px;
+  border: 1px solid #555;
+  text-align: center;
+  cursor: pointer;
+}
+
+.route-selection-cell.drag-over {
+  background: #555;
+}
+
 .updateTime {
   color: lightblue;
   position: absolute;
   top: 10px;
   left: 10px;
   font-size: 14px;
-  z-index: 10; /* 降低 z-index，足够显示但不遮挡内容 */
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: transparent; /* 透明背景 */
+  background: transparent;
 }
 
 .input-container {
@@ -396,7 +440,7 @@ textarea:focus {
   background: #9c27b0;
 }
 
-#deleteTripBtn {
+.delete-trip-btn {
   padding: 8px 16px;
   border: none;
   border-radius: 5px;
@@ -406,8 +450,22 @@ textarea:focus {
   background: #e53935;
 }
 
-#deleteTripBtn:hover {
+.delete-trip-btn:hover {
   background: #d32f2f;
+}
+
+.add-back-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  background: #4caf50;
+}
+
+.add-back-btn:hover {
+  background: #45a049;
 }
 
 .auth-container {
