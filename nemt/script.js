@@ -1,9 +1,9 @@
-// Version 2.1.2
+// Version 2.1.3
 let drivers = []; //
 
 // 监听 postMessage
 window.addEventListener('message', (event) => {
-  const allowedOrigins = ['http://127.0.0.1:5500', 'https://provider.nemtplatform.com/trips', 'https://provider.nemtplatform.com', 'https://awmt.transmedik.com/trips'];
+  const allowedOrigins = ['http://127.0.0.1:5500', 'https://provider.nemtplatform.com/trips', 'https://provider.nemtplatform.com', 'https://awmt.transmedik.com'];
   if (!allowedOrigins.includes(event.origin)) {
     console.warn('Received message from untrusted origin:', event.origin);
     return;
