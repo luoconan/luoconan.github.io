@@ -1,4 +1,4 @@
-// version: v2.1.10
+// version: v2.1.19
 let routes = [];
 let prtMap, darMap, date;
 
@@ -118,6 +118,7 @@ function getPassengerPhone(patient, prtMap, darMap) {
 
 // curr facility 地址映射表
 const facilityAddressMap = {
+  'IOA': '3575 Geary Blvd San Francisco CA 94118',
   'Institute of Aging': '3575 Geary Blvd San Francisco CA 94118',
   'Merced Residential Care Facility (259 Broad)': '259 Broad St San Francisco CA 94112',
   'Merced Residential Care Facility (Girard)': '129 Girard St San Francisco CA 94134',
@@ -125,8 +126,8 @@ const facilityAddressMap = {
   'Victorian Manor': '1444 McAllister St San Francisco CA 94115',
   'Providence Place': '2456 Geary Blvd San Francisco CA 94115',
   'Hayes Convalescent Hospital': '1250 Hayes St San Francisco CA 94117',
-  'Laurel Heights Community Care': '2740 California St San Francisco CA 94115',
-  'CENTRAL GARDENS POST ACUTE': '1355 Ellis St San Francisco CA 94115',
+  'Laurel Heights Community Care': '2740 California St San Francisco CA 1415',
+  'CENTRAL GARDENS POST ACUTE': '1355 Ellis St San Francisco CA 1415',
   'Portola Gardens, LLC': '350 University St San Francisco CA 94134',
   'MERCED THREE RESIDENTIAL CARE FACILITY (HAMPSHIRE)': '1420 Hampshire St San Francisco CA 94110',
   'Jewish Home and Rehab Center': '302 Silver Ave San Francisco CA 94112',
@@ -461,6 +462,10 @@ function parseTable(text) {
     return { headers: [], data: [] };
   }
   const headers = lines[0].split('\t').map(h => h.trim());
+  console.log('Parsed DAR headers:', headers); // 添加日志以验证列名
+  if (!headers.includes('Escort')) {
+    console.warn('Escort column not found in DAR headers');
+  }
   const data = lines.slice(1).map(line => {
     const values = line.split('\t').map(v => v.trim());
     const row = {};
@@ -581,6 +586,7 @@ function generateTrips(prtInfoText, darText) {
       let address = row['address'] || '';
       const currFacility = row['curr facility'] || '';
       const visitType = row['Visit Type'] || '';
+      const escort = row['Escort'] || '';
       const patientKey = patient.toLowerCase();
       if (!patient || !address) {
         console.warn(`Skipping DAR row with missing patient or address:`, row);
@@ -592,26 +598,71 @@ function generateTrips(prtInfoText, darText) {
         console.log(`Replaced address for ${patientKey} with curr facility ${currFacility}: ${address}`);
       }
 
-      console.log('Processing patient:', patientKey, 'Visit Type:', visitType, 'Address:', address, 'Curr Facility:', currFacility);
+      console.log('Processing patient:', patientKey, 'Visit Type:', visitType, 'Address:', address, 'Curr Facility:', currFacility, 'Escort:', escort);
 
       const isGeary3595AndNoFacility = address.toLowerCase().includes('3595 geary') && !currFacility.trim();
 
+      // 处理 escort：如果不是 Y/N/-，根据 hasExternal 分配到 a-leg/b-leg 或 a-leg-ext/b-leg-ext
+      const visitTypes = visitType.split(',').map(v => v.trim().toLowerCase());
+      const hasExternal = visitTypes.includes('external appointment') || visitTypes.includes('ext');
+      const hasFromIOA = visitTypes.includes('fromioa');
+      const hasBackIOA = visitTypes.includes('backioa');
+      const escortValue = !['y', 'n', '-'].includes(escort.toLowerCase()) ? escort : '';
+      console.log(`Escort value for ${patientKey}: ${escortValue}, hasExternal: ${hasExternal}, hasFromIOA: ${hasFromIOA}, hasBackIOA: ${hasBackIOA}`);
+
       if (!isGeary3595AndNoFacility && !seenPatientsForNormalTrips.has(patientKey)) {
         seenPatientsForNormalTrips.add(patientKey);
-        const visitTypeLower = visitType.toLowerCase();
+        // 处理 Visit Type：按逗号分隔并转换为小写
+        const visitTypes = visitType.split(',').map(v => v.trim().toLowerCase());
+
+        // 1. 生成普通行程（a-leg 和 b-leg）
         let aLegPickup = '0900';
         let aLegDropoff = '1000';
         let bLegPickup = '1530';
         let bLegDropoff = '1630';
-        let generateALeg = !visitTypeLower.includes('noam');
-        let generateBLeg = !visitTypeLower.includes('nopm');
+        let generateALeg = true;
+        let generateBLeg = true;
 
-        if (visitTypeLower.includes('2nd')) {
+        // 检查 A@NNNN 和 P@NNNN（优先级高于 noam/nopm）
+        const timeMatchA = visitTypes.find(v => v.startsWith('a@'));
+        const timeMatchP = visitTypes.find(v => v.startsWith('p@'));
+        if (timeMatchA) {
+          const timeA = timeMatchA.split('@')[1]?.trim();
+          if (timeA && isValidTimeFormat(timeA)) {
+            aLegPickup = timeA;
+            aLegDropoff = adjustTime(aLegPickup, 60); // 假设 a-leg 持续 60 分钟
+            console.log(`Adjusted a-leg for ${timeMatchA}:`, aLegPickup, aLegDropoff);
+          } else {
+            console.warn(`Invalid time format in ${timeMatchA} for ${patientKey}`);
+            showError(`Invalid time format in ${timeMatchA} for ${patient}: must be HHMM (e.g., 0900)`);
+          }
+        } else if (visitTypes.includes('noam')) {
+          generateALeg = false;
+          console.log('Skipped a-leg due to noam for:', patientKey);
+        }
+
+        if (timeMatchP) {
+          const timeP = timeMatchP.split('@')[1]?.trim();
+          if (timeP && isValidTimeFormat(timeP)) {
+            bLegPickup = timeP;
+            bLegDropoff = adjustTime(bLegPickup, 60); // 假设 b-leg 持续 60 分钟
+            console.log(`Adjusted b-leg for ${timeMatchP}:`, bLegPickup, bLegDropoff);
+          } else {
+            console.warn(`Invalid time format in ${timeMatchP} for ${patientKey}`);
+            showError(`Invalid time format in ${timeMatchP} for ${patient}: must be HHMM (e.g., 0900)`);
+          }
+        } else if (visitTypes.includes('nopm')) {
+          generateBLeg = false;
+          console.log('Skipped b-leg due to nopm for:', patientKey);
+        }
+
+        // 处理 2nd 和 early
+        if (visitTypes.includes('2nd') && !timeMatchA) {
           aLegPickup = '1030';
           aLegDropoff = '1100';
           console.log('Adjusted a-leg for 2nd:', aLegPickup, aLegDropoff);
         }
-        if (visitTypeLower.includes('early')) {
+        if (visitTypes.includes('early') && !timeMatchP) {
           bLegPickup = '1400';
           bLegDropoff = '1430';
           console.log('Adjusted b-leg for early:', bLegPickup, bLegDropoff);
@@ -624,15 +675,13 @@ function generateTrips(prtInfoText, darText) {
             pickup: aLegPickup,
             dropoff: aLegDropoff,
             puaddress: address,
-            doaddress: '3575 Geary Blvd San Francisco CA 94118',
+            doaddress: facilityAddressMap.IOA,
             status: 'noAction',
             leg: 'a-leg',
-            note: '',
+            note: hasExternal ? '' : escortValue,
             phone: getPassengerPhone(patient, prtMap, darMap)
           });
-          console.log('Generated a-leg for:', patientKey);
-        } else {
-          console.log('Skipped a-leg due to noam for:', patientKey);
+          console.log('Generated a-leg for:', patientKey, 'Note:', hasExternal ? '' : escortValue);
         }
 
         if (generateBLeg) {
@@ -641,51 +690,55 @@ function generateTrips(prtInfoText, darText) {
             id: patient,
             pickup: bLegPickup,
             dropoff: bLegDropoff,
-            puaddress: '3575 Geary Blvd San Francisco CA 94118',
+            puaddress: facilityAddressMap.IOA,
             doaddress: address,
             status: 'noAction',
             leg: 'b-leg',
-            note: '',
+            note: hasExternal ? '' : escortValue,
             phone: getPassengerPhone(patient, prtMap, darMap)
           });
-          console.log('Generated b-leg for:', patientKey);
-        } else {
-          console.log('Skipped b-leg due to nopm for:', patientKey);
+          console.log('Generated b-leg for:', patientKey, 'Note:', hasExternal ? '' : escortValue);
         }
-      }
 
-      if (visitType === 'EXTERNAL APPOINTMENT') {
-        const apptTime = row['appt time'].replace(":", "") || '0900';
-        const pickupALeg = adjustTime(apptTime, -45);
-        const dropoffALeg = apptTime;
-        const pickupBLeg = adjustTime(dropoffALeg, 90);
-        const dropoffBLeg = adjustTime(pickupBLeg, 45);
-        const apptNote = row['Appt Notes'] || '';
-        trips.push({
-          tripId: generateTripId(),
-          id: patient,
-          pickup: pickupALeg,
-          dropoff: dropoffALeg,
-          puaddress: address,
-          doaddress: apptNote,
-          status: 'noAction',
-          leg: 'a-leg-ext',
-          note: '',
-          phone: getPassengerPhone(patient, prtMap, darMap)
-        });
-        trips.push({
-          tripId: generateTripId(),
-          id: patient,
-          pickup: pickupBLeg,
-          dropoff: dropoffBLeg,
-          puaddress: apptNote,
-          doaddress: address,
-          status: 'noAction',
-          leg: 'b-leg-ext',
-          note: '',
-          phone: getPassengerPhone(patient, prtMap, darMap)
-        });
-        console.log('Generated external trips for:', patientKey, 'apptTime:', apptTime);
+        // 2. 额外生成外部预约行程（a-leg-ext 和 b-leg-ext）
+        if (hasExternal) {
+          const apptTime = row['appt time'].replace(":", "") || '0900';
+          if (!isValidTimeFormat(apptTime)) {
+            console.warn(`Invalid appt time for ${patientKey}: ${apptTime}, skipping external trips`);
+            showError(`Invalid appointment time format for ${patient}: must be HHMM (e.g., 0900)`);
+          } else {
+            const pickupALeg = adjustTime(apptTime, -45);
+            const dropoffALeg = apptTime;
+            const pickupBLeg = adjustTime(dropoffALeg, 90);
+            const dropoffBLeg = adjustTime(pickupBLeg, 45);
+            const apptNote = row['Appt Notes'] || '';
+            trips.push({
+              tripId: generateTripId(),
+              id: patient,
+              pickup: pickupALeg,
+              dropoff: dropoffALeg,
+              puaddress: hasFromIOA ? facilityAddressMap.IOA : address,
+              doaddress: apptNote,
+              status: 'noAction',
+              leg: 'a-leg-ext',
+              note: escortValue,
+              phone: getPassengerPhone(patient, prtMap, darMap)
+            });
+            trips.push({
+              tripId: generateTripId(),
+              id: patient,
+              pickup: pickupBLeg,
+              dropoff: dropoffBLeg,
+              puaddress: apptNote,
+              doaddress: hasBackIOA ? facilityAddressMap.IOA : address,
+              status: 'noAction',
+              leg: 'b-leg-ext',
+              note: escortValue,
+              phone: getPassengerPhone(patient, prtMap, darMap)
+            });
+            console.log('Generated external trips for:', patientKey, 'apptTime:', apptTime, 'Note:', escortValue, 'FromIOA:', hasFromIOA, 'BackIOA:', hasBackIOA);
+          }
+        }
       }
     }
   });
@@ -843,10 +896,10 @@ function renderRoutes(prtMap, darMap, date) {
       }
 
       block.addEventListener('click', (e) => {
-        const isCtrlPressed = e.ctrlKey;
+        const isMultiSelectKeyPressed = e.ctrlKey || e.metaKey;
         const isSelected = block.classList.contains('selected');
 
-        if (isCtrlPressed) {
+        if (isMultiSelectKeyPressed) {
           if (isSelected) {
             block.classList.remove('selected');
           } else {
