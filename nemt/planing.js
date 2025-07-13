@@ -126,7 +126,7 @@ const facilityAddressMap = {
   'Victorian Manor': '1444 McAllister St San Francisco CA 94115',
   'Providence Place': '2456 Geary Blvd San Francisco CA 94115',
   'Hayes Convalescent Hospital': '1250 Hayes St San Francisco CA 94117',
-  'Laurel Heights Community Care': '2740 California St San Francisco CA 1415',
+  'Laurel Heights Community Care': '2740 California St San Francisco CA 94115',
   'CENTRAL GARDENS POST ACUTE': '1355 Ellis St San Francisco CA 1415',
   'Portola Gardens, LLC': '350 University St San Francisco CA 94134',
   'MERCED THREE RESIDENTIAL CARE FACILITY (HAMPSHIRE)': '1420 Hampshire St San Francisco CA 94110',
