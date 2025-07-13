@@ -1,0 +1,48 @@
+<!-- Version 2.0.5 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medication Planning</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <span class="updateTime" id="planDate">Date: --/--</span>
+  <div class="search-wrapper">
+    <h3>Prt Name</h3>
+    <input type="text" id="searchInput" placeholder="Enter passenger name or keywords">
+    <div class="radio-group">
+      <input type="radio" id="regularRadio" name="addType" value="Regular" checked>
+      <label for="regularRadio">Regular</label>
+      <input type="radio" id="addonRadio" name="addType" value="Add-on">
+      <label for="addonRadio">Add-on</label>
+    </div>
+    <button id="addBtn">Add</button>
+    <button id="exportAllBtn">Export All Trips</button>
+    <div id="suggestions" class="suggestions"></div>
+  </div>
+  <div class="container">
+    <div class="timeline-container">
+      <div class="timeline-header"></div>
+      <div class="drivers"></div>
+    </div>
+    <div class="display-panel">
+      <div id="errorMsg" style="display: none;"></div>
+      <div class="input-container">
+        <div class="textarea-wrapper">
+          <h3>prt Info</h3>
+          <textarea id="prtInfoInput" placeholder="Enter prt Info data here"></textarea>
+        </div>
+        <div class="textarea-wrapper">
+          <h3>Medication</h3>
+          <textarea id="medicationInput" placeholder="Enter Medication data here"></textarea>
+        </div>
+        <button id="planBtn">Plan</button>
+      </div>
+      <div class="display-content"></div>
+    </div>
+  </div>
+  <script src="medication.js" type="module"></script>
+</body>
+</html>
