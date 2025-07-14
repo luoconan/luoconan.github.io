@@ -1,0 +1,581 @@
+// ==UserScript==
+// @name         auto Upload tripSheet2
+// @namespace    http://Conanluo.com/
+// @version      1.0.3
+// @description  uploading
+// @author       Conanluo
+// @match        https://awmt.transmedik.com/trips/trip-sheet
+// @match        https://work.conanluo.com/nemt/tripSheet.html?k=4
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=nemtplatform.com
+// @grant        GM_xmlhttpRequest
+// @downloadURL https://update.greasyfork.org/scripts/538682/auto%20Upload%20tripSheet.user.js
+// @updateURL https://update.greasyfork.org/scripts/538682/auto%20Upload%20tripSheet.meta.js
+// ==/UserScript==
+
+(async function() {
+
+    const workerUrl = 'https://tripsheetdata.conanluo.workers.dev/save';
+
+    let driversTrip=[
+        {id: "Han Yang Zhou",passengers: []},
+        {id: "Rong Tang",passengers: []},
+        {id: "Mauricio Reina",passengers: []},
+        {id: "Jerry Higgins",passengers: []},
+        {id: "Mingzhan Li",passengers: []},
+        {id: "Fook Fung",passengers: []},
+        {id: "Walter Mejia",passengers: []},
+        {id: "Zhao Zhong Zheng",passengers: []},
+        {id: "Jabari Tyler",passengers: []},
+        {id: "Yingyang Chen",passengers: []},
+        {id: "Bert Reid",passengers: []},
+        {id: "Jie Qian",passengers: []},
+        {id: "Jerald Alejandro",passengers: []},
+        {id: "Wilson Ochoa",passengers: []},
+        {id: "unknow Driver",passengers: []}
+    ]
+
+    // 函数：保存字符串和时间戳到 Cloudflare KV
+    function saveToKV(content) {
+        const timestamp = new Date().toISOString();
+        GM_xmlhttpRequest({
+            method: 'POST',
+            url: workerUrl,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({  timestamp, content }),
+            onload: function(response) {
+                if (response.status === 200) {
+                    console.log('数据已保存到 KV:', response.responseText);
+                } else {
+                    console.error('错误:', response.status, response.responseText);
+                }
+            },
+            onerror: function() {
+                console.error('网络错误');
+            }
+        });
+    }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        // 缓存上次获取的行程数据
+    let cachedTrips = [];
+
+    // 获取 JWT token（根据实际情况修改）
+    const getToken = () => {
+        // 尝试从 cookie 获取 token
+        const token = document.cookie.split('; ').find(row => row.startsWith('jwt='));
+        if (token) return token.split('=')[1];
+
+        // 或者从 localStorage 获取
+        // return localStorage.getItem('jwt_token') || 'your_token_here';
+
+        // 后备 token（仅用于测试）
+        console.warn('使用后备 token，请更新 getToken 逻辑以适应实际环境');
+        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjdlZDRlZTc5ZjBkOGMzNDJmYjFhNzU2IiwiYWNjb3VudFN0YXR1cyI6ImFjdGl2ZSIsInNJZCI6IjY3ZmQ5ZGY5OGE2NTM0MGI4NTZjYzc4ZCIsInRva2VuS2V5IjoiMTc0MzE5MzU3OTgyNyIsInJvbGVzIjoiY29tcGFueSIsImlhdCI6MTc1MTg2MDUyN30.NXtapunZ0iDQBAtT-rGsetXcGvX5at-fkP1J5Bd5o8A';
+    };
+
+    // 获取太平洋时间（PDT，UTC-7）的当天日期并转换为 UTC 格式
+    const getScheduleTimeRange = () => {
+        const now = new Date();
+        // 设置为太平洋时间
+        const pdtDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+
+        // 获取当天 00:00:00 PDT
+        const startDate = new Date(pdtDate.getFullYear(), pdtDate.getMonth(), pdtDate.getDate(), 0, 0, 0, 0);
+        // 转换为 UTC（PDT 为 UTC-7，需加 7 小时）
+        const startUTC = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);
+
+        // 获取次日 00:00:00 PDT（即当天的 23:59:59.999）
+        const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000 - 1);
+        const endUTC = new Date(endDate.getTime() + 7 * 60 * 60 * 1000);
+
+        // 格式化为 API 所需的 UTC 时间字符串
+        const startTime = startUTC.toISOString().replace('.000Z', '.000Z');
+        const endTime = endUTC.toISOString().replace('.000Z', '.999Z');
+
+        return `${startTime},${endTime}`;
+    };
+
+    // 使用 GM_xmlhttpRequest 调用 API
+    const fetchTrips = async (skip) => {
+        const token = getToken();
+        const scheduleTime = getScheduleTimeRange();
+        return new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: 'GET',
+                url: `https://apis.nemtplatform.com/api/assigns?status=all&skip=${skip}&scheduleTime=${scheduleTime}`,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
+                    'Authorization': `JWT ${token}`,
+                    'Connection': 'keep-alive',
+                    'Content-Type': 'application/json',
+                    // 移除 If-None-Match 以强制获取最新数据
+                    // 'If-None-Match': 'W/"1447a-j5jo30GKahvv+9piyw9wxd+sKpI"',
+                    'Origin': 'https://awmt.transmedik.com',
+                    'Referer': 'https://awmt.transmedik.com/',
+                    'Sec-Fetch-Dest': 'empty',
+                    'Sec-Fetch-Mode': 'cors',
+                    'Sec-Fetch-Site': 'cross-site',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+                    'sec-ch-ua': '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"',
+                    'sec-ch-ua-mobile': '?0',
+                    'sec-ch-ua-platform': '"Windows"'
+                },
+                anonymous: false,
+                onload: function(response) {
+                    if (response.status === 200) {
+                        try {
+                            const data = JSON.parse(response.responseText);
+                            cachedTrips = data; // 更新缓存
+                            resolve(data);
+                        } catch (e) {
+                            reject(new Error('解析 JSON 失败: ' + e.message));
+                        }
+                    } else if (response.status === 304) {
+                        // 处理 304 状态码，返回缓存数据
+                        console.log(`Skip=${skip} 数据未更改，使用缓存数据`);
+                        resolve(cachedTrips);
+                    } else {
+                        reject(new Error(`请求失败: ${response.status} ${response.statusText}`));
+                    }
+                },
+                onerror: function(error) {
+                    reject(new Error('网络错误: ' + error.message));
+                }
+            });
+        });
+    };
+
+    // 循环获取所有数据（skip=0 到 1500）
+    const fetchAllTrips = async () => {
+        const allTrips = [];
+        const limit = 50; // 假设每次请求返回 50 条数据
+        const maxSkip = 1500;
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        for (let skip = 0; skip <= maxSkip; skip += limit) {
+            try {
+                console.log(`获取 skip=${skip} 的数据...`);
+                const trips = await fetchTrips(skip);
+                if (Array.isArray(trips)) {
+                    allTrips.push(...trips);
+                    cachedTrips = trips; // 更新缓存
+                } else {
+                    console.warn(`Skip=${skip} 返回非数组数据:`, trips);
+                }
+                // 添加 200 毫秒延迟，避免请求过快
+                //await delay(200);
+            } catch (error) {
+                console.error(`获取 skip=${skip} 失败:`, error);
+                alert(`获取 skip=${skip} 失败: ${error.message}`);
+            }
+        }
+
+        // 筛选 serviceArea = "681d306b41bcbf28cb2c50f3" 的行程
+        const filteredTrips = allTrips.filter(trip => trip.serviceArea === '681d306b41bcbf28cb2c50f3');
+        console.log(`筛选出 ${filteredTrips.length} 条 serviceArea=681d306b41bcbf28cb2c50f3 的行程`);
+        return filteredTrips;
+    };
+
+    // 在网页上显示行程数据
+    async function displayTrips(trips){
+        //如果不在规定时间(7:00-18:00),停止自动更新trip,直接return false
+
+        let thisHour=new Date().getHours()
+        if(thisHour<7 || thisHour>18) return false;
+
+        let drivers=JSON.parse(JSON.stringify(driversTrip));
+/*
+        const container = document.createElement('div');
+        container.style.cssText = 'position: fixed; top: 50px; right: 900px; background: white; padding: 15px; border: 1px solid #ccc; max-height: 80vh; overflow-y: auto; z-index: 1000; box-shadow: 0 0 10px rgba(0,0,0,0.2);';
+        container.innerHTML = '<h3 id="hide_list" style="margin-top: 0;">行程列表（IOA - Pace）</h3>';
+
+        if (!Array.isArray(trips) || trips.length === 0) {
+            container.innerHTML += '<p>未找到符合条件的行程。</p>';
+            document.body.appendChild(container);
+            return;
+        }
+*/
+        trips.forEach(trip => {
+            const driverObj=trip.driver ? trip.driver : {displayName:"unschedule"}
+
+
+            const driver=driverObj.displayName
+            const prt=trip.priorityClient.displayName
+            const pickup=toHHmm(trip.scheduleTime)
+            const dropoff=toHHmm(trip.appointmentTime)
+            const status=trip.jobStatus
+
+            const puaddress=trip.jobOriginAddress
+            const doaddress=trip.jobDestinationAddress
+            const note=trip.companyNote
+
+            let temp={id:prt,pickup,dropoff,status,puaddress,doaddress,note}
+            if(driver=="Han Yang Zhou"){
+                drivers[0].passengers.push(temp)
+            }else if(driver=="Rong Tang"){
+                drivers[1].passengers.push(temp)
+            }else if(driver=="Mauricio Reina"){
+                drivers[2].passengers.push(temp)
+            }else if(driver=="Jerry Higgins"){
+                drivers[3].passengers.push(temp)
+            }else if(driver=="Mingzhan Li"){
+                drivers[4].passengers.push(temp)
+            }else if(driver=="Jerald Alejandro"){
+                drivers[5].passengers.push(temp)
+                /*}else if(driver=="Fook Fung"){
+                    drivers[5].passengers.push(temp)*/
+            }else if(driver=="Walter Mejia"){
+                drivers[6].passengers.push(temp)
+            }else if(driver=="Zhao Zhong Zheng"){
+                drivers[7].passengers.push(temp)
+            }else if(driver=="Jabari Tyler"){
+                drivers[8].passengers.push(temp)
+            }else if(driver=="Yingyang Chen"){
+                drivers[9].passengers.push(temp)
+            }else if(driver=="Bert Reid"){
+                drivers[10].passengers.push(temp)
+            }else if(driver=="Jie Qian"){
+                drivers[11].passengers.push(temp)
+            }else if(driver=="Wilson Ochoa"){
+                drivers[13].passengers.push(temp)
+            }else{
+                drivers[14].passengers.push(temp)
+            }
+
+
+/*
+            const tripDiv = document.createElement('div');
+            tripDiv.style.cssText = 'margin-bottom: 10px;';
+            tripDiv.innerHTML = `
+                <strong>司机:</strong> ${driverObj.displayName ? driverObj.displayName : '无'}<br>
+                <strong>客户:</strong> ${trip.priorityClient ? trip.priorityClient.displayName : '无'}<br>
+                <strong>起点:</strong> ${trip.jobOriginAddress || '无'}<br>
+                <strong>终点:</strong> ${trip.jobDestinationAddress || '无'}<br>
+                <strong>Pickup 时间:</strong> ${trip.scheduleTime ? new Date(trip.scheduleTime).toLocaleString('zh-CN') : '无'}<br>
+                <strong>Dropoff 时间:</strong> ${trip.appointmentTime ? new Date(trip.appointmentTime).toLocaleString('zh-CN') : '无'}<br>
+                <strong >状态:</strong> ${trip.jobStatus.includes("cancel")?`<font style='color:red'>`+trip.jobStatus+`</font>`:trip.jobStatus || '无'}<br>
+                <strong>里程:</strong> ${trip.milage || '无'} 英里<br>
+                <strong>行程备注:</strong> ${trip.companyNote || '无'}<br>
+                <hr>
+            `;
+            container.appendChild(tripDiv);
+*/
+        });
+
+         try {
+                //console.log(111)
+                await fetchLunchTimes(drivers);
+            } catch (err) {
+                console.error('失败:', err);
+            }
+
+
+        return JSON.stringify(drivers)
+
+
+
+        // 移除旧的容器
+        //const oldContainer = document.querySelector('div[style*="position: fixed; top: 10px; right: 300px"]');
+        //if (oldContainer) oldContainer.remove();
+//        document.body.appendChild(container);
+    };
+
+    // 创建刷新按钮
+    const createRefreshButton = () => {
+        const button = document.createElement('button');
+        button.textContent = '刷新行程';
+        button.style.cssText = 'position: fixed; top: 10px; left: 350px; z-index: 1000; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;';
+        button.onclick = async () => {
+            button.disabled = true; // 禁用按钮，防止重复点击
+            try {
+                const trips = await fetchAllTrips();
+                displayTrips(trips);
+                console.log('行程已刷新:', trips);
+            } catch (error) {
+                console.error('刷新行程失败:', error);
+                //alert('刷新行程失败: ' + error.message);
+            } finally {
+                button.disabled = false; // 恢复按钮
+            }
+        };
+        document.body.appendChild(button);
+    };
+
+    // 初始化
+    createRefreshButton();
+
+    // 页面加载时自动获取数据
+/*
+    (async () => {
+        try {
+            const trips = await fetchAllTrips();
+            displayTrips(trips);
+            console.log('初始行程已加载:', trips);
+        } catch (error) {
+            console.error('初始加载失败:', error);
+            alert('初始加载失败: ' + error.message);
+        }
+    })();
+*/
+
+    function toHHmm(isoString) {
+        const date = new Date(isoString);
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 示例：获取字符串
+    async function getTrips() {
+        //如果不在规定时间(7:00-18:00),停止自动更新trip,直接return false
+        let thisHour=new Date().getHours()
+        if(thisHour<7 || thisHour>18) return false;
+
+        let tripStr=""
+        let drivers=JSON.parse(JSON.stringify(driversTrip));
+        if($("tbody tr").length>0){
+
+
+            $("table tbody tr").each(function(){
+                let driver= $(this).find("td").eq(3).text().replace("Reassign","").trim()
+                let prt= $(this).find("td").eq(11).text().trim()
+                let pickup=$(this).find("td").eq(13).text().trim().slice(-4)
+                let dropoff=$(this).find("td").eq(14).text().trim().slice(-4)
+                let status=$(this).find("td").eq(2).text().trim()
+
+                let puaddress=$(this).find("td").eq(13).text().split("San Francisco")[0].trim()
+                let doaddress=$(this).find("td").eq(14).text().split("San Francisco")[0].trim()
+
+                prt=(status.includes("VIP")?"🔥":"")+prt
+
+                status=status.includes("Cancelled")?3:
+                status.includes("Finished")?2:
+                status.includes("Onboard")?1:0
+                let temp={id:prt,pickup,dropoff,status,puaddress,doaddress}
+                //console.log(JSON.stringify(temp))
+                if(driver=="Han Yang Zhou"){
+                    drivers[0].passengers.push(temp)
+                }else if(driver=="Rong Tang"){
+                    drivers[1].passengers.push(temp)
+                }else if(driver=="Mauricio Reina"){
+                    drivers[2].passengers.push(temp)
+                }else if(driver=="Jerry Higgins"){
+                    drivers[3].passengers.push(temp)
+                }else if(driver=="Mingzhan Li"){
+                    drivers[4].passengers.push(temp)
+                }else if(driver=="Jerald Alejandro"){
+                    drivers[5].passengers.push(temp)
+                /*}else if(driver=="Fook Fung"){
+                    drivers[5].passengers.push(temp)*/
+                }else if(driver=="Walter Mejia"){
+                    drivers[6].passengers.push(temp)
+                }else if(driver=="Zhao Zhong Zheng"){
+                    drivers[7].passengers.push(temp)
+                }else if(driver=="Jabari Tyler"){
+                    drivers[8].passengers.push(temp)
+                }else if(driver=="Yingyang Chen"){
+                    drivers[9].passengers.push(temp)
+                }else if(driver=="Bert Reid"){
+                    drivers[10].passengers.push(temp)
+                }else if(driver=="Jie Qian"){
+                    drivers[11].passengers.push(temp)
+                }else if(driver=="Wilson Ochoa"){
+                    drivers[13].passengers.push(temp)
+                }else{
+                    drivers[14].passengers.push(temp)
+                }
+            })
+
+            try {
+                //console.log(111)
+                await fetchLunchTimes(drivers);
+            } catch (err) {
+                console.error('失败:', err);
+            }
+
+            tripStr=JSON.stringify(drivers)
+
+            return tripStr
+
+        }else{
+            return false
+        }
+
+        //return document.querySelector('#some-element').innerText; // 替换为你的选择器
+    }
+
+    // 主逻辑：每分钟运行
+    async function run() {
+/*
+
+        if($("#updateTripSheet").length==0){
+            $(".flex.gap-2").eq(1).append(`<button id="updateTripSheet" class="btn btn-primary">update Trip Sheet</button>`)
+            $("#updateTripSheet").click(async function(){
+                $(this).removeClass("btn-primary","fast").addClass("btn-danger","fast")
+                $(this).text("updating...")
+                await run();
+
+                $(this).removeClass("btn-danger","fast").addClass("btn-primary","fast")
+                $(this).text("update Trip Sheet")
+
+            })
+        }
+*/
+        //const content = await getTrips();
+        const content =await displayTrips()
+        /*
+        try{
+            // 查找目标 修改 日期
+            const targetInput = document.querySelector('input.form-control.w-52[placeholder="Select Date"]');
+
+            if (targetInput) {
+                //console.log('Found target input:', targetInput);
+
+                // 获取今天的日期并格式化为 M/D/YYYY
+                const today = new Date();
+                const month = today.getMonth() + 1; // 月份从 0 开始，需加 1
+                const day = today.getDate();
+                const year = today.getFullYear();
+                const formattedDate = `${month}/${day}/${year}`;
+                const newValue = `${formattedDate} ~ ${formattedDate}`; // 例如 "6/7/2025 ~ 6/7/2025"
+
+                if(newValue!==targetInput.value){
+
+                    // 临时移除 readonly 属性（如果存在）
+                    if (targetInput.hasAttribute('readonly')) {
+                        targetInput.removeAttribute('readonly');
+                    }
+
+                    // 设置新值
+                    targetInput.value = newValue;
+
+                    // 触发 input 事件，通知 Angular 更新模型
+                    const inputEvent = new Event('input', {
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    targetInput.dispatchEvent(inputEvent);
+
+                    // 触发 change 事件（某些情况下需要）
+                    const changeEvent = new Event('change', {
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    targetInput.dispatchEvent(changeEvent);
+
+                    // 恢复 readonly 属性
+                    targetInput.setAttribute('readonly', '');
+                }
+            } else {
+                console.log('Target input not found');
+            }
+
+
+            $("button:contains('Reset')").click()
+        }catch(e){
+        }
+        */
+        //console.log(content)
+
+        if (content) {
+            saveToKV(content);
+        } else {
+            console.error('未找到内容');
+        }
+
+    }
+
+//    await run(); // 立即运行
+    setInterval(run, 60000); // 每分钟
+
+
+    //用异步包装获取司机吃饭时间-----------------------开始
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbzBdbSd3xujI7CAwxPfD5b8KOktG6Z4VjqE_8q512q5Bc3MJjFRurs-aODOI-sIFzJR/exec';
+    // 包装 GM_xmlhttpRequest 为 Promise
+    function gmFetch(options) {
+        return new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                ...options,
+                onload: (response) => {
+                    resolve(response);
+                },
+                onerror: (err) => {
+                    reject(err);
+                }
+            });
+        });
+    }
+    // 异步获取数据
+    async function fetchLunchTimes(drivers) {
+        try {
+            const response = await gmFetch({
+                method: 'GET',
+                url: apiUrl,
+            });
+            console.log('请求完成，状态码:', response.status);
+            if (response.status === 200) {
+                try {
+                    const data = JSON.parse(response.responseText);
+                    console.log('数据获取成功:', data);
+                    for(let i=1;i<data.length;i++){
+                        let temp={"id":"Lunch","pickup":data[i][1]+"","dropoff":data[i][2]+""}
+                        let driver=data[i][0]
+                        if(driver=="Han Yang Zhou"){
+                            drivers[0].passengers.push(temp)
+                        }else if(driver=="Rong Tang"){
+                            drivers[1].passengers.push(temp)
+                        }else if(driver=="Mauricio Reina"){
+                            drivers[2].passengers.push(temp)
+                        }else if(driver=="Jerry Higgins"){
+                            drivers[3].passengers.push(temp)
+                        }else if(driver=="Mingzhan Li"){
+                            drivers[4].passengers.push(temp)
+                        }else if(driver=="Fook Fung"){
+                            drivers[5].passengers.push(temp)
+                        }else if(driver=="Walter Mejia"){
+                            drivers[6].passengers.push(temp)
+                        }else if(driver=="Zhao Zhong Zheng"){
+                            drivers[7].passengers.push(temp)
+                        }else if(driver=="Jabari Tyler"){
+                            drivers[8].passengers.push(temp)
+                        }else if(driver=="Yingyang Chen"){
+                            drivers[9].passengers.push(temp)
+                        }else if(driver=="Bert Reid"){
+                            drivers[10].passengers.push(temp)
+                        }else if(driver=="Jie Qian"){
+                            drivers[11].passengers.push(temp)
+                        }else if(driver=="Jerald Alejandro"){
+                            drivers[12].passengers.push(temp)
+                        }else if(driver=="Wilson Ochoa"){
+                            drivers[13].passengers.push(temp)
+                        }else{
+                            drivers[14].passengers.push(temp)
+                        }
+                    }
+                    //return data;
+                } catch (e) {
+                    console.error('解析 JSON 失败:', e, response.responseText);
+                    throw new Error(`JSON 解析失败: ${e.message}`);
+                }
+            } else {
+                console.error('请求失败，状态码:', response.status, '响应:', response.responseText);
+                throw new Error(`请求失败，状态码: ${response.status}`);
+            }
+        } catch (err) {
+            console.error('请求错误:', err);
+            throw err;
+        }
+    }
+    //用异步包装获取司机吃饭时间--------------------------结束
+    // Your code here...
+})();
