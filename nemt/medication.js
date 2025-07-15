@@ -1,11 +1,11 @@
-// version: v2.0.12
+// version: v2.0.13
 let routes = [];
 let prtMap, medicationMap, date;
 
 // 时间轴配置
-const totalWidth = 1000; // 与 planing 一致
+const totalWidth = 1000;
 const driverLabelWidth = 100;
-const timelineWidth = totalWidth - driverLabelWidth; // 900px
+const timelineWidth = totalWidth - driverLabelWidth;
 const laneHeight = 20;
 
 // 生成唯一 tripId
@@ -270,7 +270,6 @@ function exportRouteToCSV(route, date, prtMap, medicationMap) {
     const patient = passenger.id.toLowerCase();
     const prtRow = prtMap.get(patient) || {};
     const medicationRow = medicationMap.get(patient) || {};
-    const space = prtRow['Service Type'] || 'Ambulatory';
     const phone = getPassengerPhone(patient, prtMap, medicationMap);
     const pickupAddr = processAddress(passenger.puaddress);
     const dropoffAddr = processAddress(passenger.doaddress);
@@ -280,7 +279,7 @@ function exportRouteToCSV(route, date, prtMap, medicationMap) {
       'Req Pickup': formatTimeToHHMM(passenger.pickup),
       Appointment: formatTimeToHHMM(passenger.dropoff),
       Patient: passenger.id,
-      Space: space,
+      Space: 'DME & Rx',
       'Pickup Comment': passenger.note || '',
       'Dropoff Comment': '',
       Type: '',
@@ -337,7 +336,6 @@ function exportAllTrips(date, prtMap, medicationMap) {
       const patient = passenger.id.toLowerCase();
       const prtRow = prtMap.get(patient) || {};
       const medicationRow = medicationMap.get(patient) || {};
-      const space = prtRow['Service Type'] || 'Ambulatory';
       const phone = getPassengerPhone(patient, prtMap, medicationMap);
       const pickupAddr = processAddress(passenger.puaddress);
       const dropoffAddr = processAddress(passenger.doaddress);
@@ -348,7 +346,7 @@ function exportAllTrips(date, prtMap, medicationMap) {
         'Req Pickup': formatTimeToHHMM(passenger.pickup),
         Appointment: formatTimeToHHMM(passenger.dropoff),
         Patient: passenger.id,
-        Space: space,
+        Space: 'DME & Rx',
         'Pickup Comment': passenger.note || '',
         'Dropoff Comment': `@van${routeNumber}`,
         Type: '',
@@ -462,7 +460,7 @@ function filterTrips(searchText) {
     blocks.forEach(block => {
       block.style.opacity = "1";
     });
-    showSuggestions(searchText, prtMap); // 清空建议
+    showSuggestions(searchText, prtMap);
     return;
   }
 
@@ -486,7 +484,7 @@ function filterTrips(searchText) {
     block.style.opacity = matches ? "1" : "0.2";
   });
 
-  showSuggestions(searchText, prtMap); // 显示名字建议
+  showSuggestions(searchText, prtMap);
 }
 
 // 处理时间轴显示的 ID（仅限时间轴）
@@ -519,7 +517,6 @@ function showSuggestions(input, prtMap) {
   }
 
   const inputLower = input.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
-  // 检查输入是否完全匹配 prtMap 中的名字
   const exactMatch = Array.from(prtMap.entries()).some(([key, row]) => {
     const nameLower = row['Name'].toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
     return nameLower === inputLower;
@@ -536,7 +533,7 @@ function showSuggestions(input, prtMap) {
       const nameLower = row['Name'].toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
       return keywords.every(keyword => nameLower.includes(keyword));
     })
-    .slice(0, 5); // 最多显示5个
+    .slice(0, 5);
 
   if (matches.length === 0) {
     suggestions.style.display = 'none';
@@ -570,7 +567,6 @@ function showSuggestions(input, prtMap) {
     suggestions.appendChild(suggestion);
   });
 
-  // 动态设置 suggestions 位置
   const inputRect = searchInput.getBoundingClientRect();
   suggestions.style.left = `${inputRect.left}px`;
   suggestions.style.top = `${inputRect.bottom + window.scrollY}px`;
@@ -586,8 +582,8 @@ function renderTimelineHeader(minTime, maxTime) {
     return;
   }
   header.innerHTML = '';
-  const duration = (maxTime - minTime) / (1000 * 60 * 60); // 10 hours
-  const tickInterval = 1000 * 60 * 60; // 每1小时一个刻度
+  const duration = (maxTime - minTime) / (1000 * 60 * 60);
+  const tickInterval = 1000 * 60 * 60;
   for (let i = 0; i <= Math.floor(duration); i++) {
     const time = minTime + i * tickInterval;
     const pixel = timeToPixel(time, minTime, maxTime) + driverLabelWidth;
@@ -800,9 +796,9 @@ function renderRoutes(prtMap, medicationMap, date) {
       if (p.status === 'deleted') {
         block.classList.add("medication-status-cancelled");
       } else if (p.status === 'added') {
-        block.classList.add("medication-status-added"); // 新增行程为红色
+        block.classList.add("medication-status-added");
       } else {
-        block.classList.add("medication-b-leg-med"); // 默认咖啡色
+        block.classList.add("medication-b-leg-med");
       }
 
       block.addEventListener('click', (e) => {
@@ -998,10 +994,10 @@ function renderRoutes(prtMap, medicationMap, date) {
               for (let j = 0; j < tempPassengers.length; j++) {
                 if (JSON.stringify(tempPassengers[j]).includes(`"${p.tripId}"`)) {
                   if (passenger.status === 'deleted') {
-                    delete tempPassengers[j].status; // 恢复正常状态
+                    delete tempPassengers[j].status;
                     console.log('Restored trip:', tempPassengers[j]);
                   } else {
-                    tempPassengers[j].status = 'deleted'; // 标记为已删除
+                    tempPassengers[j].status = 'deleted';
                     console.log('Marked trip as deleted:', tempPassengers[j]);
                   }
                   break;
@@ -1184,11 +1180,10 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log('Added new trip:', newTrip);
       clearError();
       renderRoutes(prtMap, medicationMap, date);
-      searchInput.value = ''; // 清空输入框
+      searchInput.value = '';
       document.getElementById('suggestions').innerHTML = '';
       document.getElementById('suggestions').style.display = 'none';
     } else {
-      // 名字不在 prtMap 中，显示错误并生成可编辑表格
       showError(`Patient ${name} not found in prt Info`);
       displayContent.innerHTML = '';
 
