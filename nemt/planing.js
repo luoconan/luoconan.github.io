@@ -1,4 +1,4 @@
-// version: v2.1.20
+// version: v2.1.21
 let routes = [];
 let prtMap, darMap, date;
 
@@ -427,7 +427,7 @@ function renderTimelineHeader(minTime, maxTime) {
   const tickInterval = 1000 * 60 * 60;
   for (let i = 0; i <= Math.ceil(duration); i++) {
     const time = minTime + i * tickInterval;
-    const pixel = timeToPixel(time, minTime, maxTime) + driverLabelWidth;
+    const pixel = timeToPixel(time, minTime, maxTime) + driverLabelWidth + 100;
     const tick = document.createElement("div");
     tick.className = "time-tick";
     tick.style.left = `${pixel}px`;
@@ -462,7 +462,7 @@ function parseTable(text) {
     return { headers: [], data: [] };
   }
   const headers = lines[0].split('\t').map(h => h.trim());
-  console.log('Parsed DAR headers:', headers); // 添加日志以验证列名
+  console.log('Parsed DAR headers:', headers);
   if (!headers.includes('Escort')) {
     console.warn('Escort column not found in DAR headers');
   }
@@ -600,17 +600,20 @@ function generateTrips(prtInfoText, darText) {
 
       console.log('Processing patient:', patientKey, 'Visit Type:', visitType, 'Address:', address, 'Curr Facility:', currFacility, 'Escort:', escort);
 
-      const isGeary3595AndNoFacility = address.toLowerCase().includes('3595 geary') && !currFacility.trim();
-
-      // 处理 escort：如果不是 Y/N/-，根据 hasExternal 分配到 a-leg/b-leg 或 a-leg-ext/b-leg-ext
       const visitTypes = visitType.split(',').map(v => v.trim().toLowerCase());
       const hasExternal = visitTypes.includes('external appointment') || visitTypes.includes('ext');
+      const isGeary3595 = address.toLowerCase().includes('3595 geary');
+
+      // 只对非 external appointment 的行程应用 3595 Geary 过滤
+      const skipNormalTrips = isGeary3595 && !hasExternal;
+
+      // 处理 escort：如果不是 Y/N/-，根据 hasExternal 分配到 a-leg/b-leg 或 a-leg-ext/b-leg-ext
       const hasFromIOA = visitTypes.includes('fromioa');
       const hasBackIOA = visitTypes.includes('backioa');
       const escortValue = !['y', 'n', '-'].includes(escort.toLowerCase()) ? escort : '';
       console.log(`Escort value for ${patientKey}: ${escortValue}, hasExternal: ${hasExternal}, hasFromIOA: ${hasFromIOA}, hasBackIOA: ${hasBackIOA}`);
 
-      if (!isGeary3595AndNoFacility && !seenPatientsForNormalTrips.has(patientKey)) {
+      if (!skipNormalTrips && !seenPatientsForNormalTrips.has(patientKey)) {
         seenPatientsForNormalTrips.add(patientKey);
         // 处理 Visit Type：按逗号分隔并转换为小写
         const visitTypes = visitType.split(',').map(v => v.trim().toLowerCase());
@@ -699,45 +702,45 @@ function generateTrips(prtInfoText, darText) {
           });
           console.log('Generated b-leg for:', patientKey, 'Note:', hasExternal ? '' : escortValue);
         }
+      }
 
-        // 2. 额外生成外部预约行程（a-leg-ext 和 b-leg-ext）
-        if (hasExternal) {
-          const apptTime = row['appt time'].replace(":", "") || '0900';
-          if (!isValidTimeFormat(apptTime)) {
-            console.warn(`Invalid appt time for ${patientKey}: ${apptTime}, skipping external trips`);
-            showError(`Invalid appointment time format for ${patient}: must be HHMM (e.g., 0900)`);
-          } else {
-            const pickupALeg = adjustTime(apptTime, -45);
-            const dropoffALeg = apptTime;
-            const pickupBLeg = adjustTime(dropoffALeg, 90);
-            const dropoffBLeg = adjustTime(pickupBLeg, 45);
-            const apptNote = row['Appt Notes'] || '';
-            trips.push({
-              tripId: generateTripId(),
-              id: patient,
-              pickup: pickupALeg,
-              dropoff: dropoffALeg,
-              puaddress: hasFromIOA ? facilityAddressMap.IOA : address,
-              doaddress: apptNote,
-              status: 'noAction',
-              leg: 'a-leg-ext',
-              note: escortValue,
-              phone: getPassengerPhone(patient, prtMap, darMap)
-            });
-            trips.push({
-              tripId: generateTripId(),
-              id: patient,
-              pickup: pickupBLeg,
-              dropoff: dropoffBLeg,
-              puaddress: apptNote,
-              doaddress: hasBackIOA ? facilityAddressMap.IOA : address,
-              status: 'noAction',
-              leg: 'b-leg-ext',
-              note: escortValue,
-              phone: getPassengerPhone(patient, prtMap, darMap)
-            });
-            console.log('Generated external trips for:', patientKey, 'apptTime:', apptTime, 'Note:', escortValue, 'FromIOA:', hasFromIOA, 'BackIOA:', hasBackIOA);
-          }
+      // 2. 额外生成外部预约行程（a-leg-ext 和 b-leg-ext）
+      if (hasExternal) {
+        const apptTime = row['appt time'].replace(":", "") || '0900';
+        if (!isValidTimeFormat(apptTime)) {
+          console.warn(`Invalid appt time for ${patientKey}: ${apptTime}, skipping external trips`);
+          showError(`Invalid appointment time format for ${patient}: must be HHMM (e.g., 0900)`);
+        } else {
+          const pickupALeg = adjustTime(apptTime, -45);
+          const dropoffALeg = apptTime;
+          const pickupBLeg = adjustTime(dropoffALeg, 90);
+          const dropoffBLeg = adjustTime(pickupBLeg, 45);
+          const apptNote = row['Appt Notes'] || '';
+          trips.push({
+            tripId: generateTripId(),
+            id: patient,
+            pickup: pickupALeg,
+            dropoff: dropoffALeg,
+            puaddress: hasFromIOA ? facilityAddressMap.IOA : address,
+            doaddress: apptNote,
+            status: 'noAction',
+            leg: 'a-leg-ext',
+            note: escortValue,
+            phone: getPassengerPhone(patient, prtMap, darMap)
+          });
+          trips.push({
+            tripId: generateTripId(),
+            id: patient,
+            pickup: pickupBLeg,
+            dropoff: dropoffBLeg,
+            puaddress: apptNote,
+            doaddress: hasBackIOA ? facilityAddressMap.IOA : address,
+            status: 'noAction',
+            leg: 'b-leg-ext',
+            note: escortValue,
+            phone: getPassengerPhone(patient, prtMap, darMap)
+          });
+          console.log('Generated external trips for:', patientKey, 'apptTime:', apptTime, 'Note:', escortValue, 'FromIOA:', hasFromIOA, 'BackIOA:', hasBackIOA);
         }
       }
     }
@@ -879,13 +882,12 @@ function renderRoutes(prtMap, darMap, date) {
       block.dataset.pickup = p.pickup;
       block.dataset.dropoff = p.dropoff;
 
-      // 优先检查 deleted 状态
       if (p.status === 'deleted') {
         block.classList.add("status-cancelled");
       } else if (p.id === "Lunch") {
         block.classList.add("id-lunch");
       } else if (p.leg === 'a-leg-ext' || p.leg === 'b-leg-ext') {
-        block.classList.add('external-appointment');
+        block.classList.add("external-appointment");
       } else {
         const status = p.status;
         if (status === 1 || status === "onBoard") {
