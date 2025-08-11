@@ -336,7 +336,7 @@
             if (!pmArr[i]) continue;
             for (let j = 0; j < pmArr[i].length; j++) {
                 let tempPrt = pmArr[i][j];
-                let r = i == 0 ? "Joe" : i;
+                let r = i; //== 0 ? "Joe" : i;
                 byRouteArr.push([whichRoom(tempPrt.replace("__<b>Warning</b>", "")), r, isWheelchair(tempPrt)]);
             }
         }
@@ -363,3 +363,4 @@
     });
 });
 </script>
+
