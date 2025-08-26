@@ -1,4 +1,4 @@
-//version 8/26/2025 11.05
+//version 8/26/2025 12.05
 addrs={
         "1 Thomas More Way": "2",
         "1001 Franklin Street": "8",
@@ -260,6 +260,9 @@ prtObjInfo = {
         "room": "3"
     },
     "Carroll-Iturralde, Ruth": {
+        "room": "3"
+    },
+    "Carroll-iturralde, Ruth": {
         "room": "3"
     },
     "Carroll, Robert A": {
