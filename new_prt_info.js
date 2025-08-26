@@ -1,4 +1,4 @@
-//version 7/22/2025 11.05
+//version 8/26/2025 11.05
 addrs={
         "1 Thomas More Way": "2",
         "1001 Franklin Street": "8",
@@ -287,7 +287,7 @@ prtObjInfo = {
         "room": "1"
     },
     "Chan, Shun Chow": {
-        "room": "1"
+        "room": "2"
     },
     "Chan, Sook Wah": {
         "room": "1"
