@@ -234,7 +234,7 @@ function exportAllTrips(date, prtMap, darMap) {
         Patient: passenger.id,
         Space: space,
         'Pickup Comment': passenger.note || '',
-        'Dropoff Comment': `@van${routeNumber}`,
+        'Dropoff Comment': `@van${routeNumber>9?routeNumber:'0'+routeNumber}`,
         Type: '',
         'Pickup Phone': phone,
         'Dropoff Phone': '',
