@@ -1,4 +1,4 @@
-// version: v2.1.21
+// version: v2.1.22
 let routes = [];
 let prtMap, darMap, date;
 
@@ -620,9 +620,9 @@ function generateTrips(prtInfoText, darText) {
 
         // 1. 生成普通行程（a-leg 和 b-leg）
         let aLegPickup = '0900';
-        let aLegDropoff = '1000';
-        let bLegPickup = '1530';
-        let bLegDropoff = '1630';
+        let aLegDropoff = '1030';
+        let bLegPickup = '1545';
+        let bLegDropoff = '1645';
         let generateALeg = true;
         let generateBLeg = true;
 
