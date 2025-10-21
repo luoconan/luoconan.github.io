@@ -1,5 +1,5 @@
-//version 10/21/2025 10.15/
-addrs={/
+//version 10/21/2025 10:15/
+addrs={
         "1 Thomas More Way": "2",
         "1001 Franklin Street": "8",
         "1025 Fillmore Street": "8",
