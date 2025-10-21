@@ -250,6 +250,9 @@ prtObjInfo = {
     "Cabrera de Interiano, Elva": {
         "room": "3"
     },
+    "Cabrera De Interiano, Elva": {
+        "room": "3"
+    },
     "Cafferty, Ellen F": {
         "room": "3"
     },
@@ -1140,6 +1143,27 @@ prtObjInfo = {
     },
     "Zhu, Cui Liang": {
         "room": "1"
+    },
+    "Lai, Wai Ping": {
+        "room": "1"
+    },
+    "Rothstein, Karen": {
+        "room": "2"
+    },
+    "Wernick, Sandra": {
+        "room": "2"
+    },
+    "Haynes, Cristina": {
+        "room": "3"
+    },
+    "Nagata, Bulou V": {
+        "room": "3"
+    },
+    "Wong, Mangyung": {
+        "room": "1"
+    },
+    "Gllegos Figueroa, Adriana Socorro": {
+        "room": "3"
     }
 }
 function getForDAR() {
