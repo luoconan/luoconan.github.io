@@ -1,4 +1,4 @@
-//version 11/5/2025 15:15/
+//version 11/5/2025 16:15/
 addrs={
         "1 Thomas More Way": "2",
         "1001 Franklin Street": "8",
@@ -247,6 +247,9 @@ prtObjInfo = {
         "room": 3
     },
     "Cabrera de Interiano, Elva": {
+        "room": 3
+    },
+    "Cabrera De Interiano, Elva": {
         "room": 3
     },
     "Cafferty, Ellen F": {
@@ -645,6 +648,9 @@ prtObjInfo = {
     "Lee, Sooja": {
         "room": 2
     },
+    "Lee, Funglin So":{
+      "room":1      
+    },
     "Lee-Danridge, Robin E": {
         "room": 3
     },
@@ -780,6 +786,9 @@ prtObjInfo = {
     "Melville, Ruth": {
         "room": 3
     },
+    "Melville, Ruth E": {
+        "room": 3
+    },
     "Mengesha, Hiwan": {
         "room": 3
     },
@@ -866,6 +875,9 @@ prtObjInfo = {
     },
     "Quach, Miles": {
         "room": 1
+    },
+    "Rogers, Jeanne M":{
+        "room":3
     },
     "Ramos, Gladys": {
         "room": 3
