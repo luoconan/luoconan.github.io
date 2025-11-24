@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="./bootstrap.css" rel="stylesheet">
+    <script src="js/jq.js"></script>
+    <script src="./bootstrap.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New_Route_Sheet</title>
+    <style>
+        * {
+            color: black;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            padding: 5px;
+        }
+
+        /* --- 标题样式 --- */
+        #dateHeader {
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 0;
+            padding: 2px 0;
+            line-height: 1.1;
+            user-select: none;
+            cursor: pointer;
+        }
+        
+        #dateHeader:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* 司机设置表格样式 */
+        #driverSetupContainer {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        
+        #driverSetupContainer h3 {
+            font-size: 1em;
+            margin: 0 0 5px 0;
+            line-height: 1;
+            text-align: center;
+        }
+
+        #driverTable {
+            border-collapse: collapse;
+            width: auto;
+            min-width: 300px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #driverTable th {
+            background-color: #007bff;
+            color: white;
+            padding: 4px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        #driverTable td {
+            border: 1px solid #ddd;
+            padding: 2px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #driverTable tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .rt-input {
+            width: 80px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 2px;
+            font-weight: bold;
+            color: #0056b3;
+            font-size: 0.9em;
+        }
+
+        #btnSet {
+            margin-top: 5px;
+            width: 100%;
+            padding: 5px;
+            font-size: 0.9em;
+        }
+
+        #mainSheet {
+            display: none;
+            margin-top: 2px;
+        }
+
+        /* --- 主表格通用样式 --- */
+        .sheet-table {
+            width: auto;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .sheet-table th, .sheet-table td {
+            border: 1px solid black;
+            padding: 1px 2px;
+            text-align: left;
+            font-size: 0.75em;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .col-med-addr {
+            white-space: normal !important;
+        }
+
+        .sheet-table th {
+            background-color: #e2e3e5;
+            text-align: center;
+            font-weight: bold;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        /* --- Room 模式布局 (紧凑靠左) --- */
+        .room-row {
+            display: flex;
+            width: auto;
+            justify-content: flex-start;
+            gap: 3px;
+            align-items: flex-start;
+        }
+        
+        .room-col {
+            flex: 0 1 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .room-header-row th {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            font-size: 0.9em;
+            padding: 2px;
+        }
+
+        /* --- AM/PM 列宽 --- */
+        .col-prt { 
+            white-space: nowrap;
+        } 
+        .col-rt { text-align: center; }
+        .col-warn { text-align: center; }
+        .col-sep { width: 10px; border: none; }
+
+        /* --- Med 样式 --- */
+        .med-table th, .med-table td {
+            border-left: none;
+            border-right: none;
+        }
+        
+        .col-med-rt { text-align: center; padding: 0 5px; }
+        .col-med-name { padding: 0 5px; }
+        .col-med-addr { max-width: 300px; }
+        .col-med-phone { text-align: center; }
+        .col-med-sign { min-width: 100px; border-left: 1px solid black !important; }
+
+        .text-center { text-align: center !important; }
+        
+        .pickup-time {
+            font-size: 0.8em;
+            color: #555;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="driverSetupContainer">
+        <div>
+            <h3>Setup Routes</h3>
+            <table id="driverTable">
+                <thead>
+                    <tr>
+                        <th>Driver</th>
+                        <th>Route # (Default)</th>
+                    </tr>
+                </thead>
+                <tbody id="driverListBody">
+                </tbody>
+            </table>
+            <button id="btnSet" class="btn btn-primary">Generate Sheet</button>
+        </div>
+    </div>
+
+    <div id="mainSheet">
+        <div id="dateHeader"></div>
+        <div id="tableContainer"></div>
+    </div>
+
+</body>
+
+<script>
+    // ---------------- 配置区域 ----------------
+    const defaultRoutes = {
+        "Bert Reid": "10",
+        "Jabari Tyler": "6",
+        "Jerald Alejandro": "3",
+        "Jerry Higgins": "4",
+        "Mauricio Reina": "1",
+        "Mingzhan Li": "2",
+        "Rong Tang": "9",
+        "Walter Mejia": "8",
+        "Yingyang Chen": "7",
+        "Zhao Zhong Zheng": "5",
+        "Jie Qian": "11",
+        "Wilson Ochoa": "12",
+        "Han Yang Zhou": "Joe",
+        "Minjie Cao": "Sam"
+    };
+    // ----------------------------------------
+
+    let globalData = [];
+    let driverRouteMap = {};
+    let urlParams = {};
+    
+    let currentSortMode = 0; 
+
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var href = window.location.href;
+            var reg = new RegExp("[?&]" + name + "=([^&]*)");
+            var r = href.match(reg);
+            if (r != null) return decodeURIComponent(r[1]); return null;
+        }
+    })(jQuery);
+
+    $(document).ready(function () {
+        urlParams.type = $.getUrlParam("type");
+        urlParams.date = $.getUrlParam("date");
+        
+        let rawArrStr = $.getUrlParam("arr");
+        let rawArr = [];
+        
+        if (rawArrStr) {
+            try {
+                rawArr = JSON.parse(rawArrStr);
+            } catch (e) {
+                try { rawArr = eval(rawArrStr); } catch (e2) {}
+            }
+        }
+        if(!rawArr || !Array.isArray(rawArr)) rawArr = [];
+
+        processRawData(rawArr, urlParams.type);
+
+        // --- 司机表生成逻辑 (按 Route 排序) ---
+        let uniqueDrivers = [...new Set(globalData.map(item => item.driver))].filter(d => d && d.trim() !== "");
+        
+        let driversWithSortInfo = uniqueDrivers.map(driver => {
+            let dName = driver.trim();
+            let routeVal = defaultRoutes[dName];
+            return {
+                name: dName,
+                route: routeVal,
+                isNum: (routeVal && !isNaN(routeVal))
+            };
+        });
+
+        driversWithSortInfo.sort((a, b) => {
+            if (!a.route && !b.route) return a.name.localeCompare(b.name);
+            if (!a.route) return 1;
+            if (!b.route) return -1;
+            if (a.isNum && b.isNum) return parseInt(a.route) - parseInt(b.route);
+            if (a.isNum && !b.isNum) return -1;
+            if (!a.isNum && b.isNum) return 1;
+            return a.route.localeCompare(b.route);
+        });
+
+        let driverHtml = "";
+        driversWithSortInfo.forEach((item) => {
+            let val = item.route || "";
+            driverHtml += `<tr><td>${item.name}</td><td><input type="text" class="rt-input" data-driver="${item.name}" value="${val}" placeholder="#"></td></tr>`;
+        });
+        $("#driverListBody").html(driverHtml || "<tr><td colspan='2' style='color:red;'>No drivers found.</td></tr>");
+
+        let titleSuffix = "";
+        if(urlParams.type) titleSuffix = ` (${urlParams.type.toUpperCase()})`;
+        
+        let dateText = (urlParams.date || "No Date") + titleSuffix;
+        
+        $("#dateHeader").text(dateText);
+
+        // --- 点击事件逻辑更新 ---
+        $("#dateHeader").click(function() {
+            if (urlParams.type === 'med') {
+                // Med 只有 2 种模式: 0=Name, 1=Rt#
+                currentSortMode = (currentSortMode + 1) % 2;
+            } else {
+                // AM/PM 有 3 种模式: 0=Name, 1=Rt#, 2=Room
+                currentSortMode = (currentSortMode + 1) % 3;
+            }
+            renderMainTable(urlParams.type);
+        });
+    });
+
+    function processRawData(arr, type) {
+        globalData = [];
+        arr.forEach(str => {
+            if(!str) return;
+            let parts = str.split(">");
+            let obj = {
+                driver: parts[0] ? parts[0].trim() : "Unknown",
+                name: parts[1] ? parts[1].trim() : "",
+                rawString: str
+            };
+            if (type === 'med') {
+                obj.address = parts[2] ? parts[2].trim() : "";
+                obj.phone = parts[3] ? parts[3].trim() : "";
+            } else {
+                obj.room = parts[2] ? parts[2].trim() : "";
+                obj.wander = parts[3] ? parts[3].trim() : "";
+            }
+            globalData.push(obj);
+        });
+    }
+
+    function getRoomEmoji(roomStr) {
+        if (!roomStr) return "😄";
+        let r = roomStr.toLowerCase();
+        if (r.includes("sun")) return "☀️";
+        if (r.includes("star")) return "✨";
+        if (r.includes("moon")) return "🌙";
+        return "😄";
+    }
+
+    function getRoomTypeIndex(roomStr) {
+        if (!roomStr) return 3;
+        let r = roomStr.toLowerCase();
+        if (r.includes("sun")) return 0;
+        if (r.includes("star")) return 1;
+        if (r.includes("moon")) return 2;
+        return 3;
+    }
+
+    function formatName(nameStr) {
+        if (nameStr.includes("-@@")) {
+            let parts = nameStr.split("-@@");
+            return `${parts[0]} <span class="pickup-time">@ ${parts[1]}</span>`;
+        }
+        return nameStr;
+    }
+
+    $("#btnSet").click(function() {
+        $(".rt-input").each(function() {
+            let driver = $(this).data("driver");
+            let rtVal = $(this).val();
+            driverRouteMap[driver] = rtVal;
+        });
+        $("#driverSetupContainer").hide();
+        $("#mainSheet").show();
+        renderMainTable(urlParams.type);
+    });
+
+    function createCellHtml(item) {
+        if (!item) {
+            return `<td class="col-prt">&nbsp;</td><td class="col-rt"></td><td class="col-warn"></td>`;
+        }
+        let emoji = getRoomEmoji(item.room);
+        let displayName = formatName(item.name);
+        let fullPrtDisplay = `${emoji} ${displayName}`;
+        let rtNum = driverRouteMap[item.driver] || "-";
+        let warnDisplay = (item.wander && item.wander.length > 0) ? "⚠️" : "";
+
+        return `<td class="col-prt">${fullPrtDisplay}</td>
+                <td class="col-rt text-center">${rtNum}</td>
+                <td class="col-warn text-center">${warnDisplay}</td>`;
+    }
+
+    function renderRoomTable(title, dataArray) {
+        let hasData = dataArray && dataArray.length > 0;
+        
+        let html = `<table class="sheet-table">
+            <thead>
+                <tr class="room-header-row"><th colspan="3">${title}</th></tr>
+                <tr>
+                    <th class="col-prt">Prt</th>
+                    <th class="col-rt">Rt#</th>
+                    <th class="col-warn">⚠️</th>
+                </tr>
+            </thead>
+            <tbody>`;
+        
+        if (hasData) {
+            dataArray.sort((a, b) => a.name.localeCompare(b.name));
+            dataArray.forEach(item => {
+                let emoji = getRoomEmoji(item.room);
+                let displayName = formatName(item.name);
+                let fullPrtDisplay = `${emoji} ${displayName}`;
+                let rtNum = driverRouteMap[item.driver] || "-";
+                let warnDisplay = (item.wander && item.wander.length > 0) ? "⚠️" : "";
+                
+                html += `<tr>
+                    <td class="col-prt">${fullPrtDisplay}</td>
+                    <td class="col-rt text-center">${rtNum}</td>
+                    <td class="col-warn text-center">${warnDisplay}</td>
+                </tr>`;
+            });
+        } else {
+             html += `<tr><td colspan="3" style="text-align:center; color:#ccc;">-</td></tr>`;
+        }
+        
+        html += `</tbody></table>`;
+        return html;
+    }
+
+    function renderMainTable(type) {
+        let html = "";
+        
+        if (type === 'med') {
+            // --- MED 类型 ---
+            let sortedData = [...globalData];
+
+            if (currentSortMode === 1) {
+                // Rt# Sort
+                sortedData.sort((a, b) => {
+                    let rA = driverRouteMap[a.driver] || "999";
+                    let rB = driverRouteMap[b.driver] || "999";
+                    return rA.localeCompare(rB, undefined, {numeric: true, sensitivity: 'base'});
+                });
+            } else {
+                // Name Sort (Default)
+                sortedData.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            html += `<table class="sheet-table med-table">
+                        <thead>
+                            <tr>
+                                <th class="col-med-rt">Rt#</th>
+                                <th class="col-med-name">Name</th>
+                                <th class="col-med-addr">Address</th>
+                                <th class="col-med-phone">Phone</th>
+                                <th class="col-med-sign">Sign</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+            sortedData.forEach(item => {
+                let rtNum = driverRouteMap[item.driver] || "-";
+                let displayName = formatName(item.name);
+                html += `<tr>
+                            <td class="col-med-rt">${rtNum}</td>
+                            <td class="col-med-name">${displayName}</td>
+                            <td class="col-med-addr">${item.address || ""}</td>
+                            <td class="col-med-phone">${item.phone || ""}</td>
+                            <td class="col-med-sign"></td>
+                         </tr>`;
+            });
+            html += `</tbody></table>`;
+
+        } else {
+            // --- AM / PM 类型 ---
+            
+            if (currentSortMode === 2) {
+                // *** Room Sort Mode ***
+                let sunArr = [], starArr = [], moonArr = [], otherArr = [];
+                
+                globalData.forEach(item => {
+                    let typeIdx = getRoomTypeIndex(item.room);
+                    if (typeIdx === 0) sunArr.push(item);
+                    else if (typeIdx === 1) starArr.push(item);
+                    else if (typeIdx === 2) moonArr.push(item);
+                    else otherArr.push(item);
+                });
+
+                html += `<div class="room-row">`;
+                
+                html += `<div class="room-col">`;
+                html += renderRoomTable("☀️ Sun", sunArr);
+                html += `</div>`;
+
+                html += `<div class="room-col">`;
+                html += renderRoomTable("✨ Star", starArr);
+                html += `</div>`;
+
+                html += `<div class="room-col">`;
+                html += renderRoomTable("🌙 Moon", moonArr);
+                if (otherArr.length > 0) {
+                     html += renderRoomTable("😄 Other", otherArr);
+                }
+                html += `</div>`;
+                
+                html += `</div>`;
+
+            } else {
+                // *** Default Sort Mode ***
+                let sortedData = [...globalData];
+
+                if (currentSortMode === 1) {
+                    sortedData.sort((a, b) => {
+                        let rA = driverRouteMap[a.driver] || "999";
+                        let rB = driverRouteMap[b.driver] || "999";
+                        return rA.localeCompare(rB, undefined, {numeric: true, sensitivity: 'base'});
+                    });
+                } else {
+                    sortedData.sort((a, b) => a.name.localeCompare(b.name));
+                }
+
+                let total = sortedData.length;
+                let mid = Math.ceil(total / 2);
+
+                html += `<table class="sheet-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-prt">Prt</th>
+                                    <th class="col-rt">Rt#</th>
+                                    <th class="col-warn">⚠️</th>
+                                    <th class="col-sep"></th>
+                                    <th class="col-prt">Prt</th>
+                                    <th class="col-rt">Rt#</th>
+                                    <th class="col-warn">⚠️</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                for (let i = 0; i < mid; i++) {
+                    let leftItem = sortedData[i];
+                    let rightIndex = i + mid;
+                    let rightItem = (rightIndex < total) ? sortedData[rightIndex] : null;
+
+                    html += `<tr>`;
+                    html += createCellHtml(leftItem);
+                    html += `<td class="col-sep"></td>`;
+                    html += createCellHtml(rightItem);
+                    html += `</tr>`;
+                }
+                html += `</tbody></table>`;
+            }
+        }
+        
+        $("#tableContainer").html(html);
+    }
+</script>
+</html>
