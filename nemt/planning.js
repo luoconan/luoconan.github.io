@@ -1,4 +1,4 @@
-// version: v2.3.10 (Medication Space = DME & Rx)
+// version: v2.4.0 (Custom Export & AddTrip Integration)
 let routes = [];
 let prtMap, darMap, date;
 
@@ -102,24 +102,12 @@ function getPassengerPhone(patient, prtMap, darMap) {
   return phone;
 }
 
+// --- MODIFICATION START (Pickup Comment requirement: Simplified Note) ---
+// 简化逻辑：Pickup Comment 只需要 passenger.note 的内容 (即用户在 addtrip.js 中 input 框填写的值)
 function constructNote(passenger, prtRow) {
-  if (passenger.leg === 'b-leg-Med') {
-    let note = "medication";
-    const pickupNote = prtRow ? (prtRow['Pickup Note'] || prtRow['Pickup Info']) : '';
-    if (pickupNote && pickupNote.trim()) {
-      note += ` ( - ${pickupNote.trim()})`;
-    }
-    return note;
-  }
-  const escortPart = passenger.note || ''; 
-  if (!prtRow) return escortPart;
-  const pickupInfo = prtRow['Pickup Info'] || prtRow['Pickup Note'] || '';
-  const wander = prtRow['Wander'] || '';
-  const parts = [escortPart, pickupInfo, wander]
-    .map(s => s ? s.trim() : '')
-    .filter(s => s !== '');
-  return parts.join(' - ');
+  return (passenger.note || '').trim();
 }
+// --- MODIFICATION END ---
 
 const facilityAddressMap = {
   'IOA': '3575 Geary Blvd San Francisco CA 94118',
@@ -227,6 +215,7 @@ function generateTrips(prtInfoText, darText) {
   if (darLines.length < 3) return { date: '', routes: [], darMap: new Map() };
   
   const dateMatch = darLines[0].match(/(\w+,\s*(\d{2})\/(\d{2})\/(\d{4}))/);
+  // 确保 date 格式为 MM/DD/YYYY
   date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : `--/--/${new Date().getFullYear()}`;
   
   let dayOfWeek = -1;
@@ -299,7 +288,6 @@ function generateTrips(prtInfoText, darText) {
         baseMismatch = checkMismatch(pData.rows[0], prtRow);
     }
 
-    // 2. 生成基础行程
     const baseTrips = { a: null, b: null };
     
     if (!isCenterAddress(address)) {
@@ -307,16 +295,14 @@ function generateTrips(prtInfoText, darText) {
         tripId: generateTripId(), id: name, status: 'noAction', leg: 'a-leg',
         pickup: '0900', dropoff: '1030',
         puaddress: address, doaddress: facilityAddressMap.IOA,
-        note: '', // 基础行程不显示 Escort
-        phone: getPassengerPhone(name, prtMap, darMap),
+        note: escortValue, phone: getPassengerPhone(name, prtMap, darMap),
         mismatch: baseMismatch
       };
       baseTrips.b = {
         tripId: generateTripId(), id: name, status: 'noAction', leg: 'b-leg',
         pickup: '1545', dropoff: '1645',
         puaddress: facilityAddressMap.IOA, doaddress: address,
-        note: '', // 基础行程不显示 Escort
-        phone: getPassengerPhone(name, prtMap, darMap),
+        note: escortValue, phone: getPassengerPhone(name, prtMap, darMap),
         mismatch: baseMismatch
       };
     }
@@ -349,7 +335,6 @@ function generateTrips(prtInfoText, darText) {
       if (!hasGlobal('backioa')) baseTrips.b = null;
     }
 
-    // 3. 逐行生成外部行程
     pData.rows.forEach(row => {
       const vt = parseVisitType(row['Visit Type'] || '');
       const apptTimeRaw = (row['appt time'] || '').replace(':', '');
@@ -415,7 +400,7 @@ function generateTrips(prtInfoText, darText) {
     if (baseTrips.b) allTrips.push(baseTrips.b);
   });
 
-  // Medication Trip 逻辑
+  // Medication Trip 逻辑 (DAR-based)
   if (dayOfWeek !== -1) {
     prtMap.forEach((prtRow, patientKey) => {
       const medDay = prtRow['Med Day'];
@@ -429,13 +414,15 @@ function generateTrips(prtInfoText, darText) {
         const name = prtRow['Name'];
         let doaddress = prtRow['Address'] || '';
         
+        // 新增检查：如果 PRT Info 的地址是 Center，则跳过
         if (isCenterAddress(doaddress)) return;
 
         allTrips.push({
           tripId: generateTripId(), id: name, status: 'noAction', leg: 'b-leg-Med',
           pickup: '1700', dropoff: '1730',
           puaddress: facilityAddressMap.IOA, doaddress: doaddress,
-          note: '', phone: getPassengerPhone(name, prtMap, darMap)
+          note: '', // MODIFICATION: 这里清空 note，确保使用 addtrip.js 表单输入的 note
+          phone: getPassengerPhone(name, prtMap, darMap)
         });
       }
     });
@@ -465,9 +452,6 @@ function generateTrips(prtInfoText, darText) {
   return { date, routes, darMap };
 }
 
-// ==========================================
-// 修改部分: CSV Space 列逻辑 (b-leg-Med -> DME & Rx)
-// ==========================================
 function exportRouteToCSV(route, date, prtMap, darMap) {
   const headers = [
     'Date', 'Req Pickup', 'Appointment', 'Patient', 'Space', 'Pickup Comment', 'Dropoff Comment', 'Type',
@@ -476,19 +460,14 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
     'Dropoff Address', 'Dropoff Address1', 'Dropoff City', 'Dropoff State', 'Dropoff Zip', 'Trip ID'
   ];
   const rows = [];
-  const fullDate = date;
+  // date 变量已经在 generateTrips 中被格式化为 MM/DD/YYYY
+  const fullDate = date; 
 
   route.passengers.forEach(passenger => {
     if (passenger.status === 'deleted') return;
     const patient = passenger.id.toLowerCase();
     const prtRow = prtMap.get(patient) || {};
-    
-    // Space 逻辑修改
-    let space = prtRow['Service Type'] || 'Ambulatory';
-    if (passenger.leg === 'b-leg-Med') {
-        space = 'DME & Rx';
-    }
-
+    const space = prtRow['Service Type'] || 'Ambulatory';
     const phone = getPassengerPhone(patient, prtMap, darMap);
     const pickupAddr = processAddress(passenger.puaddress);
     const dropoffAddr = processAddress(passenger.doaddress);
@@ -500,7 +479,8 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
       typeVal = 'Medication';
     }
 
-    const finalNote = constructNote(passenger, prtRow);
+    const finalNote = constructNote(passenger, prtRow); // 使用简化的 Note
+    const authorization = prtRow['MRN'] || ''; // MODIFICATION: 从 PRT 获取 MRN 作为 Authorization
 
     const row = {
       Date: fullDate,
@@ -508,12 +488,12 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
       Appointment: formatTimeToHHMM(passenger.dropoff),
       Patient: passenger.id,
       Space: space,
-      'Pickup Comment': finalNote,
+      'Pickup Comment': finalNote, // MODIFICATION: 使用简化的 Note
       'Dropoff Comment': '',
       Type: typeVal,
       'Pickup Phone': phone,
       'Dropoff Phone': '',
-      Authorization: '',
+      Authorization: authorization, // MODIFICATION: Authorization 字段
       'Funding Source': 'PACE - IOA',
       Distance: '',
       Run: '',
@@ -554,18 +534,14 @@ function exportAllTrips(date, prtMap, darMap) {
   const fullDate = date;
 
   routes.forEach(route => {
+    // MODIFICATION: 跳过 unschedule 队列的导出
     if (route.id === 'unschedule') return;
+    
     route.passengers.forEach(passenger => {
       if (passenger.status === 'deleted') return;
       const patient = passenger.id.toLowerCase();
       const prtRow = prtMap.get(patient) || {};
-      
-      // Space 逻辑修改
-      let space = prtRow['Service Type'] || 'Ambulatory';
-      if (passenger.leg === 'b-leg-Med') {
-          space = 'DME & Rx';
-      }
-
+      const space = prtRow['Service Type'] || 'Ambulatory';
       const phone = getPassengerPhone(patient, prtMap, darMap);
       const pickupAddr = processAddress(passenger.puaddress);
       const dropoffAddr = processAddress(passenger.doaddress);
@@ -578,7 +554,8 @@ function exportAllTrips(date, prtMap, darMap) {
         typeVal = 'Medication';
       }
 
-      const finalNote = constructNote(passenger, prtRow);
+      const finalNote = constructNote(passenger, prtRow); // 使用简化的 Note
+      const authorization = prtRow['MRN'] || ''; // MODIFICATION: 从 PRT 获取 MRN 作为 Authorization
 
       const row = {
         Date: fullDate,
@@ -586,12 +563,12 @@ function exportAllTrips(date, prtMap, darMap) {
         Appointment: formatTimeToHHMM(passenger.dropoff),
         Patient: passenger.id,
         Space: space,
-        'Pickup Comment': finalNote,
+        'Pickup Comment': finalNote, // MODIFICATION: 使用简化的 Note
         'Dropoff Comment': `@van${parseInt(routeNumber)>9?routeNumber:'0'+parseInt(routeNumber)}`,
         Type: typeVal,
         'Pickup Phone': phone,
         'Dropoff Phone': '',
-        Authorization: '',
+        Authorization: authorization, // MODIFICATION: Authorization 字段
         'Funding Source': 'PACE - IOA',
         Distance: '',
         Run: '',
@@ -896,7 +873,7 @@ function renderRoutes(prtMap, darMap, date) {
         block.style.backgroundColor = '#9400D3'; // Highlight address mismatch
       } else if (p.status === 'deleted') {
         block.classList.add("status-cancelled");
-      } else if (p.leg && p.leg.includes('ext')) {
+      } else if (p.leg && (p.leg.includes('ext') || p.leg.includes('manual'))) {
         block.classList.add("external-appointment");
       } else {
         const status = p.status;
@@ -1092,6 +1069,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById('searchInput');
   const exportAllBtn = document.getElementById('exportAllBtn');
 
+  // 将全局 prtMap 和 darMap 绑定到 window，供 addtrip.js 访问和修改
+  window.prtMap = prtMap;
+  window.darMap = darMap;
+  window.date = date;
+
   if (planBtn) {
     planBtn.addEventListener('click', () => {
       const prt = prtInfoInput.value.trim();
@@ -1100,7 +1082,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = generateTrips(prt, dar);
       routes = res.routes; date = res.date; darMap = res.darMap;
       const pi = parseTable(prt);
-      prtMap = new Map(); pi.data.forEach(r => { if(r.Name) prtMap.set(r.Name.toLowerCase(), r); });
+      prtMap = new Map(); pi.data.forEach(r => { 
+        // 确保 MRN 字段存在
+        if (r['MRN'] === undefined) r['MRN'] = ''; 
+        if(r.Name) prtMap.set(r.Name.toLowerCase(), r); 
+      });
+      // 更新全局变量
+      window.prtMap = prtMap;
+      window.darMap = darMap;
+      window.date = date;
+      
       planDateSpan.textContent = `Date: ${date}`;
       renderRoutes(prtMap, darMap, date);
     });
