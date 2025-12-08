@@ -1,4 +1,4 @@
-// version: v2.4.0 (Custom Export & AddTrip Integration)
+// version: v2.4.1 
 let routes = [];
 let prtMap, darMap, date;
 
@@ -541,7 +541,7 @@ function exportAllTrips(date, prtMap, darMap) {
       if (passenger.status === 'deleted') return;
       const patient = passenger.id.toLowerCase();
       const prtRow = prtMap.get(patient) || {};
-      const space = prtRow['Service Type'] || 'Ambulatory';
+      const space = "DME & Rx";
       const phone = getPassengerPhone(patient, prtMap, darMap);
       const pickupAddr = processAddress(passenger.puaddress);
       const dropoffAddr = processAddress(passenger.doaddress);
