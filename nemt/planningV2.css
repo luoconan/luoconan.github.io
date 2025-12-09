@@ -1,0 +1,666 @@
+/* version: v2.0.25 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+  background: #333;
+  /* 确保占满整个浏览器高度 */
+  min-height: 100vh;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  /* MODIFICATION: (100vh - 80px) + 22px = 100vh - 58px */
+  height: calc(100vh - 20px); 
+  margin-top: 10px; 
+}
+
+.timeline-container {
+  width: 70%;
+  overflow-x: auto;
+  background: #333;
+  /* 确保时间轴占满高度 */
+  height: 100%; 
+}
+
+.display-panel {
+  width: 30%;
+  background: #333;
+  border-left: 1px solid #555;
+  padding: 0 10px 10px 10px; 
+  /* MODIFICATION: Enable scrolling for the display panel */
+  overflow-y: auto; 
+  /* 确保面板占满高度 */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Modal Styles --- */
+#prt-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#prt-modal-content {
+    background: #444;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 80%;
+    max-width: 600px;
+    color: #fff;
+}
+#prt-modal-content h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+#prtInfoInputModal {
+    width: 100%;
+    height: 250px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #666;
+    border-radius: 4px;
+    background: #333;
+    color: #fff;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+#prtLoadBtn {
+    padding: 10px 20px;
+    background: #ab47bc;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+}
+.main-content-hidden {
+    display: none !important;
+}
+
+/* --- Search & PRT Wrapper --- */
+.search-prt-wrapper {
+    padding: 10px;
+    background: #333;
+    border-bottom: 1px solid #555;
+    position: sticky; 
+    top: 0;
+    z-index: 5;
+}
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #555;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+.search-wrapper h3 {
+  flex: 0 0 auto;
+  font-size: 16px;
+  color: #f0f0f0;
+  font-weight: bold;
+  margin: 0 10px 0 0;
+  line-height: 32px;
+}
+#searchInput {
+  flex: 3;
+  min-width: 0;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
+  transition: border-color 0.3s;
+}
+#searchInput::placeholder {
+  color: #bbb;
+}
+#searchInput:focus {
+  outline: none;
+  border-color: #ab47bc;
+}
+#exportAllBtn {
+  padding: 5px 3px;
+  background: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+#exportAllBtn:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+#exportAllBtn:active {
+  transform: scale(0.97);
+}
+
+/* --- Export Button (Inside Driver Label) --- */
+.export-csv-btn {
+  padding: 5px 3px;
+  background: #007bff; 
+  border: none;
+  border-radius: 5px;
+  color: #fff; 
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+.export-csv-btn:hover {
+  background: #0056b3;
+}
+.driver-label {
+    width: 100px;
+    flex-shrink: 0;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    background: #444;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    align-self: stretch;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* --- Display & Input Styles (DAR Fix) --- */
+.display-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #fff;
+  box-sizing: border-box;
+}
+.display-table td {
+  padding: 8px;
+  border-bottom: 1px solid #555;
+}
+.display-table td:first-child {
+  font-weight: bold;
+  width: 40%;
+}
+/* OLD other-trips-table removed as new structure uses all-trips-table */
+.other-trips-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #fff;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+.other-trips-table th,
+.other-trips-table td {
+  padding: 8px;
+  border-bottom: 1px solid #555;
+  text-align: left;
+}
+.other-trips-table th {
+  font-weight: bold;
+  background: #444;
+}
+.other-trips-table tr.highlight {
+  background: #fff9c4;
+  color: #000;
+  font-weight: bold;
+}
+
+/* --- H3 Title Style Unification (DAR, Edit Trip, Summary) --- */
+.display-panel h3, .textarea-wrapper h3 {
+    color: #f0f0f0;
+    font-size: 16px;
+    font-weight: bold; /* Ensure it is bold */
+    margin-bottom: 5px;
+}
+
+/* --- NEW MODULE STYLES (Module 1, 2, 3) --- */
+.edit-module, .batch-module, .all-trips-module {
+    /* MODIFICATION: Add border and padding for module framing */
+    border: 1px solid #666; 
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px; /* Increase margin for separation */
+}
+
+/* Adjust h3 margin within framed modules */
+.edit-module h3, .batch-module h3, .all-trips-module h3 {
+    margin-bottom: 10px; 
+    padding: 0; /* Remove internal padding on h3 */
+}
+.batch-hint {
+    font-size: 12px;
+    color: #bbb;
+    margin-bottom: 10px;
+}
+
+/* Module 1: Edit Trip Details Button Container */
+.button-container-v2 {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-end; /* Align buttons to the right */
+}
+.button-container-v2 button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    flex-grow: 1; /* Make buttons expand */
+    max-width: 150px; 
+}
+.save-changes-btn {
+    background: #007bff; /* Blue for Save Changes */
+}
+.save-changes-btn:hover {
+    background: #0056b3;
+}
+.cancel-btn {
+    background: #e53935; /* Red for Cancel Trip (status change) */
+}
+.cancel-btn:hover {
+    background: #d32f2f;
+}
+
+/* Module 2: Batch Selection Actions Button Styles */
+.button-container-batch {
+    display: flex;
+    gap: 10px;
+}
+.button-container-batch button {
+    padding: 8px 5px; /* Smaller padding for 3 buttons */
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    flex: 1; 
+    white-space: nowrap;
+}
+.batch-cancel-btn {
+    background: #ff9800; /* Orange for Cancel Status */
+}
+.batch-cancel-btn:hover {
+    background: #f57c00;
+}
+.batch-addback-btn {
+    background: #4caf50; /* Green for Add Back */
+}
+.batch-addback-btn:hover {
+    background: #45a049;
+}
+.batch-delete-btn {
+    background: #e53935; /* Red for Permanent Delete */
+}
+.batch-delete-btn:hover {
+    background: #d32f2f;
+}
+
+/* Module 3: All Trips Table Styles */
+.all-trips-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px; 
+  color: #fff;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+.all-trips-table th,
+.all-trips-table td {
+  padding: 5px;
+  border-bottom: 1px solid #555;
+  text-align: left;
+}
+.all-trips-table th {
+  font-weight: bold;
+  background: #444;
+}
+/* --- END NEW MODULE STYLES --- */
+
+
+.display-content {
+  line-height: 1.5;
+}
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.textarea-wrapper {
+    width: 100%; /* Fix: Ensure wrapper is full width */
+}
+.textarea-wrapper h3 {
+  /* MODIFICATION: Removed redundant styles, using unified .display-panel h3 */
+  margin-bottom: 5px;
+}
+#darInput { /* Specific ID for DAR Input */
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
+  resize: vertical;
+}
+#darInput::placeholder {
+  color: #bbb;
+}
+#darInput:focus {
+  outline: none;
+  border-color: #ab47bc;
+}
+/* The Reset button uses .delete-trip-btn class, but its padding needs to match #planBtn */
+/* The general .delete-trip-btn style (used by Reset) will be overridden here to match flex sizing */
+.delete-trip-btn {
+  /* This style specifically targets the Reset button in the HTML structure: 
+     <button id="resetBtn" class="delete-trip-btn" style="flex: 1;">Reset</button> */
+  padding: 10px; /* Match #planBtn padding */
+  background: #e53935; /* Red */
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  /* width: 100%; <- Removed, relies on flex: 1 in HTML */
+}
+.delete-trip-btn:hover {
+  background: #d32f2f;
+}
+/* Plan Button style remains the same */
+#planBtn {
+  padding: 10px;
+  background: #ab47bc;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100%;
+}
+#planBtn:hover {
+  background: #9c27b0;
+}
+
+
+.editable-field {
+  cursor: pointer;
+  padding: 2px;
+  border-bottom: 1px dotted #bbb;
+}
+.editable-field:hover {
+  background: #555;
+}
+.edit-input {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 3px;
+  background: #444;
+  color: #fff;
+}
+.edit-textarea {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #666;
+  border-radius: 3px;
+  background: #444;
+  color: #fff;
+  resize: vertical;
+  height: 60px;
+}
+/* OLD button-container and specific edit/delete buttons removed */
+.myButton {
+  padding: 8px 16px;
+  background: #ab47bc;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s, box-shadow 0.2s;
+}
+
+/* --- Timeline Styles (Tripsheet/Timeline Fixes) --- */
+.timeline-header {
+  position: sticky;
+  top: 0;
+  background: #444;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 100px;
+  border-bottom: 1px solid #555;
+  color: #fff;
+}
+.time-tick {
+  position: absolute;
+  width: 1px;
+  height: 10px;
+  background: #bbb;
+}
+.time-label {
+  position: absolute;
+  font-size: 12px;
+  transform: translateX(-50%);
+  top: 15px;
+  color: #bbb;
+}
+.driver-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-bottom: 1px solid #555;
+  background: #444;
+}
+.driver-label {
+  width: 100px;
+  flex-shrink: 0;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  background: #444;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  align-self: stretch;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.passenger-container {
+  flex-grow: 1;
+  position: relative; /* CRITICAL FIX for absolute positioning of blocks */
+  padding-bottom: 4px;
+}
+.passenger-lane {
+  position: absolute;
+  height: 20px;
+}
+.passenger-block {
+  position: absolute; /* CRITICAL FIX for time placement */
+  height: 16px;
+  background: #d4a017;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+  padding: 0 5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.passenger-block.status-onboard {
+  background: #4fc3f7;
+}
+.passenger-block.status-finished {
+  background: #66bb6a;
+}
+.passenger-block.status-cancelled {
+  background: #b0bec5;
+}
+.passenger-block.external-appointment {
+  background: #FF69B4;
+}
+.passenger-block.selected {
+  border: 3px solid #00008B;
+  height: 19px;
+  line-height: 13px;
+  font-weight: bold;
+}
+.passenger-block.same-id {
+  border: 3px solid #0288d1;
+  height: 14px;
+  line-height: 8px;
+  font-weight: bold;
+}
+.passenger-block.dragging {
+  opacity: 0.5;
+  border: 2px dashed #fff;
+}
+.driver-row.drag-over {
+  background: #555;
+}
+.route-selection-table {
+  border-collapse: collapse;
+  background: #444;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.route-selection-cell {
+  width: 50px;
+  height: 30px;
+  border: 1px solid #555;
+  text-align: center;
+  cursor: pointer;
+}
+.route-selection-cell.drag-over {
+  background: #555;
+}
+.updateTime {
+  color: lightblue;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 14px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+}
+/* --- Tab Styles (Deep Gray for inactive, Light Gray for active) --- */
+.tab-buttons {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    width: 100%;
+}
+.tab-buttons button {
+    flex-grow: 1;
+    border: 1px solid #555;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px 4px 0 0;
+    margin-right: -1px; 
+    
+    /* 深灰色 (非当前标签) */
+    background-color: #4a4a4a;
+    color: #fff;
+}
+.tab-buttons button:last-child {
+    margin-right: 0;
+}
+.tab-buttons button.active {
+    /* 浅灰色 (当前标签) */
+    background-color: #666666 !important;
+    border-color: #555;
+}
+.tab-content {
+    border: 1px solid #555;
+    border-top: none;
+    padding: 15px;
+    background: #333;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+}
+
+/* --- Summary Table Styles --- */
+.tripsheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #fff;
+  margin-top: 10px;
+}
+.tripsheet th,
+.tripsheet td {
+  padding: 8px;
+  border: 1px solid #555;
+  text-align: left;
+  background: none !important;
+  color: #fff;
+}
+/* Summary Specific Colors */
+.tripsheet .row-sod {
+    background: none;
+    color: lightblue;
+    font-weight: bold;
+    text-align: left;
+}
+.tripsheet .row-ioapace {
+    background: #4a4a4a; /* Deep Gray */
+    font-weight: normal;
+}
+.tripsheet .row-count {
+    background: #555; /* Mid Gray */
+}
+.tripsheet .row-total {
+    background: #4a4a4a; /* Deep Gray */
+    font-weight: bold;
+}
