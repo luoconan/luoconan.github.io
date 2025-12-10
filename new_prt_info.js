@@ -1,4 +1,4 @@
-//version 12/2/2025 9:47
+//version 12/10/2025 9:47
 addrs={
         
     }
@@ -469,7 +469,7 @@ prtObjInfo = {
         "room": 2
     },
     "Lee, Funglin So":{
-      "room":1      
+      "room":2
     },
     "Lee-Danridge, Robin E": {
         "room": 3
@@ -721,7 +721,7 @@ prtObjInfo = {
         "room": 3
     },
     "Rothstein, Karen": {
-        "room": 2
+        "room": 3
     },
     "Salunga, Marissa": {
         "room": 3
