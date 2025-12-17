@@ -1,4 +1,4 @@
-// version: v2.0.18 
+// version: v2.0.19 
 var routes = []; // MODIFICATION: Used 'var' instead of 'let' to prevent 'already been declared' SyntaxError
 let prtMap = new Map(); // 初始化为 Map
 let darMap = new Map();
@@ -48,26 +48,58 @@ function isValidPhoneFormat(phoneStr) {
   return regex.test(phoneStr);
 }
 
+// 修复：使用动态日期解析时间，而非硬编码的 2025/4/15
 function parseTime(timeStr) {
   try {
     const hours = parseInt(timeStr.slice(0, 2), 10);
     const minutes = parseInt(timeStr.slice(2, 4), 10);
     if (isNaN(hours) || isNaN(minutes)) return 0;
-    return new Date(2025, 4, 15, hours, minutes).getTime();
+    
+    // 如果 date 尚未解析（如初始化时），使用当前日期作为回退，防止报错
+    let y, m, d;
+    if (!date || date === '--/--/----') {
+        const now = new Date();
+        y = now.getFullYear();
+        m = now.getMonth();
+        d = now.getDate();
+    } else {
+        const dateParts = date.split('/');
+        m = parseInt(dateParts[0], 10) - 1; // JS Month is 0-11
+        d = parseInt(dateParts[1], 10);
+        y = parseInt(dateParts[2], 10);
+    }
+
+    return new Date(y, m, d, hours, minutes).getTime();
   } catch (e) {
     return 0;
   }
 }
 
+// 修复：使用动态日期计算时间偏移
 function adjustTime(timeStr, minutes) {
   try {
     const hours = parseInt(timeStr.slice(0, 2), 10);
     const minutesCurrent = parseInt(timeStr.slice(2, 4), 10);
     if (isNaN(hours) || isNaN(minutesCurrent)) return timeStr;
-    const date = new Date(2025, 4, 15, hours, minutesCurrent);
-    date.setMinutes(date.getMinutes() + minutes);
-    const newHours = date.getHours().toString().padStart(2, '0');
-    const newMinutes = date.getMinutes().toString().padStart(2, '0');
+
+    let y, m, d;
+    if (!date || date === '--/--/----') {
+        const now = new Date();
+        y = now.getFullYear();
+        m = now.getMonth();
+        d = now.getDate();
+    } else {
+        const dateParts = date.split('/');
+        m = parseInt(dateParts[0], 10) - 1;
+        d = parseInt(dateParts[1], 10);
+        y = parseInt(dateParts[2], 10);
+    }
+    
+    const dateObj = new Date(y, m, d, hours, minutesCurrent);
+    dateObj.setMinutes(dateObj.getMinutes() + minutes);
+    
+    const newHours = dateObj.getHours().toString().padStart(2, '0');
+    const newMinutes = dateObj.getMinutes().toString().padStart(2, '0');
     return `${newHours}${newMinutes}`;
   } catch (e) {
     return timeStr;
@@ -107,11 +139,6 @@ function getPassengerPhone(patient, prtMap, darMap) {
 
 /**
  * 将 PRT Wander, DAR Escort 和 PRT Pickup Note 合并成一个备注字符串。
- * @param {object} prtRow PRT Info 行数据
- * @param {object | undefined} darRow DAR 行数据
- * @param {boolean} isMedication 是否为 Medication trip
- * @param {boolean} isAppointment 是否为 External Appointment trip
- * @returns {string} 合并后的备注字符串。
  */
 function constructInitialNote(prtRow, darRow, isMedication, isAppointment) {
   const notes = [];
@@ -317,6 +344,7 @@ function mergePrtInfo(newPrtInfoText) {
   return prtMap;
 }
 
+// 修复：更新后的生成行程逻辑
 function generateTrips(prtInfoText, darText) {
   clearError();
   tripIdCounter = 0;
@@ -326,13 +354,27 @@ function generateTrips(prtInfoText, darText) {
   const darLines = darText.trim().split('\n').map(line => line.trim());
   if (darLines.length < 3) return { date: '', routes: [], darMap: new Map() };
   
-  const dateMatch = darLines[0].match(/(\w+,\s*(\d{2})\/(\d{2})\/(\d{4}))/);
-  date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : `--/--/${new Date().getFullYear()}`;
+  // 修复：直接匹配第一行的 MM/DD/YYYY 格式日期，不依赖星期或逗号
+  const datePattern = /(\d{1,2})\/(\d{1,2})\/(\d{4})/;
+  const dateMatch = darLines[0].match(datePattern);
   
   // FIX: 确保 dayOfWeek 在整个函数作用域内有效
   let dayOfWeek = -1; 
   if (dateMatch) {
-    dayOfWeek = new Date(dateMatch[4], dateMatch[2] - 1, dateMatch[3]).getDay();
+    const m = parseInt(dateMatch[1], 10);
+    const d = parseInt(dateMatch[2], 10);
+    const y = parseInt(dateMatch[3], 10);
+    
+    // 更新全局 date 变量，格式化为 MM/DD/YYYY
+    date = `${m.toString().padStart(2, '0')}/${d.toString().padStart(2, '0')}/${y}`;
+    
+    // 基于真实日期计算 dayOfWeek
+    dayOfWeek = new Date(y, m - 1, d).getDay();
+  } else {
+    // 默认回退
+    const now = new Date();
+    date = `${(now.getMonth()+1).toString().padStart(2, '0')}/${now.getDate().toString().padStart(2, '0')}/${now.getFullYear()}`;
+    dayOfWeek = now.getDay();
   }
 
   const dar = parseTable(darLines.slice(1).join('\n'));
@@ -346,7 +388,10 @@ function generateTrips(prtInfoText, darText) {
     
     if (row['Patient']) darMap.set(row['Patient'].toLowerCase(), row);
     
-    if (row['Transpo'] === 'Y') {
+    // 修复：兼容 'Transpo' 和 'transport' 两种表头
+    const isTranspo = row['Transpo'] === 'Y' || row['transport'] === 'Y';
+    
+    if (isTranspo) {
       const name = row['Patient'];
       const key = name.toLowerCase();
       
@@ -363,7 +408,8 @@ function generateTrips(prtInfoText, darText) {
       const pData = uniquePatients.get(key);
       pData.rows.push(row);
       
-      const vtStr = row['Visit Type'] || '';
+      // 兼容 Visit Type 和 Visit-Type
+      const vtStr = row['Visit Type'] || row['Visit-Type'] || '';
       vtStr.toLowerCase().split(',').map(s => s.trim()).forEach(tag => {
         if(tag) pData.globalFlags.add(tag);
       });
@@ -449,7 +495,7 @@ function generateTrips(prtInfoText, darText) {
     }
 
     pData.rows.forEach(row => {
-      const vt = parseVisitType(row['Visit Type'] || '');
+      const vt = parseVisitType(row['Visit Type'] || row['Visit-Type'] || '');
       const apptTimeRaw = (row['appt time'] || '').replace(':', '');
       const apptNote = row['Appt Notes'] || row['address'] || ''; 
       const rowMismatch = checkMismatch(row, prtRow);
@@ -847,9 +893,21 @@ function parseTable(text) {
 function getTimeRange() {
   let minTime = Infinity;
   let maxTime = -Infinity;
+  
+  // FIX: 如果没有路线，使用默认的早7晚6，但基于当前日期
   if (!routes || !Array.isArray(routes) || routes.length === 0) {
-    return { minTime: new Date(2025, 4, 15, 7, 0).getTime(), maxTime: new Date(2025, 4, 15, 18, 0).getTime() };
+    // 使用全局 date 变量，或者当前日期
+    const now = new Date();
+    let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+    if (date && date !== '--/--/----') {
+         const parts = date.split('/');
+         m = parseInt(parts[0], 10) - 1;
+         d = parseInt(parts[1], 10);
+         y = parseInt(parts[2], 10);
+    }
+    return { minTime: new Date(y, m, d, 7, 0).getTime(), maxTime: new Date(y, m, d, 18, 0).getTime() };
   }
+
   routes.forEach(route => {
     if (route.passengers) {
       route.passengers.forEach(p => {
@@ -862,7 +920,19 @@ function getTimeRange() {
       });
     }
   });
-  if (minTime === Infinity) return { minTime: new Date(2025, 4, 15, 7, 0).getTime(), maxTime: new Date(2025, 4, 15, 18, 0).getTime() };
+  
+  if (minTime === Infinity) {
+    // 同上，回退逻辑
+    const now = new Date();
+    let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+    if (date && date !== '--/--/----') {
+         const parts = date.split('/');
+         m = parseInt(parts[0], 10) - 1;
+         d = parseInt(parts[1], 10);
+         y = parseInt(parts[2], 10);
+    }
+    return { minTime: new Date(y, m, d, 7, 0).getTime(), maxTime: new Date(y, m, d, 18, 0).getTime() };
+  }
   
   const minDate = new Date(minTime);
   const maxDate = new Date(maxTime);
@@ -1438,7 +1508,7 @@ document.addEventListener("DOMContentLoaded", () => {
       prtLoadBtn.addEventListener('click', loadPrtInfo);
   }
 
-  // --- Plan Button Listener (remains unchanged) ---
+  // --- Plan Button Listener ---
   if (planBtn) {
     planBtn.addEventListener('click', () => {
       const prt = ''; 

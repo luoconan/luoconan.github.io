@@ -1,4 +1,4 @@
-// version: v1.5.0 (Fixed Date Parsing & Visit Type Logic)
+// version: v2.5.0 (Fixed Date Parsing & Visit Type Logic)
 let routes = [];
 let prtMap, darMap, date;
 
