@@ -1,4 +1,4 @@
-// version: v2.0.26 (Added Conflict Modal & Crash Prevention)
+// version: v2.0.35 (Fixed: Load PRT Tolerant Parsing & Debug Alert)
 var routes = []; 
 let prtMap = new Map(); 
 let darMap = new Map();
@@ -17,7 +17,7 @@ function generateTripId() {
   return `trip-${tripIdCounter++}`;
 }
 
-// --- MODAL FUNCTIONS START (新增) ---
+// --- MODAL FUNCTIONS START ---
 function showConflictModal(message) {
   const modal = document.getElementById('conflictModal');
   const msgElem = document.getElementById('conflictMsg');
@@ -25,7 +25,6 @@ function showConflictModal(message) {
     msgElem.innerHTML = message;
     modal.style.display = 'flex';
   } else {
-    // Fallback if modal HTML is missing
     alert(message.replace(/<br>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, ''));
   }
 }
@@ -282,35 +281,49 @@ function checkMismatch(darRow, prtRow) {
   return false;
 }
 
+// --- FIX: loadPrtInfo function (Debug & Tolerance Update) ---
 function loadPrtInfo() {
   const prtInput = document.getElementById('prtInfoInputModal');
   const prtText = prtInput.value.trim();
   
   if (!prtText) {
-    showError('PRT Info cannot be empty.');
+    alert('PRT Info cannot be empty.');
     return false;
   }
   
-  const newPrtData = parseTable(prtText).data;
+  const parsed = parseTable(prtText);
+  const newPrtData = parsed.data;
+  
+  if (!newPrtData || newPrtData.length === 0) {
+      alert('Failed to parse PRT Info. Make sure you pasted the full table.');
+      return false;
+  }
+
   const newPrtMap = new Map();
   let hasValidData = false;
+  
   newPrtData.forEach(row => {
+    // 确保这些字段存在，防止 undefined 报错
     if (row['MRN'] === undefined) row['MRN'] = ''; 
     if (row['Wander'] === undefined) row['Wander'] = '';
     if (row['Pickup Note'] === undefined) row['Pickup Note'] = '';
-    if (row['Name']) {
-      newPrtMap.set(row['Name'].toLowerCase(), row);
+    
+    // Check for 'Name' OR 'Patient' (Tolerance fix)
+    let pName = row['Name'];
+    if (!pName && row['Patient']) pName = row['Patient']; // Fallback
+
+    if (pName) {
+      // 统一加上 Name 字段，方便后续逻辑使用
+      row['Name'] = pName; 
+      newPrtMap.set(pName.toLowerCase(), row);
       hasValidData = true;
     }
   });
   
-  if (!hasValidData && newPrtData.length > 0) {
-      showError('PRT Info loaded, but no valid data rows found. Check format (Tab separated and includes "Name").');
-      return false;
-  }
-  
   if (!hasValidData) {
-      showError('PRT Info cannot be parsed or is empty.');
+      // Diagnostic alert to help user
+      const headersFound = parsed.headers.join(', ');
+      alert(`Error: Could not find "Name" column in data.\nFound headers: [${headersFound}]\n\nPossible reasons:\n1. Copy-paste lost Tab separators (became spaces).\n2. You pasted data without headers.\n3. The column name is not "Name".`);
       return false;
   }
 
@@ -397,7 +410,6 @@ function generateTrips(prtInfoText, darText) {
 
   const allTrips = [];
 
-  // 关键变更：使用 for...of 循环，允许 return 退出
   for (const [patientKey, pData] of uniquePatients) {
     const name = pData.name;
     const globalFlags = pData.globalFlags; 
@@ -443,7 +455,7 @@ function generateTrips(prtInfoText, darText) {
       if (hasGlobal('noam') || hasGlobal('fromhome')) {
         baseTrips.a = null;
       } else if (hasGlobal('2nd')) {
-         if(baseTrips.a) { // 安全检查
+         if(baseTrips.a) { 
             baseTrips.a.pickup = '1030'; baseTrips.a.dropoff = '1100';
          }
       }
@@ -457,7 +469,6 @@ function generateTrips(prtInfoText, darText) {
 
     // --- 下午行程处理 (B-leg) - 包含冲突检测 ---
     if (baseTrips.b) {
-      // 1. 先处理删除逻辑
       if (hasGlobal('nopm') || hasGlobal('backhome')) {
         baseTrips.b = null;
       } else if (hasGlobal('early')) {
@@ -466,10 +477,8 @@ function generateTrips(prtInfoText, darText) {
         }
       }
 
-      // 2. 检查是否有 p@ 时间覆盖指令
       const pTime = findGlobalTime('p@');
       if (pTime && isValidTimeFormat(pTime)) {
-        // FIX: 冲突检测 - 行程被删除了(null)，但又指定了时间
         if (!baseTrips.b) {
             showConflictModal(
                 `<strong>Error for Patient: ${name}</strong><br><br>` +
@@ -478,7 +487,6 @@ function generateTrips(prtInfoText, darText) {
                 `BUT you also entered <strong>"p@${pTime}"</strong> to set a PM time.<br><br>` +
                 `Please check your DAR input and remove one of them.`
             );
-            // 立即停止生成，强制用户修改
             return { date: '', routes: [], darMap: new Map() };
         } else {
             baseTrips.b.pickup = pTime; 
@@ -1214,7 +1222,10 @@ function renderRoutes(prtMap, darMap, date) {
       block.dataset.tripId = p.tripId;
       block.draggable = true;
       
-      if (p.leg === 'b-leg-Med') {
+      // Color logic (Updated for New Trips)
+      if (p.isNew && p.newType) {
+          block.classList.add(p.newType); // Apply new-daily, new-appt, new-med
+      } else if (p.leg === 'b-leg-Med') {
         block.style.backgroundColor = '#F4A460';
       } else if (p.mismatch) {
         block.style.backgroundColor = '#9400D3'; 
@@ -1450,6 +1461,507 @@ function setupTabs() {
     });
 }
 
+// --- Add Trip Module Logic (V2 - Enhanced with Address Autocomplete) ---
+function initAddTripModule() {
+    const radioDaily = document.querySelector('input[name="tripType"][value="daily"]');
+    const radioAppt = document.querySelector('input[name="tripType"][value="appointment"]');
+    const radioMed = document.querySelector('input[name="tripType"][value="medication"]');
+
+    const nameInput = document.getElementById('addName');
+    const suggestionsBox = document.getElementById('addNameSuggestions');
+    const phoneInput = document.getElementById('addPhone');
+
+    // A-Leg Fields
+    const aTitle = document.getElementById('aLegTitle');
+    const aPickup = document.getElementById('addAPickup');
+    const aDropoff = document.getElementById('addADropoff');
+    const aPuAddr = document.getElementById('addAPuAddr');
+    const aDoAddr = document.getElementById('addADoAddr');
+    const aNote = document.getElementById('addANote');
+    const aIgnore = document.getElementById('addAIgnore');
+
+    // B-Leg Fields
+    const bTitle = document.getElementById('bLegTitle');
+    const bPickup = document.getElementById('addBPickup');
+    const bDropoff = document.getElementById('addBDropoff');
+    const bPuAddr = document.getElementById('addBPuAddr');
+    const bDoAddr = document.getElementById('addBDoAddr');
+    const bNote = document.getElementById('addBNote');
+    const bIgnore = document.getElementById('addBIgnore');
+
+    const addBtn = document.getElementById('addTripConfirmBtn');
+
+    let selectedPatientData = null;
+    let nameCurrentFocus = -1; 
+
+    // --- Hardcoded Extra Addresses ---
+    const extraAddresses = [
+        "1 Daniel Burnham Ct San Francisco, CA 94109",
+        "1 Shrader St San Francisco, CA 94117",
+        "1001 Potrero Ave San Francisco, CA 94110",
+        "1100 Van Ness Ave San Francisco, CA 94109",
+        "1101 Van Ness Ave San Francisco, CA 94109",
+        "1160 Post St San Francisco, CA 94109",
+        "1375 Sutter St San Francisco, CA 94109",
+        "1445 Bush St San Francisco, CA 94109",
+        "1499 Webster St San Francisco, CA 94115",
+        "1500 Owens St San Francisco, CA 94158",
+        "1580 Valencia St San Francisco, CA 94110",
+        "1600 Divisadero St San Francisco, CA 94115",
+        "1651 4th St San Francisco, CA 94158",
+        "1660 Geary Blvd San Francisco, CA 94115",
+        "1661 Mission St San Francisco, CA 94103",
+        "1701 Divisadero St San Francisco, CA 94115",
+        "1725 Montgomery 2nd fl #250 San Francisco, CA 94111",
+        "1825 4th St San Francisco, CA 94158",
+        "185 Berry st. San Francisco, CA 94107",
+        "1880 Mission St San Francisco, CA 94103",
+        "1975 4th St San Francisco, CA 94158",
+        "2100 Webster St San Francisco, CA 94115",
+        "2107 O Farrell St San Francisco, CA 94115",
+        "2250 Hayes St San Francisco, CA 94117",
+        "2255 Post St San Francisco, CA 94115",
+        "2299 Post St San Francisco, CA 94118",
+        "2324 Sacramento St San Francisco, CA 94115",
+        "2330 Post St San Francisco, CA 94115",
+        "2333 Buchanan St San Francisco, CA 94115",
+        "2351 Clay St San Francisco, CA 94115",
+        "2380 Sutter St San Francisco, CA 94115",
+        "301 Main St San Francisco, CA 94105",
+        "3440 California St San Francisco, CA 94118",
+        "3716 Geary Blvd San Francisco, CA 94118",
+        "3838 California St San Francisco, CA 94118",
+        "400 Parnassus Ave San Francisco, CA 94143",
+        "45 Castro St San Francisco, CA 94114",
+        "450 Stanyan St San Francisco, CA 94117",
+        "450 Sutter St San Francisco, CA 94108",
+        "490 Illinois St San Francisco, CA 94158",
+        "490 Post St San Francisco, CA 94102",
+        "505 Parnassus Ave San Francisco, CA 94143",
+        "515 San Jose Ave San Francisco, CA 94110",
+        "520 Illinois St San Francisco, CA 94158",
+        "535 Mission Bay Blvd South San Francisco, CA 94158",
+        "55 Stevenson St San Francisco, CA 94105",
+        "555 San Jose Ave San Francisco, CA 94110",
+        "595 Buckingham Way San Francisco, CA 94132",
+        "601 Duboce St North Tower San Francisco, CA 94114",
+        "601 Duboce St South Tower San Francisco, CA 94114",
+        "636 Clay St San Francisco, CA 94111",
+        "711 Van Ness Ave San Francisco, CA 94102",
+        "815 Hyde St San Francisco, CA 94109",
+        "845 Jackson St San Francisco, CA 94133",
+        "929 Clay St San Francisco, CA 94108",
+        "950 Stockton St San Francisco, CA 94108",
+        "99 W Portal Ave San Francisco, CA 94127",
+        "2356 Sutter St San Francisco, CA 94143"
+    ];
+
+    // Combine static addresses (Facility Map + Hardcoded)
+    // Using Set to remove duplicates
+    const staticAddresses = Array.from(new Set([
+        ...Object.values(facilityAddressMap),
+        ...extraAddresses
+    ]));
+
+    const centerAddress = "3575 Geary Blvd San Francisco CA 94118";
+
+    // --- Helper: Generate Note automatically ---
+    function generateAutoNote(patientData, mode) {
+        if (!patientData) return mode === 'appointment' ? 'Escort: ' : '';
+
+        const parts = [];
+        // 1. Wander (Not for Med)
+        if (mode !== 'medication') {
+            const wander = (patientData['Wander'] || '').trim();
+            if (wander) parts.push(wander);
+        }
+        // 2. Escort (Only for Appt)
+        if (mode === 'appointment') {
+            parts.push('Escort: ');
+        }
+        // 3. Pickup Note
+        const puNote = (patientData['Pickup Note'] || '').trim();
+        if (puNote) parts.push(puNote);
+
+        return parts.join('  |  ');
+    }
+
+    // --- Helper: Disable inputs if Ignored ---
+    function updateInputState() {
+        const aInputs = [aPickup, aDropoff, aPuAddr, aDoAddr, aNote];
+        aInputs.forEach(el => el.disabled = aIgnore.checked);
+
+        const bInputs = [bPickup, bDropoff, bPuAddr, bDoAddr, bNote];
+        bInputs.forEach(el => el.disabled = bIgnore.checked);
+    }
+
+    // --- 1. Mode Switching & Reset Logic ---
+    function updateFormMode() {
+        aIgnore.checked = false;
+        bIgnore.checked = false;
+        
+        const homeAddr = selectedPatientData ? (selectedPatientData['Address'] || '') : '';
+        
+        let currentMode = 'daily';
+        if (radioAppt.checked) currentMode = 'appointment';
+        if (radioMed.checked) currentMode = 'medication';
+
+        const autoNote = generateAutoNote(selectedPatientData, currentMode);
+
+        if (radioDaily.checked) {
+            aTitle.textContent = "A-Leg Details (Home -> Facility)";
+            bTitle.textContent = "B-Leg Details (Facility -> Home)";
+            aPickup.value = "0900"; aDropoff.value = "1030";
+            aPuAddr.value = homeAddr; aDoAddr.value = centerAddress;
+            aNote.value = autoNote || "Center Day";
+            bPickup.value = "1545"; bDropoff.value = "1630";
+            bPuAddr.value = centerAddress; bDoAddr.value = homeAddr;
+            bNote.value = autoNote || "Center Day";
+        } else if (radioAppt.checked) {
+            aTitle.textContent = "A-Leg Details (a-leg-ext)";
+            bTitle.textContent = "B-Leg Details (b-leg-ext)";
+            aPickup.value = ""; aDropoff.value = "";
+            bPickup.value = ""; bDropoff.value = "";
+            aPuAddr.value = ""; aDoAddr.value = "";
+            bPuAddr.value = ""; bDoAddr.value = "";
+            aNote.value = autoNote || "Outside Appointment";
+            bNote.value = autoNote || "Outside Appointment";
+        } else if (radioMed.checked) {
+            aTitle.textContent = "A-Leg Details";
+            bTitle.textContent = "B-Leg Details (Facility -> Home)";
+            
+            // Med: Prefill Daily times BUT ignore by default
+            aIgnore.checked = true;
+            aPickup.value = "0900"; aDropoff.value = "1030";
+            aPuAddr.value = homeAddr; aDoAddr.value = centerAddress;
+            aNote.value = "addon-Med"; 
+
+            bPickup.value = "1700"; bDropoff.value = "1730";
+            bPuAddr.value = centerAddress; bDoAddr.value = homeAddr;
+            bNote.value = "addon-Med";
+        }
+        
+        updateInputState();
+    }
+
+    [radioDaily, radioAppt, radioMed].forEach(r => r.addEventListener('change', updateFormMode));
+    
+    // Checkbox Listeners
+    if(aIgnore) aIgnore.addEventListener('change', updateInputState);
+    if(bIgnore) bIgnore.addEventListener('change', updateInputState);
+
+    function resetForm() {
+        nameInput.value = '';
+        phoneInput.value = '';
+        selectedPatientData = null;
+        updateFormMode(); 
+    }
+
+    // --- 2. Address Autocomplete Logic (NEW) ---
+    function attachAddressAutocomplete(inp) {
+        // Ensure parent has relative position for positioning suggestions
+        if(inp.parentElement) inp.parentElement.style.position = 'relative';
+
+        const addrSuggestions = document.createElement('div');
+        addrSuggestions.className = 'suggestions';
+        inp.parentNode.appendChild(addrSuggestions);
+
+        let currentFocus = -1;
+
+        function closeList() {
+            addrSuggestions.innerHTML = '';
+            currentFocus = -1;
+        }
+
+        function showList(items) {
+            closeList();
+            if (items.length === 0) return;
+
+            items.forEach(itemStr => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = itemStr;
+                div.addEventListener('click', function() {
+                    inp.value = itemStr;
+                    closeList();
+                });
+                addrSuggestions.appendChild(div);
+            });
+        }
+
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("active");
+            x[currentFocus].scrollIntoView({ block: "nearest" });
+        }
+
+        function removeActive(x) {
+            for (let i = 0; i < x.length; i++) {
+                x[i].classList.remove("active");
+            }
+        }
+
+        // Logic to get candidates based on current input and patient
+        function getCandidates(val) {
+            const homeAddr = selectedPatientData ? (selectedPatientData['Address'] || '') : '';
+            
+            // Scenario 1: Empty Input
+            if (!val) {
+                const defaults = [];
+                if (homeAddr) defaults.push(homeAddr); // Priority 1: Guest Address
+                defaults.push(centerAddress);          // Priority 2: IOA Address
+                // Filter out duplicates in defaults just in case
+                return [...new Set(defaults)];
+            }
+
+            // Scenario 2: Search
+            const cleanVal = val.replace(/,/g, '').toLowerCase();
+            const searchPool = [...staticAddresses];
+            if (homeAddr) searchPool.unshift(homeAddr); // Add guest address to pool
+
+            return searchPool.filter(addr => {
+                if(!addr) return false;
+                const cleanAddr = addr.replace(/,/g, '').toLowerCase();
+                return cleanAddr.includes(cleanVal);
+            });
+        }
+
+        // Events
+        inp.addEventListener('focus', function() {
+            if (this.disabled) return;
+            const candidates = getCandidates('');
+            showList(candidates);
+        });
+
+        inp.addEventListener('input', function() {
+            const candidates = getCandidates(this.value);
+            showList(candidates);
+        });
+
+        inp.addEventListener("keydown", function(e) {
+            let x = addrSuggestions.getElementsByTagName("div");
+            if (e.key === "ArrowDown") {
+                currentFocus++;
+                addActive(x);
+            } else if (e.key === "ArrowUp") {
+                currentFocus--;
+                addActive(x);
+            } else if (e.key === "Enter") {
+                if (x && x.length > 0 && currentFocus > -1) {
+                    e.preventDefault();
+                    x[currentFocus].click();
+                } else if (x && x.length === 0) {
+                    // Do nothing, let default enter behavior happen (form submission prevention is handled globally if needed)
+                }
+            }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target !== inp && e.target !== addrSuggestions) {
+                closeList();
+            }
+        });
+    }
+
+    // Attach Autocomplete to Address Fields
+    [aPuAddr, aDoAddr, bPuAddr, bDoAddr].forEach(el => {
+        if(el) attachAddressAutocomplete(el);
+    });
+
+
+    // --- 3. Name Autocomplete Logic ---
+    function addNameActive(x) {
+        if (!x) return false;
+        removeNameActive(x);
+        if (nameCurrentFocus >= x.length) nameCurrentFocus = 0;
+        if (nameCurrentFocus < 0) nameCurrentFocus = (x.length - 1);
+        x[nameCurrentFocus].classList.add("active");
+        x[nameCurrentFocus].scrollIntoView({ block: "nearest" }); 
+    }
+
+    function removeNameActive(x) {
+        for (let i = 0; i < x.length; i++) {
+            x[i].classList.remove("active");
+        }
+    }
+
+    function closeNameLists() {
+        suggestionsBox.innerHTML = "";
+    }
+
+    if(nameInput) {
+        nameInput.addEventListener('input', function() {
+            const val = this.value; 
+            closeNameLists();
+            if (!val) return false;
+            nameCurrentFocus = -1;
+
+            const cleanVal = val.replace(/,/g, '').toLowerCase();
+
+            const matches = Array.from(prtMap.values())
+                .filter(row => {
+                    if (!row.Name) return false;
+                    const cleanName = row.Name.replace(/,/g, '').toLowerCase();
+                    return cleanName.includes(cleanVal);
+                })
+                .slice(0, 10); 
+
+            if (matches.length === 0) return;
+
+            matches.forEach(row => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = row.Name; 
+                div.addEventListener('click', function() {
+                    nameInput.value = row.Name;
+                    phoneInput.value = row.Phone || '';
+                    selectedPatientData = row;
+                    closeNameLists();
+                    updateFormMode(); // Will update addresses and notes
+                });
+                suggestionsBox.appendChild(div);
+            });
+        });
+
+        nameInput.addEventListener("keydown", function(e) {
+            let x = suggestionsBox.getElementsByTagName("div");
+            if (e.key === "ArrowDown") {
+                nameCurrentFocus++;
+                addNameActive(x);
+            } else if (e.key === "ArrowUp") {
+                nameCurrentFocus--;
+                addNameActive(x);
+            } else if (e.key === "Enter") {
+                e.preventDefault(); 
+                if (nameCurrentFocus > -1) {
+                    if (x) x[nameCurrentFocus].click(); 
+                }
+            }
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (nameInput && suggestionsBox && !nameInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            closeNameLists();
+        }
+    });
+
+    // --- 4. Add New Button Logic ---
+    function triggerAddTrip() {
+        const name = nameInput.value.trim();
+        if (!name) {
+            alert("Please select a patient name.");
+            return;
+        }
+
+        const newTrips = [];
+        
+        let tripTypeTag = '';
+        if (radioDaily.checked) tripTypeTag = 'new-daily';
+        else if (radioAppt.checked) tripTypeTag = 'new-appt';
+        else if (radioMed.checked) tripTypeTag = 'new-med';
+
+        const createTrip = (legType, pu, doTime, puAddr, doAddr, note) => {
+            return {
+                tripId: generateTripId(),
+                id: name,
+                status: 'noAction',
+                leg: legType,
+                pickup: pu,
+                dropoff: doTime,
+                puaddress: puAddr,
+                doaddress: doAddr,
+                note: note,
+                phone: phoneInput.value,
+                mismatch: false,
+                isNew: true, 
+                newType: tripTypeTag 
+            };
+        };
+
+        let aLegType = 'a-leg';
+        let bLegType = 'b-leg';
+        if (radioAppt.checked) {
+            aLegType = 'a-leg-ext';
+            bLegType = 'b-leg-ext';
+        } else if (radioMed.checked) {
+            bLegType = 'b-leg-Med';
+        }
+
+        if (!aIgnore.checked) {
+            if (!aPickup.value || !aDropoff.value) {
+                alert("Please fill in A-Leg times or check 'Ignore A-Leg'.");
+                return;
+            }
+            newTrips.push(createTrip(aLegType, aPickup.value, aDropoff.value, aPuAddr.value, aDoAddr.value, aNote.value));
+        }
+
+        if (!bIgnore.checked) {
+            if (!bPickup.value || !bDropoff.value) {
+                alert("Please fill in B-Leg times or check 'Ignore B-Leg'.");
+                return;
+            }
+            newTrips.push(createTrip(bLegType, bPickup.value, bDropoff.value, bPuAddr.value, bDoAddr.value, bNote.value));
+        }
+
+        if (newTrips.length === 0) {
+            alert("No trips to add.");
+            return;
+        }
+
+        // --- Auto Route Assignment ---
+        let routeId = 'unschedule';
+        let foundPrtRow = selectedPatientData;
+        
+        if (!foundPrtRow && prtMap.size > 0) {
+            foundPrtRow = prtMap.get(name.toLowerCase());
+        }
+
+        if (foundPrtRow && foundPrtRow['RT#']) {
+            const rtNum = parseInt(foundPrtRow['RT#'], 10);
+            if (!isNaN(rtNum) && rtNum >= 0 && rtNum <= 12) {
+                routeId = `Route ${rtNum}`;
+            }
+        }
+
+        const targetRoute = routes.find(r => r.id === routeId);
+        if (targetRoute) {
+            newTrips.forEach(t => targetRoute.passengers.push(t));
+        } else {
+            const unRoute = routes.find(r => r.id === 'unschedule');
+            if(unRoute) unRoute.passengers.push(...newTrips);
+            else routes.push({ id: 'unschedule', passengers: newTrips });
+        }
+
+        // Silent Success
+        renderRoutes(prtMap, darMap, date);
+        updateSummaryTable();
+        
+        // Reset and Focus
+        resetForm();
+        nameInput.focus();
+    }
+
+    if(addBtn) {
+        addBtn.addEventListener('click', triggerAddTrip);
+    }
+
+    // --- 5. Global Shortcut: Shift + Enter ---
+    document.addEventListener('keydown', (e) => {
+        if (e.shiftKey && e.key === 'Enter') {
+            const btn = document.getElementById('addTripConfirmBtn');
+            // Ensure button exists and is visible
+            if (btn && btn.offsetParent !== null) {
+                e.preventDefault();
+                triggerAddTrip();
+            }
+        }
+    });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   setupTabs(); 
@@ -1475,9 +1987,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!dar) return showError('Enter DAR Data to Plan');
       
       const res = generateTrips(prt, dar);
-      // Check for conflict abort (res will be empty or minimal)
+      // Check for conflict abort
       if (!res.date && res.routes.length === 0) {
-         // Stop further processing if generateTrips aborted due to conflict
          return; 
       }
 
@@ -1511,4 +2022,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (exportAllBtn) exportAllBtn.addEventListener('click', () => exportAllTrips(date, prtMap, darMap));
   if (searchInput) searchInput.addEventListener('input', () => filterTrips(searchInput.value));
+  
+  // 初始化 Add Trip 模块
+  initAddTripModule();
 });

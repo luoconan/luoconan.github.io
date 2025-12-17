@@ -1,4 +1,4 @@
-/* version: v2.0.26 */
+/* version: v2.0.28 */
 * {
   margin: 0;
   padding: 0;
@@ -691,4 +691,154 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
+}
+/* --- Add Trip Module Styles (V2 Update) --- */
+
+.add-trip-radio-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 14px;
+    align-items: center;
+}
+
+.add-trip-radio-group input[type="radio"] {
+    margin-right: 5px;
+    accent-color: #007bff; /* Optional: style the radio button color */
+}
+
+.add-trip-section {
+    border: 1px solid #555;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    background: #333; /* Dark background matches image */
+}
+
+.add-trip-section h3 {
+    font-size: 14px;
+    color: #eee;
+    margin-bottom: 10px;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.form-row label {
+    width: 80px; /* Fixed width for labels to align inputs */
+    color: #ccc;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.form-row input[type="text"],
+.form-row textarea {
+    flex-grow: 1;
+    background: #2b2b2b; /* Slightly darker input bg */
+    border: 1px solid #555;
+    color: #fff;
+    padding: 6px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.form-row input[type="text"]:focus,
+.form-row textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.checkbox-wrapper {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.checkbox-wrapper input {
+    margin-right: 5px;
+}
+
+.add-now-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #00c853; /* Bright Green as in image */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.add-now-btn:hover {
+    background-color: #009624;
+}
+
+/* Autocomplete Suggestions */
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #444;
+    border: 1px solid #666;
+    border-top: none;
+    z-index: 1000;
+    max-height: 150px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 13px;
+}
+
+.suggestion-item:hover {
+    background: #007bff;
+}
+/* --- Autocomplete Keyboard Navigation Style --- */
+.suggestion-item.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* --- New Trip Colors (Darker Versions) --- */
+/* Daily: 深黄色 */
+.passenger-block.new-daily {
+    background-color: #8B6508 !important;
+    border: 1px solid #ffd700;
+}
+
+/* Appointment: 深粉红色 (Fixed: Darker Pink instead of Purple) */
+.passenger-block.new-appt {
+    background-color: #C71585 !important; /* MediumVioletRed */
+    border: 1px solid #FF1493; /* DeepPink border */
+}
+
+/* Medication: 深橙色 */
+.passenger-block.new-med {
+    background-color: #A04000 !important;
+    border: 1px solid #ff8c00;
+}
+/* --- Disabled Input Style --- */
+.form-row input:disabled,
+.form-row textarea:disabled {
+    background-color: #444 !important; /* 更深的灰色 */
+    color: #888 !important; /* 文字变暗 */
+    cursor: not-allowed;
+    border-color: #444;
 }

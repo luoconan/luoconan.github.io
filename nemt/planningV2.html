@@ -1,4 +1,4 @@
-<!--Version: v2.0.26 -->
+<!--Version: v2.0.27 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,7 +60,88 @@
           </div>
 
           <div id="add-trip" class="tab-content">
-            <p style="color:#bbb;">Add Trip functionality will go here.</p>
+            <div class="add-trip-radio-group">
+                <label><input type="radio" name="tripType" value="daily" checked> Daily</label>
+                <label><input type="radio" name="tripType" value="appointment"> Appointment</label>
+                <label><input type="radio" name="tripType" value="medication"> Medication</label>
+            </div>
+
+            <div class="add-trip-section">
+                <h3>Prt Information</h3>
+                <div class="form-row">
+                    <label>Name:</label>
+                    <div style="position: relative; flex-grow: 1;">
+                        <input type="text" id="addName" placeholder="Search Patient..." autocomplete="off">
+                        <div id="addNameSuggestions" class="suggestions"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Phone:</label>
+                    <input type="text" id="addPhone" readonly style="background-color: #555; color: #ccc;">
+                </div>
+            </div>
+
+            <div class="add-trip-section">
+                <div class="section-header">
+                    <h3 id="aLegTitle">A-Leg Details (Home -> Facility)</h3>
+                </div>
+                
+                <div class="form-row">
+                    <label>Pickup:</label>
+                    <input type="text" id="addAPickup">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="addAIgnore"> <label for="addAIgnore">Ignore A-Leg</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Dropoff:</label>
+                    <input type="text" id="addADropoff">
+                </div>
+                <div class="form-row">
+                    <label>puaddress:</label>
+                    <input type="text" id="addAPuAddr">
+                </div>
+                <div class="form-row">
+                    <label>doaddress:</label>
+                    <input type="text" id="addADoAddr">
+                </div>
+                <div class="form-row">
+                    <label>note:</label>
+                    <textarea id="addANote" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="add-trip-section">
+                <div class="section-header">
+                    <h3 id="bLegTitle">B-Leg Details (Facility -> Home)</h3>
+                </div>
+                
+                <div class="form-row">
+                    <label>Pickup:</label>
+                    <input type="text" id="addBPickup">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="addBIgnore"> <label for="addBIgnore">Ignore B-Leg</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Dropoff:</label>
+                    <input type="text" id="addBDropoff">
+                </div>
+                <div class="form-row">
+                    <label>puaddress:</label>
+                    <input type="text" id="addBPuAddr">
+                </div>
+                <div class="form-row">
+                    <label>doaddress:</label>
+                    <input type="text" id="addBDoAddr">
+                </div>
+                <div class="form-row">
+                    <label>note:</label>
+                    <textarea id="addBNote" rows="2"></textarea>
+                </div>
+            </div>
+
+            <button id="addTripConfirmBtn" class="add-now-btn">Add New</button>
           </div>
 
           <div id="summary" class="tab-content">
