@@ -1,0 +1,49 @@
+<!-- version: v2.1.5 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planing</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <span class="updateTime" id="planDate">Date: --/--</span>
+  <div class="search-wrapper">
+    <h3>Search</h3> 
+    <input type="text" id="searchInput" placeholder="Enter passenger name or keywords">
+    <button id="exportAllBtn">Export All Trips</button>
+  </div>
+  <div class="container">
+    <div class="timeline-container">
+      <div class="timeline-header"></div>
+      <div class="drivers"></div>
+    </div>
+    <div class="display-panel">
+      <div id="errorMsg" style="display: none;"></div>
+      <div class="input-container">
+        <div class="textarea-wrapper">
+          <h3>prt Info</h3>
+          <textarea id="prtInfoInput" placeholder="Enter prt Info data here"></textarea>
+        </div>
+        <div class="textarea-wrapper">
+          <h3>DAR</h3>
+          <textarea id="darInput" placeholder="Enter DAR data here"></textarea>
+        </div>
+        <button id="planBtn">Plan</button>
+      </div>
+      <div class="display-content"></div>
+    </div>
+  </div>
+  <div id="conflictModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <h3 style="color: #ff4444; margin-bottom: 15px;">Data Conflict Detected</h3>
+    <p id="conflictMsg" style="line-height: 1.6; margin-bottom: 20px; color: #fff;"></p>
+    <div style="text-align: right;">
+      <button onclick="closeConflictModal()" class="myButton">OK, I will fix it</button>
+    </div>
+  </div>
+</div>
+  <script src="planning.js"></script>
+</body>
+</html>
