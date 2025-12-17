@@ -1,4 +1,4 @@
-// version: v1.4.5 
+// version: v1.5.0 (Fixed Date Parsing & Visit Type Logic)
 let routes = [];
 let prtMap, darMap, date;
 
@@ -281,13 +281,13 @@ function generateTrips(prtInfoText, darText) {
   const darLines = darText.trim().split('\n').map(line => line.trim());
   if (darLines.length < 3) return { date: '', routes: [], darMap: new Map() };
   
-  const dateMatch = darLines[0].match(/(\w+,\s*(\d{2})\/(\d{2})\/(\d{4}))/);
-  // 确保 date 格式为 MM/DD/YYYY
-  date = dateMatch ? `${dateMatch[2]}/${dateMatch[3]}/${dateMatch[4]}` : `--/--/${new Date().getFullYear()}`;
+  // --- MODIFICATION: 修复日期解析正则，兼容不带逗号或带Tab的格式 ---
+  const dateMatch = darLines[0].match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  date = dateMatch ? `${dateMatch[1].padStart(2, '0')}/${dateMatch[2].padStart(2, '0')}/${dateMatch[3]}` : `--/--/${new Date().getFullYear()}`;
   
   let dayOfWeek = -1;
   if (dateMatch) {
-    dayOfWeek = new Date(dateMatch[4], dateMatch[2] - 1, dateMatch[3]).getDay();
+    dayOfWeek = new Date(dateMatch[3], dateMatch[1] - 1, dateMatch[2]).getDay();
   }
 
   const dar = parseTable(darLines.slice(1).join('\n'));
@@ -414,11 +414,24 @@ function generateTrips(prtInfoText, darText) {
 
     pData.rows.forEach(row => {
       const vt = parseVisitType(row['Visit Type'] || '');
+      const visitTypeRaw = (row['Visit Type'] || '').toUpperCase(); // 获取原始大写字符串
+
       const apptTimeRaw = (row['appt time'] || '').replace(':', '');
       const apptNote = row['Appt Notes'] || row['address'] || ''; 
       const rowMismatch = checkMismatch(row, prtRow);
       
-      const isExt = vt.has('ext') || vt.has('external appointment') || vt.has('external');
+      // --- MODIFICATION: 增强外部预约识别逻辑 ---
+      let isExt = vt.has('ext') || vt.has('external appointment') || vt.has('external');
+      
+      // 如果没有 'ext' 标签，但包含 OFFICE VISIT / CONSULT 等关键词，也视为外部预约
+      if (!isExt) {
+          if (visitTypeRaw.includes('OFFICE VISIT') || 
+              visitTypeRaw.includes('CONSULT') || 
+              visitTypeRaw.includes('OUTSIDE')) {
+              isExt = true;
+          }
+      }
+
       const isAcup = vt.has('acupuncture') || vt.has('acup');
       const isDia = vt.has('dialysis') || vt.has('dia');
 
