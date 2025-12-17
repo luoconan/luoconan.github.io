@@ -1,6 +1,6 @@
-// version: v2.0.19 
-var routes = []; // MODIFICATION: Used 'var' instead of 'let' to prevent 'already been declared' SyntaxError
-let prtMap = new Map(); // 初始化为 Map
+// version: v2.0.26 (Added Conflict Modal & Crash Prevention)
+var routes = []; 
+let prtMap = new Map(); 
 let darMap = new Map();
 let date;
 let prtInfoHistory = []; 
@@ -16,6 +16,27 @@ let tripIdCounter = 0;
 function generateTripId() {
   return `trip-${tripIdCounter++}`;
 }
+
+// --- MODAL FUNCTIONS START (新增) ---
+function showConflictModal(message) {
+  const modal = document.getElementById('conflictModal');
+  const msgElem = document.getElementById('conflictMsg');
+  if (modal && msgElem) {
+    msgElem.innerHTML = message;
+    modal.style.display = 'flex';
+  } else {
+    // Fallback if modal HTML is missing
+    alert(message.replace(/<br>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, ''));
+  }
+}
+
+window.closeConflictModal = function() {
+  const modal = document.getElementById('conflictModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+// --- MODAL FUNCTIONS END ---
 
 function showError(message) {
   const errorMsg = document.getElementById('errorMsg');
@@ -48,14 +69,12 @@ function isValidPhoneFormat(phoneStr) {
   return regex.test(phoneStr);
 }
 
-// 修复：使用动态日期解析时间，而非硬编码的 2025/4/15
 function parseTime(timeStr) {
   try {
     const hours = parseInt(timeStr.slice(0, 2), 10);
     const minutes = parseInt(timeStr.slice(2, 4), 10);
     if (isNaN(hours) || isNaN(minutes)) return 0;
     
-    // 如果 date 尚未解析（如初始化时），使用当前日期作为回退，防止报错
     let y, m, d;
     if (!date || date === '--/--/----') {
         const now = new Date();
@@ -64,7 +83,7 @@ function parseTime(timeStr) {
         d = now.getDate();
     } else {
         const dateParts = date.split('/');
-        m = parseInt(dateParts[0], 10) - 1; // JS Month is 0-11
+        m = parseInt(dateParts[0], 10) - 1; 
         d = parseInt(dateParts[1], 10);
         y = parseInt(dateParts[2], 10);
     }
@@ -75,7 +94,6 @@ function parseTime(timeStr) {
   }
 }
 
-// 修复：使用动态日期计算时间偏移
 function adjustTime(timeStr, minutes) {
   try {
     const hours = parseInt(timeStr.slice(0, 2), 10);
@@ -113,7 +131,6 @@ function formatTimeToHHMM(timeStr) {
   return `${hours}:${minutes}`;
 }
 
-// Zip Code 默认为 94118
 function processAddress(address) {
   if (!address) return { street: '', zip: '94118' };
   
@@ -137,55 +154,38 @@ function getPassengerPhone(patient, prtMap, darMap) {
   return phone;
 }
 
-/**
- * 将 PRT Wander, DAR Escort 和 PRT Pickup Note 合并成一个备注字符串。
- */
 function constructInitialNote(prtRow, darRow, isMedication, isAppointment) {
   const notes = [];
-
-  // 1. PRT Wander (非 Medication)
   if (!isMedication) {
       const wander = (prtRow['Wander'] || '').trim();
       if (wander) {
           notes.push(wander);
       }
   }
-
-  // 2. DAR Escort (Appointment 专用, 忽略特定值)
   if (isAppointment && darRow) {
       const escort = (darRow['Escort'] || '').trim();
-      // 忽略 "-", "Y", "N", 以及纯数字
       const isSimpleEscort = ['-', 'y', 'n'].includes(escort.toLowerCase()) || /^\d+$/.test(escort);
-      
       if (escort && !isSimpleEscort) {
           notes.push(`Escort: ${escort}`);
       }
   }
-  
-  // 3. PRT Pickup Note
   const pickupNote = (prtRow['Pickup Note'] || '').trim();
   if (pickupNote) {
       notes.push(pickupNote);
   }
-  
   return notes.join(' / ').trim();
 }
-
 
 function getTripSpace(passenger, prtRow) {
   const leg = passenger.leg || '';
   const isMedication = leg === 'b-leg-Med';
-
   if (isMedication) {
-      // 1. Medication Trip: DME & Rx
       return 'DME & Rx';
   } else {
-      // 2. Non-Medication Trip: Use PRT Service Type
       const serviceType = (prtRow['Service Type'] || '').trim().toLowerCase();
       if (serviceType.includes('wheelchair')) {
           return 'Wheelchair';
       } else {
-          // 默认为 Ambulatory
           return 'Ambulatory';
       }
   }
@@ -227,7 +227,6 @@ function isCenterAddress(address) {
   return address && address.toLowerCase().includes('3595 geary');
 }
 
-// 智能地址标准化
 function normalizeAddr(addr) {
   if (!addr) return '';
   let s = addr.toLowerCase();
@@ -284,7 +283,6 @@ function checkMismatch(darRow, prtRow) {
 }
 
 function loadPrtInfo() {
-  // 从模态框获取 PRT Info
   const prtInput = document.getElementById('prtInfoInputModal');
   const prtText = prtInput.value.trim();
   
@@ -294,8 +292,6 @@ function loadPrtInfo() {
   }
   
   const newPrtData = parseTable(prtText).data;
-  
-  // 1. 覆盖 Map
   const newPrtMap = new Map();
   let hasValidData = false;
   newPrtData.forEach(row => {
@@ -318,60 +314,43 @@ function loadPrtInfo() {
       return false;
   }
 
-  // 2. 更新全局变量和历史记录
   prtMap = newPrtMap;
   prtInfoHistory = Array.from(newPrtMap.values()); 
   window.prtMap = prtMap;
   
-  // 隐藏模态框，显示主内容
   document.getElementById('prt-modal-backdrop').style.display = 'none';
   document.getElementById('main-content').classList.remove('main-content-hidden');
   
-  // 默认打开 Data & Plan tab
   const defaultTab = document.querySelector('.tab-buttons [data-tab="data-planning"]');
   if (defaultTab) {
       defaultTab.click(); 
   }
   
   clearError();
-  // 初始渲染 Summary 确保表格存在
   updateSummaryTable(); 
   return true;
 }
 
-function mergePrtInfo(newPrtInfoText) {
-  // 此函数现在保留，但如果 PRT Info 输入仅在模态框中，则此函数仅返回当前的 prtMap
-  return prtMap;
-}
-
-// 修复：更新后的生成行程逻辑
+// 核心：生成行程并处理冲突
 function generateTrips(prtInfoText, darText) {
   clearError();
   tripIdCounter = 0;
   
   const mergedPrtMap = prtMap;
-  
   const darLines = darText.trim().split('\n').map(line => line.trim());
   if (darLines.length < 3) return { date: '', routes: [], darMap: new Map() };
   
-  // 修复：直接匹配第一行的 MM/DD/YYYY 格式日期，不依赖星期或逗号
   const datePattern = /(\d{1,2})\/(\d{1,2})\/(\d{4})/;
   const dateMatch = darLines[0].match(datePattern);
   
-  // FIX: 确保 dayOfWeek 在整个函数作用域内有效
   let dayOfWeek = -1; 
   if (dateMatch) {
     const m = parseInt(dateMatch[1], 10);
     const d = parseInt(dateMatch[2], 10);
     const y = parseInt(dateMatch[3], 10);
-    
-    // 更新全局 date 变量，格式化为 MM/DD/YYYY
     date = `${m.toString().padStart(2, '0')}/${d.toString().padStart(2, '0')}/${y}`;
-    
-    // 基于真实日期计算 dayOfWeek
     dayOfWeek = new Date(y, m - 1, d).getDay();
   } else {
-    // 默认回退
     const now = new Date();
     date = `${(now.getMonth()+1).toString().padStart(2, '0')}/${now.getDate().toString().padStart(2, '0')}/${now.getFullYear()}`;
     dayOfWeek = now.getDay();
@@ -379,22 +358,17 @@ function generateTrips(prtInfoText, darText) {
 
   const dar = parseTable(darLines.slice(1).join('\n'));
   darMap = new Map();
-  
   const uniquePatients = new Map();
 
   dar.data.forEach(row => {
     if (row['Phone'] === undefined) row['Phone'] = '';
     if (row['Escort'] === undefined) row['Escort'] = '';
-    
     if (row['Patient']) darMap.set(row['Patient'].toLowerCase(), row);
     
-    // 修复：兼容 'Transpo' 和 'transport' 两种表头
     const isTranspo = row['Transpo'] === 'Y' || row['transport'] === 'Y';
-    
     if (isTranspo) {
       const name = row['Patient'];
       const key = name.toLowerCase();
-      
       if (!uniquePatients.has(key)) {
         uniquePatients.set(key, {
           name: name,
@@ -407,8 +381,6 @@ function generateTrips(prtInfoText, darText) {
       
       const pData = uniquePatients.get(key);
       pData.rows.push(row);
-      
-      // 兼容 Visit Type 和 Visit-Type
       const vtStr = row['Visit Type'] || row['Visit-Type'] || '';
       vtStr.toLowerCase().split(',').map(s => s.trim()).forEach(tag => {
         if(tag) pData.globalFlags.add(tag);
@@ -425,12 +397,13 @@ function generateTrips(prtInfoText, darText) {
 
   const allTrips = [];
 
-  uniquePatients.forEach((pData, patientKey) => {
+  // 关键变更：使用 for...of 循环，允许 return 退出
+  for (const [patientKey, pData] of uniquePatients) {
     const name = pData.name;
     const globalFlags = pData.globalFlags; 
     const address = pData.baseAddress;
     const prtRow = mergedPrtMap.get(patientKey) || {}; 
-    const darRow = darMap.get(patientKey) || {}; // 基础 DAR Row
+    const darRow = darMap.get(patientKey) || {}; 
     
     const hasGlobal = (key) => globalFlags.has(key);
     const findGlobalTime = (prefix) => {
@@ -441,7 +414,6 @@ function generateTrips(prtInfoText, darText) {
     };
 
     let baseMismatch = checkMismatch(darRow, prtRow);
-
     const baseTrips = { a: null, b: null };
     
     if (!isCenterAddress(address)) {
@@ -466,26 +438,52 @@ function generateTrips(prtInfoText, darText) {
       baseTrips.b.note = constructInitialNote(prtRow, darRow, isMed, isAppt);
     }
 
+    // --- 上午行程处理 (A-leg) ---
     if (baseTrips.a) {
       if (hasGlobal('noam') || hasGlobal('fromhome')) {
         baseTrips.a = null;
       } else if (hasGlobal('2nd')) {
-        baseTrips.a.pickup = '1030'; baseTrips.a.dropoff = '1100';
+         if(baseTrips.a) { // 安全检查
+            baseTrips.a.pickup = '1030'; baseTrips.a.dropoff = '1100';
+         }
       }
       const aTime = findGlobalTime('a@');
       if (aTime && isValidTimeFormat(aTime)) {
-        baseTrips.a.pickup = aTime; baseTrips.a.dropoff = adjustTime(aTime, 30);
+        if (baseTrips.a) {
+            baseTrips.a.pickup = aTime; baseTrips.a.dropoff = adjustTime(aTime, 30);
+        }
       }
     }
+
+    // --- 下午行程处理 (B-leg) - 包含冲突检测 ---
     if (baseTrips.b) {
+      // 1. 先处理删除逻辑
       if (hasGlobal('nopm') || hasGlobal('backhome')) {
         baseTrips.b = null;
       } else if (hasGlobal('early')) {
-        baseTrips.b.pickup = '1400'; baseTrips.b.dropoff = '1430';
+        if (baseTrips.b) {
+            baseTrips.b.pickup = '1400'; baseTrips.b.dropoff = '1430';
+        }
       }
+
+      // 2. 检查是否有 p@ 时间覆盖指令
       const pTime = findGlobalTime('p@');
       if (pTime && isValidTimeFormat(pTime)) {
-        baseTrips.b.pickup = pTime; baseTrips.b.dropoff = adjustTime(pTime, 30);
+        // FIX: 冲突检测 - 行程被删除了(null)，但又指定了时间
+        if (!baseTrips.b) {
+            showConflictModal(
+                `<strong>Error for Patient: ${name}</strong><br><br>` +
+                `Reason: Data Conflict.<br>` +
+                `You have <strong>"nopm"</strong> (or backhome) which deletes the PM trip,<br>` +
+                `BUT you also entered <strong>"p@${pTime}"</strong> to set a PM time.<br><br>` +
+                `Please check your DAR input and remove one of them.`
+            );
+            // 立即停止生成，强制用户修改
+            return { date: '', routes: [], darMap: new Map() };
+        } else {
+            baseTrips.b.pickup = pTime; 
+            baseTrips.b.dropoff = adjustTime(pTime, 30);
+        }
       }
     }
 
@@ -565,7 +563,7 @@ function generateTrips(prtInfoText, darText) {
 
     if (baseTrips.a) allTrips.push(baseTrips.a);
     if (baseTrips.b) allTrips.push(baseTrips.b);
-  });
+  }
 
   // Medication Trip 逻辑
   if (dayOfWeek !== -1) {
@@ -580,21 +578,17 @@ function generateTrips(prtInfoText, darText) {
         }
         const name = prtRow['Name'];
         let doaddress = prtRow['Address'] || '';
-        
         if (isCenterAddress(doaddress)) return;
         
         const isMed = true;
         const isAppt = false;
-        
         const medicationTrip = {
           tripId: generateTripId(), id: name, status: 'noAction', leg: 'b-leg-Med',
           pickup: '1700', dropoff: '1730',
           puaddress: facilityAddressMap.IOA, doaddress: doaddress,
           phone: getPassengerPhone(name, mergedPrtMap, darMap)
         };
-        
         medicationTrip.note = constructInitialNote(prtRow, darRow, isMed, isAppt);
-        
         allTrips.push(medicationTrip);
       }
     });
@@ -636,7 +630,6 @@ function updateSummaryTable() {
 
     routes.forEach(route => {
         route.passengers.forEach(p => {
-            // Status Check: Only count trips that are not permanently deleted
             if (p.status !== 'deleted') { 
                 totalTrips++;
                 const patient = p.id.toLowerCase();
@@ -653,12 +646,7 @@ function updateSummaryTable() {
             }
         });
     });
-
-    const totalAmbWch = ambCount + wchCount;
-    const totalTripCount = totalTrips;
-    const tripTotalRatio = totalTripCount > 0 ? `${totalAmbWch}/${totalTripCount}` : '0/0';
     
-    // Summary 表格结构和样式
     const summaryTableHtml = `
         <table class="tripsheet">
             <tbody>
@@ -678,7 +666,7 @@ function updateSummaryTable() {
                     <td>DME</td><td>${dmeCount}</td>
                 </tr>
                 <tr class="row-total">
-                    <td>Trip Total</td><td>${totalTripCount}</td>
+                    <td>Trip Total</td><td>${totalTrips}</td>
                 </tr>
             </tbody>
         </table>
@@ -713,13 +701,11 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
       typeVal = 'Medication';
     }
     
-    // Status handling for export comment
     let dropoffComment = '';
     if (passenger.status === 'cancelled') {
         dropoffComment = 'Cancelled';
     }
 
-    // Pickup Comment 直接使用 passenger.note 的内容
     const finalNote = passenger.note || ''; 
     const authorization = prtRow['MRN'] || ''; 
 
@@ -730,7 +716,7 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
       Patient: passenger.id,
       Space: space,
       'Pickup Comment': finalNote, 
-      'Dropoff Comment': dropoffComment, // Use specific dropoff comment for cancelled status
+      'Dropoff Comment': dropoffComment, 
       Type: typeVal,
       'Pickup Phone': phone,
       'Dropoff Phone': '',
@@ -757,7 +743,6 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  // FIX: Provide a date for single route export
   const routeNum = route.id.replace('Route ', 'RT');
   const fileName = `${date.replace(/\//g, '')}_${routeNum}.csv`;
   link.download = fileName;
@@ -780,7 +765,6 @@ function exportAllTrips(date, prtMap, darMap) {
     if (route.id === 'unschedule') return;
     
     route.passengers.forEach(passenger => {
-      // Only export scheduled and non-deleted trips
       if (passenger.status === 'deleted') return;
       
       const patient = passenger.id.toLowerCase();
@@ -894,9 +878,7 @@ function getTimeRange() {
   let minTime = Infinity;
   let maxTime = -Infinity;
   
-  // FIX: 如果没有路线，使用默认的早7晚6，但基于当前日期
   if (!routes || !Array.isArray(routes) || routes.length === 0) {
-    // 使用全局 date 变量，或者当前日期
     const now = new Date();
     let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
     if (date && date !== '--/--/----') {
@@ -913,7 +895,7 @@ function getTimeRange() {
       route.passengers.forEach(p => {
         const pickup = parseTime(p.pickup);
         const dropoff = parseTime(p.dropoff);
-        if (pickup !== 0 && dropoff !== 0 && p.status !== 'deleted') { // Exclude deleted trips from time range calculation
+        if (pickup !== 0 && dropoff !== 0 && p.status !== 'deleted') { 
           minTime = Math.min(minTime, pickup);
           maxTime = Math.max(maxTime, dropoff);
         }
@@ -922,7 +904,6 @@ function getTimeRange() {
   });
   
   if (minTime === Infinity) {
-    // 同上，回退逻辑
     const now = new Date();
     let y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
     if (date && date !== '--/--/----') {
@@ -948,7 +929,7 @@ function timeToPixel(time, minTime, maxTime) {
 
 function assignLanes(passengers) {
   if (!passengers) return [];
-  const activePassengers = passengers.filter(p => p.status !== 'deleted'); // Only assign lanes to active trips
+  const activePassengers = passengers.filter(p => p.status !== 'deleted'); 
   const sorted = activePassengers.slice().sort((a, b) => parseTime(a.pickup) - parseTime(b.pickup));
   const lanes = [];
   sorted.forEach(p => {
@@ -1084,7 +1065,6 @@ function getSelectedTripIds() {
     return Array.from(selectedBlocks).map(b => b.dataset.tripId);
 }
 
-// Helper to update status or delete based on selected trips
 function updateSelectedTrips(actionType) {
     const selectedIds = getSelectedTripIds();
     if (selectedIds.length === 0) {
@@ -1096,7 +1076,6 @@ function updateSelectedTrips(actionType) {
         const tripData = findTripById(tid);
         if (tripData) {
             if (actionType === 'delete') {
-                // Completely remove trip from its route's passengers array
                 tripData.route.passengers = tripData.route.passengers.filter(p => p.tripId !== tid);
             } else if (actionType === 'cancel') {
                 tripData.passenger.status = 'cancelled';
@@ -1111,12 +1090,10 @@ function updateSelectedTrips(actionType) {
     updateSummaryTable();
 }
 
-// Function to render the list of all trips for the same participant
 function renderAllParticipantTrips(participantId, displayPanel) {
     const allTrips = [];
     routes.forEach(route => {
         route.passengers.filter(p => p.id === participantId).forEach(p => {
-            // Only list trips that haven't been permanently deleted
             if (p.status !== 'deleted') {
                 allTrips.push({
                     ...p,
@@ -1141,7 +1118,6 @@ function renderAllParticipantTrips(participantId, displayPanel) {
         </thead>
         <tbody>
             ${allTrips.map(p => {
-                // Address formatting: remove "San Francisco" and subsequent parts
                 const puAddr = p.puaddress.split('San Francisco')[0].trim();
                 const doAddr = p.doaddress.split('San Francisco')[0].trim();
 
@@ -1238,13 +1214,12 @@ function renderRoutes(prtMap, darMap, date) {
       block.dataset.tripId = p.tripId;
       block.draggable = true;
       
-      // Color logic
       if (p.leg === 'b-leg-Med') {
         block.style.backgroundColor = '#F4A460';
       } else if (p.mismatch) {
-        block.style.backgroundColor = '#9400D3'; // Highlight address mismatch
+        block.style.backgroundColor = '#9400D3'; 
       } else if (p.status === 'cancelled') {
-        block.classList.add("status-cancelled"); // Use grey for cancelled
+        block.classList.add("status-cancelled"); 
       } else if (p.leg && (p.leg.includes('ext') || p.leg.includes('manual'))) {
         block.classList.add("external-appointment");
       } else {
@@ -1276,15 +1251,13 @@ function renderRoutes(prtMap, darMap, date) {
         if (selTable) document.body.removeChild(selTable);
       });
       
-      block.addEventListener('dblclick', () => { // 双击打开详情
+      block.addEventListener('dblclick', () => { 
           openTripDetailTab();
-          block.click(); // 触发 click 事件来渲染详情
+          block.click(); 
       });
 
       block.addEventListener('click', (e) => {
-        // Clear previous selection/highlight
         document.querySelectorAll(".passenger-block").forEach(b => {
-             // Preserve selection if Ctrl/Cmd is pressed for multi-select
              if (!e.ctrlKey && !e.metaKey) {
                 b.classList.remove("selected");
              }
@@ -1298,18 +1271,15 @@ function renderRoutes(prtMap, darMap, date) {
            block.classList.add("selected");
         }
         
-        // Add same-id highlight
         document.querySelectorAll(".passenger-block").forEach(b => {
            if (b.dataset.id === p.id && b !== block) {
                b.classList.add("same-id");
            }
         });
 
-        // Render Trip Detail Panel
         const displayPanel = document.getElementById('trip-detail');
         displayPanel.innerHTML = '';
         
-        // --- Module 1: Edit Trip Details ---
         const editModule = document.createElement("div");
         editModule.className = "edit-module";
         editModule.innerHTML = `<h3>Edit Trip Details</h3>`; 
@@ -1317,7 +1287,6 @@ function renderRoutes(prtMap, darMap, date) {
         const mainTable = document.createElement("table");
         mainTable.className = "display-table";
         
-        // Reordered fields
         const editableFields = ['id', 'pickup', 'dropoff', 'puaddress', 'doaddress', 'status', 'leg', 'note', 'phone']; 
 
         editableFields.forEach((field, index) => {
@@ -1334,7 +1303,7 @@ function renderRoutes(prtMap, darMap, date) {
           
           let input;
           const isNote = field === 'note';
-          const isDisabled = field === 'leg' || field === 'status'; // Leg and Status are now read-only inputs
+          const isDisabled = field === 'leg' || field === 'status'; 
           
           if (isNote) {
               input = document.createElement('textarea');
@@ -1350,23 +1319,19 @@ function renderRoutes(prtMap, darMap, date) {
           
           if (isDisabled) {
               input.disabled = true; 
-              // Set background color for disabled fields
               input.style.backgroundColor = '#555'; 
           }
           
-          // Input Change Listener (updates the model directly)
           input.addEventListener('change', () => {
               let newValue = input.value.trim();
               if ((field === 'pickup' || field === 'dropoff') && newValue && !isValidTimeFormat(newValue)) {
                   showError(`Invalid ${field} format: must be HHMM`);
-                  input.value = passenger[field] || ''; // Revert input value
+                  input.value = passenger[field] || ''; 
                   return;
               }
               
-              // Update the passenger object
               passenger[field] = newValue;
               
-              // Update the block data for immediate visual update on the timeline
               block.dataset[field] = newValue;
               if (field === 'id') block.dataset.id = newValue;
               if (field === 'note') block.title = `${p.id}\n${p.pickup}-${p.dropoff}\nNote: ${newValue || 'None'}`;
@@ -1382,13 +1347,12 @@ function renderRoutes(prtMap, darMap, date) {
         
         editModule.appendChild(mainTable);
         
-        // New Button Container V2 (Cancel / Save Changes)
         const buttonContainerV2 = document.createElement("div");
         buttonContainerV2.className = "button-container-v2";
 
         const cancelBtn = document.createElement("button");
         cancelBtn.id = "cancelTripBtn";
-        cancelBtn.textContent = "Cancel"; // Cancel = Change status to 'cancelled'
+        cancelBtn.textContent = "Cancel"; 
         cancelBtn.className = "cancel-btn";
         cancelBtn.addEventListener('click', () => {
           passenger.status = 'cancelled';
@@ -1402,7 +1366,6 @@ function renderRoutes(prtMap, darMap, date) {
         confirmBtn.textContent = "Save Changes";
         confirmBtn.className = "save-changes-btn";
         confirmBtn.addEventListener('click', () => {
-          // The input change listeners already updated the data model (passenger object)
           renderRoutes(prtMap, darMap, date);
           clearError();
           updateSummaryTable();
@@ -1413,7 +1376,6 @@ function renderRoutes(prtMap, darMap, date) {
         displayPanel.appendChild(editModule);
 
 
-        // --- Module 2: Batch Selection Actions ---
         const batchModule = document.createElement("div");
         batchModule.className = "batch-module";
         batchModule.innerHTML = `
@@ -1448,7 +1410,6 @@ function renderRoutes(prtMap, darMap, date) {
         displayPanel.appendChild(batchModule);
 
 
-        // --- Module 3: All Trips for this Participant ---
         renderAllParticipantTrips(p.id, displayPanel);
 
       });
@@ -1463,7 +1424,6 @@ function renderRoutes(prtMap, darMap, date) {
   updateSummaryTable(); 
 }
 
-// Tab 切换功能
 function setupTabs() {
     const tabButtons = document.querySelectorAll('.tab-buttons button');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -1483,7 +1443,6 @@ function setupTabs() {
             document.getElementById(targetId).style.display = 'block';
             button.classList.add('active');
 
-            // Special action for Summary tab
             if (targetId === 'summary') {
                 updateSummaryTable();
             }
@@ -1503,12 +1462,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById('searchInput');
   const exportAllBtn = document.getElementById('exportAllBtn');
 
-  // Load PRT Info listener
   if (prtLoadBtn) {
       prtLoadBtn.addEventListener('click', loadPrtInfo);
   }
 
-  // --- Plan Button Listener ---
   if (planBtn) {
     planBtn.addEventListener('click', () => {
       const prt = ''; 
@@ -1518,6 +1475,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!dar) return showError('Enter DAR Data to Plan');
       
       const res = generateTrips(prt, dar);
+      // Check for conflict abort (res will be empty or minimal)
+      if (!res.date && res.routes.length === 0) {
+         // Stop further processing if generateTrips aborted due to conflict
+         return; 
+      }
+
       routes = res.routes; 
       date = res.date; 
       darMap = res.darMap;
@@ -1539,7 +1502,6 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById('trip-detail').innerHTML = '<p style="color:#bbb;">Double-click a trip block on the timeline to view details here.</p>';
           clearError();
           updateSummaryTable();
-          // Default to Data & Plan tab
           const defaultTab = document.querySelector('.tab-buttons [data-tab="data-planning"]');
           if (defaultTab) {
               defaultTab.click(); 

@@ -1,4 +1,4 @@
-// version: v2.5.0 (Fixed Date Parsing & Visit Type Logic)
+// version: v1.5.1 (Fixed: Data Conflict Modal & Crash Prevention)
 let routes = [];
 let prtMap, darMap, date;
 
@@ -13,6 +13,28 @@ let tripIdCounter = 0;
 function generateTripId() {
   return `trip-${tripIdCounter++}`;
 }
+
+// --- MODAL FUNCTIONS START (新增弹窗功能) ---
+function showConflictModal(message) {
+  const modal = document.getElementById('conflictModal');
+  const msgElem = document.getElementById('conflictMsg');
+  if (modal && msgElem) {
+    msgElem.innerHTML = message;
+    modal.style.display = 'flex';
+  } else {
+    // Fallback if modal HTML is missing in planning.html
+    alert(message.replace(/<br>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, ''));
+  }
+}
+
+// 绑定到 window 以便 HTML 中的 onclick 可以调用
+window.closeConflictModal = function() {
+  const modal = document.getElementById('conflictModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+// --- MODAL FUNCTIONS END ---
 
 function showError(message) {
   const errorMsg = document.getElementById('errorMsg');
@@ -102,18 +124,7 @@ function getPassengerPhone(patient, prtMap, darMap) {
   return phone;
 }
 
-// --- MODIFICATION START (Note Consolidation Logic) ---
-
-/**
- * 将 PRT Wander, DAR Escort 和 PRT Pickup Note 合并成一个备注字符串。
- * 这个备注字符串将被存储在 passenger.note 中。
- * 顺序: Wander (非药) + Escort (Appointment) + PRT Pickup Note
- * @param {object} prtRow PRT Info 行数据
- * @param {object | undefined} darRow DAR 行数据
- * @param {boolean} isMedication 是否为 Medication trip
- * @param {boolean} isAppointment 是否为 External Appointment trip
- * @returns {string} 合并后的备注字符串。
- */
+// --- Note Consolidation Logic ---
 function constructInitialNote(prtRow, darRow, isMedication, isAppointment) {
   const notes = [];
 
@@ -136,40 +147,30 @@ function constructInitialNote(prtRow, darRow, isMedication, isAppointment) {
       }
   }
   
-  // 3. PRT Pickup Note (放在 User Input 之前, User Input 将在 generateTrips 后被覆盖)
+  // 3. PRT Pickup Note
   const pickupNote = (prtRow['Pickup Note'] || '').trim();
   if (pickupNote) {
       notes.push(pickupNote);
   }
   
-  // 注意：用户输入（passenger.note）将在 generateTrips 外部处理，如果需要，用户可以在前端修改这个合并后的字段。
-  
-  // 返回合并后的字符串，作为 passenger.note 的初始值
   return notes.join(' / ').trim();
 }
-// --- MODIFICATION END (Note Consolidation Logic) ---
 
-
-// --- MODIFICATION START (Space requirement) ---
 function getTripSpace(passenger, prtRow) {
   const leg = passenger.leg || '';
   const isMedication = leg === 'b-leg-Med';
 
   if (isMedication) {
-      // 1. Medication Trip: DME & Rx
       return 'DME & Rx';
   } else {
-      // 2. Non-Medication Trip: Use PRT Service Type
       const serviceType = (prtRow['Service Type'] || '').trim().toLowerCase();
       if (serviceType.includes('wheelchair')) {
           return 'Wheelchair';
       } else {
-          // 默认为 Ambulatory
           return 'Ambulatory';
       }
   }
 }
-// --- MODIFICATION END (Space requirement) ---
 
 const facilityAddressMap = {
   'IOA': '3575 Geary Blvd San Francisco CA 94118',
@@ -207,7 +208,6 @@ function isCenterAddress(address) {
   return address && address.toLowerCase().includes('3595 geary');
 }
 
-// 智能地址标准化
 function normalizeAddr(addr) {
   if (!addr) return '';
   let s = addr.toLowerCase();
@@ -270,7 +270,6 @@ function generateTrips(prtInfoText, darText) {
   const prtInfo = parseTable(prtInfoText);
   prtMap = new Map();
   prtInfo.data.forEach(row => {
-    // 确保 MRN, Wander, Pickup Note 字段存在
     if (row['MRN'] === undefined) row['MRN'] = ''; 
     if (row['Wander'] === undefined) row['Wander'] = '';
     if (row['Pickup Note'] === undefined) row['Pickup Note'] = '';
@@ -281,7 +280,6 @@ function generateTrips(prtInfoText, darText) {
   const darLines = darText.trim().split('\n').map(line => line.trim());
   if (darLines.length < 3) return { date: '', routes: [], darMap: new Map() };
   
-  // --- MODIFICATION: 修复日期解析正则，兼容不带逗号或带Tab的格式 ---
   const dateMatch = darLines[0].match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
   date = dateMatch ? `${dateMatch[1].padStart(2, '0')}/${dateMatch[2].padStart(2, '0')}/${dateMatch[3]}` : `--/--/${new Date().getFullYear()}`;
   
@@ -296,7 +294,6 @@ function generateTrips(prtInfoText, darText) {
   const uniquePatients = new Map();
 
   dar.data.forEach(row => {
-    // 确保 Phone, Escort 字段存在
     if (row['Phone'] === undefined) row['Phone'] = '';
     if (row['Escort'] === undefined) row['Escort'] = '';
     
@@ -339,12 +336,13 @@ function generateTrips(prtInfoText, darText) {
 
   const allTrips = [];
 
-  uniquePatients.forEach((pData, patientKey) => {
+  // 使用 for...of 循环来允许 break/return 操作 (forEach 不支持直接跳出)
+  for (const [patientKey, pData] of uniquePatients) {
     const name = pData.name;
     const globalFlags = pData.globalFlags; 
     const address = pData.baseAddress;
-    const prtRow = prtMap.get(patientKey) || {}; // 确保获取到 prtRow
-    const darRow = pData.rows[0] || {}; // 获取第一行 DAR 数据用于基础 trip 备注
+    const prtRow = prtMap.get(patientKey) || {};
+    const darRow = pData.rows[0] || {};
     
     const hasGlobal = (key) => globalFlags.has(key);
     const findGlobalTime = (prefix) => {
@@ -377,33 +375,59 @@ function generateTrips(prtInfoText, darText) {
         mismatch: baseMismatch
       };
       
-      // MODIFICATION: 计算并设置初始 note
-      const isMed = false; // base trips are not medication
+      const isMed = false; 
       const isAppt = false;
       baseTrips.a.note = constructInitialNote(prtRow, darRow, isMed, isAppt);
       baseTrips.b.note = constructInitialNote(prtRow, darRow, isMed, isAppt);
     }
 
+    // --- 上午行程处理 (A-leg) ---
     if (baseTrips.a) {
       if (hasGlobal('noam') || hasGlobal('fromhome')) {
         baseTrips.a = null;
       } else if (hasGlobal('2nd')) {
-        baseTrips.a.pickup = '1030'; baseTrips.a.dropoff = '1100';
+        if (baseTrips.a) {
+          baseTrips.a.pickup = '1030'; baseTrips.a.dropoff = '1100';
+        }
       }
+      
       const aTime = findGlobalTime('a@');
       if (aTime && isValidTimeFormat(aTime)) {
-        baseTrips.a.pickup = aTime; baseTrips.a.dropoff = adjustTime(aTime, 30);
+        if (!baseTrips.a) {
+            // 可选：如果需要严格检查上午冲突，也可以在这里添加 showConflictModal
+            // 暂时为了简单起见，只按要求修复了 PM 的崩溃
+        } else {
+            baseTrips.a.pickup = aTime; baseTrips.a.dropoff = adjustTime(aTime, 30);
+        }
       }
     }
+
+    // --- 下午行程处理 (B-leg) ---
     if (baseTrips.b) {
       if (hasGlobal('nopm') || hasGlobal('backhome')) {
         baseTrips.b = null;
       } else if (hasGlobal('early')) {
-        baseTrips.b.pickup = '1400'; baseTrips.b.dropoff = '1430';
+        if (baseTrips.b) {
+          baseTrips.b.pickup = '1400'; baseTrips.b.dropoff = '1430';
+        }
       }
+
       const pTime = findGlobalTime('p@');
       if (pTime && isValidTimeFormat(pTime)) {
-        baseTrips.b.pickup = pTime; baseTrips.b.dropoff = adjustTime(pTime, 30);
+        if (!baseTrips.b) {
+            // FIX: 检测到冲突 - 既有 nopm 删除行程，又有 p@ 设置时间
+            showConflictModal(
+                `<strong>Error for Patient: ${name}</strong><br><br>` +
+                `Reason: Data Conflict.<br>` +
+                `You have <strong>"nopm"</strong> (or backhome) which deletes the PM trip,<br>` +
+                `BUT you also entered <strong>"p@${pTime}"</strong> to set a PM time.<br><br>` +
+                `Please check your DAR input and remove one of them.`
+            );
+            // 立即停止生成，强制用户修改
+            return { date: '', routes: [], darMap: new Map() };
+        } else {
+            baseTrips.b.pickup = pTime; baseTrips.b.dropoff = adjustTime(pTime, 30);
+        }
       }
     }
 
@@ -414,16 +438,14 @@ function generateTrips(prtInfoText, darText) {
 
     pData.rows.forEach(row => {
       const vt = parseVisitType(row['Visit Type'] || '');
-      const visitTypeRaw = (row['Visit Type'] || '').toUpperCase(); // 获取原始大写字符串
+      const visitTypeRaw = (row['Visit Type'] || '').toUpperCase();
 
       const apptTimeRaw = (row['appt time'] || '').replace(':', '');
       const apptNote = row['Appt Notes'] || row['address'] || ''; 
       const rowMismatch = checkMismatch(row, prtRow);
       
-      // --- MODIFICATION: 增强外部预约识别逻辑 ---
       let isExt = vt.has('ext') || vt.has('external appointment') || vt.has('external');
       
-      // 如果没有 'ext' 标签，但包含 OFFICE VISIT / CONSULT 等关键词，也视为外部预约
       if (!isExt) {
           if (visitTypeRaw.includes('OFFICE VISIT') || 
               visitTypeRaw.includes('CONSULT') || 
@@ -436,8 +458,7 @@ function generateTrips(prtInfoText, darText) {
       const isDia = vt.has('dialysis') || vt.has('dia');
 
       if (isExt || isAcup || isDia) {
-        // External/Appointment Trip logic
-        const currentDarRow = row; // Use current row for appointment specific notes
+        const currentDarRow = row;
         const isMed = false;
         const isAppt = true;
 
@@ -452,7 +473,6 @@ function generateTrips(prtInfoText, darText) {
           mismatch: rowMismatch
         };
         
-        // MODIFICATION: 计算并设置初始 note
         const mergedNote = constructInitialNote(prtRow, currentDarRow, isMed, isAppt);
         extA.note = mergedNote;
         extB.note = mergedNote;
@@ -498,9 +518,9 @@ function generateTrips(prtInfoText, darText) {
 
     if (baseTrips.a) allTrips.push(baseTrips.a);
     if (baseTrips.b) allTrips.push(baseTrips.b);
-  });
+  } // End of uniquePatients loop
 
-  // Medication Trip 逻辑 (DAR-based)
+  // Medication Trip 逻辑
   if (dayOfWeek !== -1) {
     prtMap.forEach((prtRow, patientKey) => {
       const medDay = prtRow['Med Day'];
@@ -514,7 +534,6 @@ function generateTrips(prtInfoText, darText) {
         const name = prtRow['Name'];
         let doaddress = prtRow['Address'] || '';
         
-        // 新增检查：如果 PRT Info 的地址是 Center，则跳过
         if (isCenterAddress(doaddress)) return;
         
         const isMed = true;
@@ -526,7 +545,6 @@ function generateTrips(prtInfoText, darText) {
           puaddress: facilityAddressMap.IOA, doaddress: doaddress,
           phone: getPassengerPhone(name, prtMap, darMap)
         };
-        // MODIFICATION: 计算并设置初始 note
         medicationTrip.note = constructInitialNote(prtRow, darRow, isMed, isAppt);
         
         allTrips.push(medicationTrip);
@@ -584,7 +602,6 @@ function exportRouteToCSV(route, date, prtMap, darMap) {
       typeVal = 'Medication';
     }
 
-    // MODIFICATION: Pickup Comment 直接使用 passenger.note 的内容
     const finalNote = passenger.note || ''; 
     const authorization = prtRow['MRN'] || ''; 
 
@@ -640,7 +657,6 @@ function exportAllTrips(date, prtMap, darMap) {
   const fullDate = date;
 
   routes.forEach(route => {
-    // MODIFICATION: 跳过 unschedule 队列的导出
     if (route.id === 'unschedule') return;
     
     route.passengers.forEach(passenger => {
@@ -660,7 +676,6 @@ function exportAllTrips(date, prtMap, darMap) {
         typeVal = 'Medication';
       }
 
-      // MODIFICATION: Pickup Comment 直接使用 passenger.note 的内容
       const finalNote = passenger.note || ''; 
       const authorization = prtRow['MRN'] || ''; 
 
@@ -977,7 +992,7 @@ function renderRoutes(prtMap, darMap, date) {
       if (p.leg === 'b-leg-Med') {
         block.style.backgroundColor = '#F4A460';
       } else if (p.mismatch) {
-        block.style.backgroundColor = '#9400D3'; // Highlight address mismatch
+        block.style.backgroundColor = '#9400D3';
       } else if (p.status === 'deleted') {
         block.classList.add("status-cancelled");
       } else if (p.leg && (p.leg.includes('ext') || p.leg.includes('manual'))) {
@@ -1017,7 +1032,6 @@ function renderRoutes(prtMap, darMap, date) {
         const isMultiSelectKeyPressed = e.ctrlKey || e.metaKey;
         if (isMultiSelectKeyPressed) {
            block.classList.toggle('selected');
-           // Optional: Highlight matching IDs for selected block
            if(block.classList.contains('selected')) {
                document.querySelectorAll(`.passenger-block[data-id="${p.id}"]`).forEach(b => {
                    if(b !== block) b.classList.add('same-id');
@@ -1026,7 +1040,6 @@ function renderRoutes(prtMap, darMap, date) {
         } else {
            document.querySelectorAll(".passenger-block").forEach(b => b.classList.remove("selected"));
            block.classList.add("selected");
-           // Add same-id highlight
            document.querySelectorAll(".passenger-block").forEach(b => {
                if (b.dataset.id === p.id && b !== block) {
                    b.classList.add("same-id");
@@ -1042,7 +1055,6 @@ function renderRoutes(prtMap, darMap, date) {
 
         const mainTable = document.createElement("table");
         mainTable.className = "display-table";
-        // MODIFICATION: 调整 editableFields，Note 字段现在可以编辑合并后的内容
         const editableFields = ['id', 'pickup', 'dropoff', 'puaddress', 'doaddress', 'phone', 'note', 'leg']; 
         const inputs = {};
 
@@ -1082,7 +1094,6 @@ function renderRoutes(prtMap, darMap, date) {
                 showError(`Invalid ${field} format: must be HHMM`);
                 newValue = passenger[field];
               }
-              // MODIFICATION: 直接将编辑后的值存回 passenger.note
               passenger[field] = newValue; 
               block.dataset[field] = newValue;
               if (field === 'id') block.dataset.id = newValue;
@@ -1090,7 +1101,7 @@ function renderRoutes(prtMap, darMap, date) {
               valueCell.replaceChild(valueSpan, input);
             });
             input.addEventListener('keypress', (evt) => {
-              if (evt.key === 'Enter' && !isNote) input.blur(); // Enter only submits on non-textarea fields
+              if (evt.key === 'Enter' && !isNote) input.blur(); 
             });
           });
         });
@@ -1104,7 +1115,6 @@ function renderRoutes(prtMap, darMap, date) {
         confirmBtn.id = "confirmEditBtn";
         confirmBtn.textContent = "Confirm Edit";
         confirmBtn.addEventListener('click', () => {
-          // Re-render to reflect timeline and data changes (e.g., if PU/DO time was changed)
           renderRoutes(prtMap, darMap, date);
           clearError();
         });
@@ -1191,10 +1201,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const dar = darInput.value.trim();
       if (!prt || !dar) return showError('Enter Data');
       const res = generateTrips(prt, dar);
+      
+      // 如果 generateTrips 返回空数据（可能因冲突中断），则不进行后续渲染
+      if (!res.date && res.routes.length === 0) return;
+
       routes = res.routes; date = res.date; darMap = res.darMap;
       const pi = parseTable(prt);
       prtMap = new Map(); pi.data.forEach(r => { 
-        // 确保 MRN, Wander, Pickup Note 字段存在
         if (r['MRN'] === undefined) r['MRN'] = ''; 
         if (r['Wander'] === undefined) r['Wander'] = '';
         if (r['Pickup Note'] === undefined) r['Pickup Note'] = '';
