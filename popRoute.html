@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Route_Sheet</title>
     <style>
+        /* 保持原有样式，新增 textarea 样式 */
         * {
             color: black;
         }
@@ -43,11 +44,16 @@
             margin-right: 10px;
         }
 
+        #driverToRoute {
+            text-align: center; /* 确保表格和输入框居中 */
+        }
+        
         #driverToRoute table {
             border-collapse: separate;
             border-spacing: 0;
-            width: 340px;
-            margin: 24px auto;
+            width: 90%; /* 调整宽度使其更适应内容 */
+            max-width: 800px;
+            margin: 24px auto 10px auto; /* 调整 margin-bottom */
             background: #f8fafc;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
             border-radius: 12px;
@@ -83,6 +89,21 @@
             font-size: 1em;
             background: #fff;
         }
+        
+        /* 新增 textarea 样式 */
+        #prtInfoTable {
+            width: 90%;
+            max-width: 800px;
+            height: 200px;
+            margin: 20px auto;
+            display: block;
+            border: 1px solid #b0bec5;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.85em;
+            text-align: left;
+        }
 
         #setDriverOnRoute {
             background: #1976d2;
@@ -106,261 +127,250 @@
         <div id="date"></div>
         <div id="table"></div>
     </div>
+    
     <div id="driverToRoute">
-        <table>
-
-        </table>
+        <table></table>
+        
+        <div style="margin-top: 20px;">
+            <label for="prtInfoTable" style="display: block; margin-bottom: 5px; font-weight: bold; color: #2a4d69;">Prt Information Table (TSV)</label>
+            <textarea id="prtInfoTable" placeholder="将制表符分隔的参与者数据粘贴到此处..."></textarea>
+        </div>
     </div>
 </body>
 
 </html>
 <script>
-    //alert(prtObjInfo["Ma, Cui Hua"])
-    let orderBy = 0; //if 0 
-    let today = new Date();
-    let todayDate = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
-    let driversArr = ["Joe", "Mauricio", "Jackie", "Jerald", "Jerry", "Zhao", "Jabari", "Raymond", "Walter", "Lok", "Bert", "Jie","Wilson", "Sam", "Victor", "Conan"];
-    let routeArr = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+// --- 全局变量与配置 ---
+let routeArr = Array.from({length: 16}, (_, i) => i.toString());
 
-    (function ($) {
-        $.getUrlParam = function (name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) return unescape(r[2]); return null;
-        }
-    })(jQuery);
+const CONFIG = {
+    DRIVERS: ["Joe", "Mauricio", "Jackie", "Jerald", "Jerry", "Zhao", "Jabari", "Raymond", "Walter", "Lok", "Bert", "Jie", "Wilson", "Sam", "Victor", "Conan"],
+    ROOM_MAP: { 1: "☀️", 2: "✨", 3: "🌙", default: "😄" }
+};
 
+let state = {
+    rawParticipants: [], 
+    routeMap: Array.from({length: 16}, (_, i) => i.toString()), 
+    displayMode: 0, 
+    todayDate: new Date().toLocaleDateString('en-US').replace(/\//g, '-')
+};
 
+// --- 工具函数 ---
+const utils = {
+    getParam: (name) => new URLSearchParams(window.location.search).get(name),
+    
+    parseRoomNum: (roomStr) => {
+        if (!roomStr) return 3;
+        const r = roomStr.toLowerCase();
+        if (r.includes("sun")) return 1;
+        if (r.includes("star")) return 2;
+        return 3; 
+    },
 
+    cleanPrtName: (str) => {
+        if (!str) return "";
+        return str
+            .replace(/\s*-\s*@@.*$/, "")       // 剔除 " - @@" 及其后续内容
+            .replace(/__<b>Warning<\/b>/g, "") // 剔除 Warning 标签
+            .replace(/<[^>]*>?/gm, '')         // 剔除 HTML 标签
+            .trim();
+    },
 
-    function whichRoom(orgPrt) {
-        let prt = orgPrt.split(" - @")[0]
-        let tempPrt = "{@}" + orgPrt
-
-        if (prtObjInfo[prt]) {
-            let room = prtObjInfo[prt].room
-
-            room = room == 1 ? "☀" :
-                room == 2 ? "✨" :
-                    room == 3 ? "🌙" :
-                        "😄"
-
-            tempPrt = room + tempPrt
-        } else {
-            tempPrt = "😄" + tempPrt
-        }
-
-        return tempPrt;
+    routeNumToIndex: (routeNum) => {
+        if (routeNum?.toUpperCase() === 'B') return 0;
+        const idx = parseInt(routeNum, 10);
+        return (!isNaN(idx) && idx >= 0 && idx < CONFIG.DRIVERS.length) ? idx : 0;
     }
-    function isWheelchair(prt) {
-        let reStr = "⚠️";
-        if (prt.indexOf("Warning</b>") == -1) reStr = "-"
-        return reStr;
+};
+
+// --- 数据处理层 ---
+function processData() {
+    const tsvText = $("#prtInfoTable").val().trim();
+    const urlArrStr = utils.getParam("arr");
+    
+    let tempPrtLibrary = {}; 
+
+    // 1. 解析 TSV 总表
+    if (tsvText) {
+        const lines = tsvText.split('\n');
+        const headers = lines[0].split('\t').map(h => h.trim());
+        
+        const nIdx = headers.findIndex(h => h.toLowerCase() === "name");
+        const wIdx = headers.findIndex(h => h.toLowerCase() === "wander");
+        const sIdx = headers.findIndex(h => h.toLowerCase() === "service type");
+        const rmIdx = headers.findIndex(h => h.toLowerCase() === "room");
+
+        if (nIdx !== -1) {
+            lines.slice(1).forEach(line => {
+                if (!line.trim()) return;
+                const v = line.split('\t');
+                const name = v[nIdx]?.trim();
+                if (!name) return;
+
+                // 统一存为小写 Key 方便忽略大小写匹配
+                tempPrtLibrary[name.toLowerCase()] = {
+                    "originalName": name,
+                    "room": utils.parseRoomNum(v[rmIdx]),
+                    "isWander": (v[wIdx]?.trim() !== "" && v[wIdx]?.trim().toLowerCase() !== "n"),
+                    "isWheelchair": v[sIdx]?.toLowerCase().includes("wheelchair")
+                };
+            });
+            // 此处由于逻辑复杂，我们选择在匹配时动态查找
+        }
     }
 
-    function createTable(arr, isRoom) {
-        let boder_style = 'border-secondary';
-        let bg_style = 'bg-dark-subtle';
-        let tableHtml = ""
-        if (isRoom) {
-            //$("#date").html(".")
-            let tempTableHtml1 = `<table style="border:1px"><tr><th colspan="3" style="text-align: center"> </th></tr>`
-            let tempTableHtml2 = roomName => `<tr><!--<th class="border border-dark ${bg_style}"></th>--><th class="border border-dark ${bg_style}">Prt&nbsp;@${roomName}</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">⚠️</th></tr>`;
-
-            let sunTable = `<div class="childTable" id="sunRoom">` + tempTableHtml1 + tempTableHtml2("Sun");
-            let starTable = `<div class="childTable" id="starRoom">` + tempTableHtml1 + tempTableHtml2("Star");
-            let moonTable = `<div class="childTable" id="moonRoom">` + tempTableHtml1 + tempTableHtml2("Moon");
-            let otherTable = `<div id="otherPrt">` + tempTableHtml1 + `other` + tempTableHtml2("Other");
-
-            for (let i = 0, j = 1; i < arr.length; i++) {
-                let room = arr[i][0].split("{@}")[0]; // ☀✨🌙
-                let prtVal=arr[i][0];
-                let rtVal=routeArr[arr[i][1]];
-                let wanderVal=arr[i][2];
-
-                let prtTr = `<tr style="color:black">
-                    <!--<td>${i}</td>-->
-                    <td class="border border-dark">${prtVal.replace("{@}", "")}</td>
-                    <td class="border border-dark">${rtVal}</td>
-                    <td class="border border-dark">${wanderVal}</td>`
-
-                if (room == "☀") {
-                    sunTable += prtTr;
-                } else if (room == "✨") {
-                    starTable += prtTr;
-                } else if (room == "🌙") {
-                    moonTable += prtTr;
-                } else {
-                    otherTable += prtTr;
-                }
-            }
-            sunTable += "</table></div>";
-            starTable += "</table></div>";
-            if (`<div class="childTable" id="otherPrt">` + tempTableHtml1 + `other` + tempTableHtml2("unknown room") == otherTable) otherTable = ""
-            moonTable += "</div></table><br>" + otherTable + "</table></div>";
-
-            tableHtml = sunTable + starTable + moonTable
-
-        } else {
-            $("#date").html(todayDate + $.getUrlParam("rt"))
-            let isMedication = $.getUrlParam("rt").indexOf("Medication List") !== -1
-            if (isMedication) {
-                let arr2 = (function () {
-                    let tempArr = [...arr];
-                    for (let i = 0; i < tempArr.length; i++) {
-                        tempArr[i][0] = tempArr[i][0].replace("☀", "")
-                        tempArr[i][0] = tempArr[i][0].replace("✨", "")
-                        tempArr[i][0] = tempArr[i][0].replace("🌙", "")
-                        tempArr[i][0] = tempArr[i][0].replace("😄", "")
-                    }
-                    return tempArr.sort()
-                })()
-
-                tableHtml = `<table style="border:1px">
-                            <tr>
-                                <!--<th class="border border-dark ${bg_style}"></th>-->
-                                <th class="border border-dark ${bg_style}">Prt</th>
-                                <th class="border border-dark ${bg_style}">Rt#</th>
-                                <th class="border border-dark ${bg_style}">⚠️</th>
-                                <th class="border border-dark ${bg_style}" style="width:300px;">Signature</th>
-                            </tr>`
-                let row = arr.length
-                for (let i = 0; i < row; i++) {
+    // 2. 名单处理
+    let processed = [];
+    if (urlArrStr) {
+        try {
+            const rawArr = JSON.parse(urlArrStr.replace(/'/g, '"'));
+            rawArr.forEach((group, idx) => {
+                if (!group) return;
+                group.forEach(pString => {
+                    const cleanName = utils.cleanPrtName(pString);
+                    const lowerCleanName = cleanName.toLowerCase();
                     
-
-                    let prtVal=arr[i][0];
-                    let rtVal=routeArr[arr[i][1]];
-                    let wanderVal=arr[i][2];
-                    tableHtml += `<tr style="color:black">
-                        <!--<td>${i}</td>-->
-                        <td class="border border-dark">${prtVal.replace("{@}", "")}</td>
-                        <td class="border border-dark">${rtVal}</td>
-                        <td class="border border-dark">${wanderVal}</td>
-                        <td class="border border-dark"> </td>`
-
-                }
-
-
-                tableHtml += "</table>"
-
-            } else {
-                tableHtml = `<table style="border:1px">
-                             <tr>
-                                <!--<th class="border border-dark ${bg_style}"></th>-->
-                                <th class="border border-dark ${bg_style}">Prt</th>
-                                <th class="border border-dark ${bg_style}">Rt#</th>
-                                <th class="border border-dark ${bg_style}">⚠️</th>
-      
-                                <th class="border border-dark ${bg_style}">&nbsp;</th>
-                                <!--<th class="border border-dark ${bg_style}"></th>-->
-                                <th class="border border-dark ${bg_style}">Prt</th>
-                                <th class="border border-dark ${bg_style}">Rt#</th>
-                                <th class="border border-dark ${bg_style}">⚠️</th>
-                             </tr>`;
-
-                let row = parseInt(arr.length / 2 + .6)
-                for (let i = 0; i < row; i++) {
-                    let prtVal=arr[i][0];
-                    let rtVal=routeArr[arr[i][1]];
-                    let wanderVal=arr[i][2];
-                    let r = parseInt(i + row);
-                    //left side
-                    tableHtml += `<tr style="color:black">
-                        <!--<td>${i}</td>-->
-                        <td class="border border-dark">${prtVal.replace("{@}", "")}</td>
-                        <td class="border border-dark">${rtVal}</td>
-                        <td class="border border-dark">${wanderVal}</td>
-                        <td class="border border-dark ${bg_style}"></td>`
-                    //right side
-
-                    let r_prt = "", r_rtNum = "", r_wheelchair = ""
-                    if (r < arr.length) {
-                        r_prt = arr[r][0];
-                        r_rtNum = routeArr[arr[r][1]];
-                        r_wheelchair = arr[r][2]
-
+                    // 忽略大小写从 tempPrtLibrary 或 prtObjInfo 中检索
+                    let info = tempPrtLibrary[lowerCleanName];
+                    
+                    // 如果 TSV 没提供，尝试从旧的 prtObjInfo 里找（同样忽略大小写）
+                    if (!info) {
+                        const legacyKey = Object.keys(prtObjInfo).find(k => k.toLowerCase() === lowerCleanName);
+                        if (legacyKey) info = prtObjInfo[legacyKey];
                     }
-                    tableHtml += `<!--<td>${r}</td>-->
-                        <td class="border border-dark">${r_prt.replace("{@}", "")}</td>
-                        <td class="border border-dark">${r_rtNum}</td>
-                        <td class="border border-dark">${r_wheelchair}</td>
-                    `
-                }
 
+                    const isWanderActive = tsvText ? (info?.isWander || false) : pString.includes("Warning");
+                    const isWheelchairActive = info?.isWheelchair || false;
+                    const roomIcon = CONFIG.ROOM_MAP[info?.room] || CONFIG.ROOM_MAP.default;
 
-                tableHtml += "</table>"
-            }
-
-
-        }
-        $("#table").html(tableHtml)
-        $("#table").removeClass("table")
-        $("#table").addClass("table_d")
+                    processed.push({
+                        name: info?.originalName || cleanName, 
+                        routeIndex: idx,
+                        isWander: isWanderActive,
+                        isWheelchair: isWheelchairActive,
+                        roomIcon: roomIcon
+                    });
+                });
+            });
+        } catch (e) { console.error("Process Error:", e); }
     }
+    state.rawParticipants = processed;
+}
 
-    $(function () {
-    let orgArr = eval($.getUrlParam("arr"));
-    // 司机与路线表格横向展示
-    let driverHeader = driversArr.map((driver, i) => orgArr[i]?.length ? `<th>${driver}</th>` : '').join('');
-    let driverInputs = driversArr.map((driver, i) => orgArr[i]?.length ? `<td><input id="arr${i}" class="routeNumber" value="${i}"></td>` : '').join('');
-    let colSpan = driversArr.filter((_, i) => orgArr[i]?.length).length;
+// --- 渲染层 ---
+function renderTable() {
+    let displayArr = [...state.rawParticipants];
+    const sortFn = (a, b) => {
+        const rtA = state.routeMap[a.routeIndex] || "";
+        const rtB = state.routeMap[b.routeIndex] || "";
+        const rtRes = rtA.localeCompare(rtB, undefined, { numeric: true });
+        return rtRes !== 0 ? rtRes : a.name.localeCompare(b.name);
+    };
+
+    if (state.displayMode === 0) displayArr.sort((a, b) => a.name.localeCompare(b.name));
+    else if (state.displayMode === 1) displayArr.sort(sortFn);
+    else if (state.displayMode === 2) {
+        displayArr.sort((a, b) => {
+            if (a.roomIcon !== b.roomIcon) return a.roomIcon.localeCompare(b.roomIcon);
+            return sortFn(a, b);
+        });
+    }
+    createTable(displayArr, state.displayMode === 2);
+}
+
+// --- 绘图函数 ---
+function createTable(dataList, isRoomMode) {
+    const bg_style = 'bg-dark-subtle';
+    let html = "";
+    
+    const getIcons = (p) => {
+        let icons = "";
+        if (p.isWander) icons += "⚠️";
+        if (p.isWheelchair) icons += "♿️";
+        return icons || "-";
+    };
+
+    if (isRoomMode) {
+        const createHeader = (title) => `<table style="border:1px"><tr><th colspan="3" style="text-align:center"> </th></tr><tr><th class="border border-dark ${bg_style}">Prt&nbsp;@${title}</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">⁉️</th></tr>`;
+        
+        let sunRows = "", starRows = "", moonRows = "", otherRows = "";
+
+        dataList.forEach(p => {
+            const row = `<tr style="color:black">
+                <td class="border border-dark">${p.roomIcon}${p.name}</td>
+                <td class="border border-dark">${state.routeMap[p.routeIndex]}</td>
+                <td class="border border-dark">${getIcons(p)}</td>
+            </tr>`;
+            
+            if (p.roomIcon === "☀️") sunRows += row;
+            else if (p.roomIcon === "✨") starRows += row;
+            else if (p.roomIcon === "🌙") moonRows += row;
+            else otherRows += row;
+        });
+
+        html += `<div class="childTable">${createHeader("Sun")}${sunRows}</table></div>`;
+        html += `<div class="childTable">${createHeader("Star")}${starRows}</table></div>`;
+        html += `<div class="childTable" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>${createHeader("Moon")}${moonRows}</table></div>`;
+        if (otherRows) html += `<div>${createHeader("Other")}${otherRows}</table></div>`;
+        html += `</div>`;
+
+        $("#table").removeClass("table_d").addClass("table").html(html);
+
+    } else {
+        $("#date").html(state.todayDate + " " + (utils.getParam("rt") || ""));
+        const mid = Math.ceil(dataList.length / 2);
+        const leftCol = dataList.slice(0, mid), rightCol = dataList.slice(mid);
+
+        const buildColHtml = (list) => {
+            if (list.length === 0) return "";
+            let colHtml = `<div class="childTable"><table style="border:1px"><tr><th class="border border-dark ${bg_style}">Prt</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">⁉️</th></tr>`;
+            list.forEach(p => {
+                colHtml += `<tr style="color:black">
+                    <td class="border border-dark">${p.roomIcon}${p.name}</td>
+                    <td class="border border-dark">${state.routeMap[p.routeIndex]}</td>
+                    <td class="border border-dark">${getIcons(p)}</td>
+                </tr>`;
+            });
+            return colHtml + `</table></div>`;
+        };
+
+        html = buildColHtml(leftCol) + buildColHtml(rightCol);
+        $("#table").removeClass("table").addClass("table_d").html(html);
+    }
+}
+
+$(function () {
+    processData();
+    const activeIndices = new Set(state.rawParticipants.map(p => p.routeIndex));
+    let headerHtml = "", inputHtml = "";
+    
+    CONFIG.DRIVERS.forEach((d, i) => {
+        if (activeIndices.has(i) || activeIndices.size === 0) {
+            headerHtml += `<th>${d}</th>`;
+            inputHtml += `<td><input id="arr${i}" class="routeNumber" style="width:40px" value="${i}"></td>`;
+        }
+    });
 
     $("#driverToRoute table").html(`
-        <tr>${driverHeader}</tr>
-        <tr>${driverInputs}</tr>
-        <tr>
-            <td colspan="${colSpan}" style="text-align:center;">
-                <button id="setDriverOnRoute">Set</button>
-            </td>
-        </tr>
+        <tr>${headerHtml}</tr>
+        <tr>${inputHtml}</tr>
+        <tr><td colspan="${activeIndices.size || 16}" style="text-align:center; border-bottom:none;"><button id="btnSet" class="btn btn-primary mt-2">Set</button></td></tr>
     `);
 
-    // 按钮点击事件
-    $("#setDriverOnRoute").click(function () {
+    $("#btnSet").click(function () {
+        $(".routeNumber").each(function () {
+            state.routeMap[$(this).attr("id").replace("arr", "")] = $(this).val();
+        });
+        processData();
         $("#driverToRoute").hide();
         $("#main").show();
+        renderTable();
+    });
 
-        $(".routeNumber").each(function () {
-            let id = $(this).attr("id").replace("arr", "");
-            let rt = $(this).val();
-            routeArr[id] = rt;
-        });
-
-        let param = $.getUrlParam("arr");
-        let pmArr = eval(param);
-        if ($.getUrlParam("date") != null) todayDate = $.getUrlParam("date");
-
-        // 组合数据
-        let byRouteArr = [];
-        for (let i = 0; i < pmArr.length - 1; i++) {
-            if (!pmArr[i]) continue;
-            for (let j = 0; j < pmArr[i].length; j++) {
-                let tempPrt = pmArr[i][j];
-                let r = i; //== 0 ? "Joe" : i;
-                byRouteArr.push([whichRoom(tempPrt.replace("__<b>Warning</b>", "")), r, isWheelchair(tempPrt)]);
-            }
-        }
-        let byNameArr = [...byRouteArr].sort();
-
-        // 默认展示
-        createTable(byNameArr);
-
-        // 切换排序方式
-        $("#date").off("click").on("click", function () {
-            const FORM_NUMBER = 3;
-            $("#table").html("");
-            orderBy++;
-            if (orderBy % FORM_NUMBER == 0) {
-                createTable(byNameArr);
-            } else if (orderBy % FORM_NUMBER == 1) {
-                createTable(byRouteArr);
-            } else if (orderBy % FORM_NUMBER == 2) {
-                let arr = [...byNameArr].sort((a, b) => a[1] - b[1]);
-                createTable(arr, true);
-                $("#table").addClass("table").removeClass("table_d");
-            }
-        });
+    $("#date").click(function() {
+        state.displayMode = (state.displayMode + 1) % 3;
+        renderTable();
     });
 });
 </script>
-
