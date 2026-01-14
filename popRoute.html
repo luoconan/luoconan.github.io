@@ -167,19 +167,16 @@ const utils = {
         return 3; 
     },
 
-    cleanPrtName: (str) => {
+    // 核心清洗函数：仅用于“对比”总表数据
+    // 例如 "Chin, Ang Lin - @@1344" -> "chin, ang lin"
+    cleanPrtNameForMatch: (str) => {
         if (!str) return "";
         return str
             .replace(/\s*-\s*@@.*$/, "")       // 剔除 " - @@" 及其后续内容
             .replace(/__<b>Warning<\/b>/g, "") // 剔除 Warning 标签
-            .replace(/<[^>]*>?/gm, '')         // 剔除 HTML 标签
-            .trim();
-    },
-
-    routeNumToIndex: (routeNum) => {
-        if (routeNum?.toUpperCase() === 'B') return 0;
-        const idx = parseInt(routeNum, 10);
-        return (!isNaN(idx) && idx >= 0 && idx < CONFIG.DRIVERS.length) ? idx : 0;
+            .replace(/<[^>]*>?/gm, '')         // 剔除所有 HTML 标签
+            .trim()
+            .toLowerCase();                    // 忽略大小写
     }
 };
 
@@ -190,7 +187,7 @@ function processData() {
     
     let tempPrtLibrary = {}; 
 
-    // 1. 解析 TSV 总表
+    // 1. 解析 TSV 总表内容 (用于提取房间和轮椅属性)
     if (tsvText) {
         const lines = tsvText.split('\n');
         const headers = lines[0].split('\t').map(h => h.trim());
@@ -207,7 +204,6 @@ function processData() {
                 const name = v[nIdx]?.trim();
                 if (!name) return;
 
-                // 统一存为小写 Key 方便忽略大小写匹配
                 tempPrtLibrary[name.toLowerCase()] = {
                     "originalName": name,
                     "room": utils.parseRoomNum(v[rmIdx]),
@@ -215,11 +211,12 @@ function processData() {
                     "isWheelchair": v[sIdx]?.toLowerCase().includes("wheelchair")
                 };
             });
-            // 此处由于逻辑复杂，我们选择在匹配时动态查找
+            // 合并到全局变量
+            prtObjInfo = Object.assign({}, prtObjInfo, tempPrtLibrary);
         }
     }
 
-    // 2. 名单处理
+    // 2. 名单处理：严格遵循 URL 传参的位置
     let processed = [];
     if (urlArrStr) {
         try {
@@ -227,25 +224,25 @@ function processData() {
             rawArr.forEach((group, idx) => {
                 if (!group) return;
                 group.forEach(pString => {
-                    const cleanName = utils.cleanPrtName(pString);
-                    const lowerCleanName = cleanName.toLowerCase();
+                    // 对比名：剥离标签并转小写
+                    const matchName = utils.cleanPrtNameForMatch(pString);
                     
-                    // 忽略大小写从 tempPrtLibrary 或 prtObjInfo 中检索
-                    let info = tempPrtLibrary[lowerCleanName];
-                    
-                    // 如果 TSV 没提供，尝试从旧的 prtObjInfo 里找（同样忽略大小写）
+                    // 获取属性（从总表库匹配）
+                    let info = tempPrtLibrary[matchName];
                     if (!info) {
-                        const legacyKey = Object.keys(prtObjInfo).find(k => k.toLowerCase() === lowerCleanName);
+                        const legacyKey = Object.keys(prtObjInfo).find(k => k.toLowerCase() === matchName);
                         if (legacyKey) info = prtObjInfo[legacyKey];
                     }
-
+                    
+                    // 状态判断：如果有总表则看总表，否则看 URL 标记
                     const isWanderActive = tsvText ? (info?.isWander || false) : pString.includes("Warning");
                     const isWheelchairActive = info?.isWheelchair || false;
                     const roomIcon = CONFIG.ROOM_MAP[info?.room] || CONFIG.ROOM_MAP.default;
 
                     processed.push({
-                        name: info?.originalName || cleanName, 
-                        routeIndex: idx,
+                        displayName: pString.replace(/__<b>Warning<\/b>/g, ""), // 显示名保留原始格式(含@@)，仅去掉Warning标签
+                        matchName: matchName,
+                        routeIndex: idx, // 强制按照传参中的位置分配 Rt#
                         isWander: isWanderActive,
                         isWheelchair: isWheelchairActive,
                         roomIcon: roomIcon
@@ -264,12 +261,15 @@ function renderTable() {
         const rtA = state.routeMap[a.routeIndex] || "";
         const rtB = state.routeMap[b.routeIndex] || "";
         const rtRes = rtA.localeCompare(rtB, undefined, { numeric: true });
-        return rtRes !== 0 ? rtRes : a.name.localeCompare(b.name);
+        // 排序使用匹配名(不含@@)更符合逻辑
+        return rtRes !== 0 ? rtRes : a.matchName.localeCompare(b.matchName);
     };
 
-    if (state.displayMode === 0) displayArr.sort((a, b) => a.name.localeCompare(b.name));
-    else if (state.displayMode === 1) displayArr.sort(sortFn);
-    else if (state.displayMode === 2) {
+    if (state.displayMode === 0) {
+        displayArr.sort((a, b) => a.matchName.localeCompare(b.matchName));
+    } else if (state.displayMode === 1) {
+        displayArr.sort(sortFn);
+    } else if (state.displayMode === 2) {
         displayArr.sort((a, b) => {
             if (a.roomIcon !== b.roomIcon) return a.roomIcon.localeCompare(b.roomIcon);
             return sortFn(a, b);
@@ -297,7 +297,7 @@ function createTable(dataList, isRoomMode) {
 
         dataList.forEach(p => {
             const row = `<tr style="color:black">
-                <td class="border border-dark">${p.roomIcon}${p.name}</td>
+                <td class="border border-dark">${p.roomIcon}${p.displayName}</td>
                 <td class="border border-dark">${state.routeMap[p.routeIndex]}</td>
                 <td class="border border-dark">${getIcons(p)}</td>
             </tr>`;
@@ -327,7 +327,7 @@ function createTable(dataList, isRoomMode) {
             let colHtml = `<div class="childTable"><table style="border:1px"><tr><th class="border border-dark ${bg_style}">Prt</th><th class="border border-dark ${bg_style}">Rt#</th><th class="border border-dark ${bg_style}">⁉️</th></tr>`;
             list.forEach(p => {
                 colHtml += `<tr style="color:black">
-                    <td class="border border-dark">${p.roomIcon}${p.name}</td>
+                    <td class="border border-dark">${p.roomIcon}${p.displayName}</td>
                     <td class="border border-dark">${state.routeMap[p.routeIndex]}</td>
                     <td class="border border-dark">${getIcons(p)}</td>
                 </tr>`;
