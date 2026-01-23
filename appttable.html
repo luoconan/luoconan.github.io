@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Trips</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+        }
+        .date-info {
+            text-align: left;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.2rem;
+        }
+        .van-cell {
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+        }
+        .van-cell:hover {
+            background-color: #e8e8ff;
+        }
+        .escort-cell {
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .escort-cell:hover {
+            background-color: #e8e8ff;
+        }
+        .center-header {
+            text-align: center;
+        }
+        .name-cell {
+            cursor: grab;
+            user-select: none;
+        }
+        .name-cell:active {
+            cursor: grabbing;
+        }
+        tr.dragging {
+            opacity: 0.5;
+            background-color: #e8e8ff !important;
+        }
+        tr.drag-over {
+            border-top: 3px solid #667eea;
+        }
+        .van-input {
+            width: 80px;
+            padding: 4px 6px;
+            border: 2px solid #667eea;
+            border-radius: 3px;
+            font-size: inherit;
+            outline: none;
+        }
+        @media print {
+            body {
+                padding: 10px;
+            }
+            th {
+                background-color: #667eea !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .van-cell {
+                cursor: default;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="date-info" id="date-info"></div>
+    <div id="table-container"></div>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const dateStr = urlParams.get('date') || '';
+        const dataStr = urlParams.get('data') || '[]';
+
+        // Format date as M/D/YYYY DayName
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            // dateStr is MM-DD-YYYY
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+
+            const month = parseInt(parts[0]);
+            const day = parseInt(parts[1]);
+            const year = parseInt(parts[2]);
+
+            const date = new Date(year, month - 1, day);
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = dayNames[date.getDay()];
+
+            return `${month}/${day}/${year} ${dayName}`;
+        }
+
+        // Display date
+        document.getElementById('date-info').textContent = formatDate(dateStr);
+
+        // Parse data
+        let trips = [];
+        try {
+            trips = JSON.parse(decodeURIComponent(dataStr));
+        } catch (e) {
+            console.error('Failed to parse data:', e);
+        }
+
+        // Build table
+        const container = document.getElementById('table-container');
+
+        if (trips.length === 0) {
+            container.innerHTML = '<div class="no-data">No appointment trips found</div>';
+        } else {
+            let html = `
+                <table id="appt-table">
+                    <thead>
+                        <tr>
+                            <th class="center-header">Escort</th>
+                            <th>Name</th>
+                            <th>Appt Time</th>
+                            <th>From Address</th>
+                            <th>Appt Address</th>
+                            <th class="center-header">A-Van#</th>
+                            <th class="center-header">B-Van#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            trips.forEach((trip, index) => {
+                // Format time (HHMM -> HH:MM)
+                let apptTime = trip.apptTime || '';
+                if (apptTime.length === 4) {
+                    apptTime = apptTime.substring(0, 2) + ':' + apptTime.substring(2);
+                }
+
+                // Format escort - show "-" if empty or "NO"
+                let escort = (trip.escort || '').trim();
+                if (!escort || escort.toLowerCase() === 'no') {
+                    escort = '-';
+                }
+
+                html += `
+                    <tr draggable="true" data-row-index="${index}">
+                        <td class="escort-cell editable-cell" data-type="escort" data-index="${index}">${escort}</td>
+                        <td class="name-cell">${trip.name || ''}</td>
+                        <td>${apptTime}</td>
+                        <td>${trip.fromAddress || ''}</td>
+                        <td>${trip.apptAddress || ''}</td>
+                        <td class="van-cell editable-cell" data-type="aVan" data-index="${index}">${trip.aVan || ''}</td>
+                        <td class="van-cell editable-cell" data-type="bVan" data-index="${index}">${trip.bVan || ''}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            // Add click handlers for editable cells (escort, A-Van#, B-Van#)
+            document.querySelectorAll('.editable-cell').forEach(cell => {
+                cell.addEventListener('click', handleCellClick);
+            });
+
+            // Add drag handlers for rows
+            initDragAndDrop();
+        }
+
+        function initDragAndDrop() {
+            const tbody = document.querySelector('#appt-table tbody');
+            let draggedRow = null;
+
+            tbody.querySelectorAll('tr').forEach(row => {
+                row.addEventListener('dragstart', (e) => {
+                    draggedRow = row;
+                    row.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                row.addEventListener('dragend', () => {
+                    row.classList.remove('dragging');
+                    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+                    draggedRow = null;
+                });
+
+                row.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    if (row !== draggedRow) {
+                        row.classList.add('drag-over');
+                    }
+                });
+
+                row.addEventListener('dragleave', () => {
+                    row.classList.remove('drag-over');
+                });
+
+                row.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    row.classList.remove('drag-over');
+                    if (row !== draggedRow && draggedRow) {
+                        // Insert dragged row before or after current row
+                        const allRows = Array.from(tbody.querySelectorAll('tr'));
+                        const draggedIdx = allRows.indexOf(draggedRow);
+                        const targetIdx = allRows.indexOf(row);
+
+                        if (draggedIdx < targetIdx) {
+                            row.parentNode.insertBefore(draggedRow, row.nextSibling);
+                        } else {
+                            row.parentNode.insertBefore(draggedRow, row);
+                        }
+                    }
+                });
+            });
+        }
+
+        function handleCellClick(e) {
+            const cell = e.currentTarget;
+            const isCtrl = e.ctrlKey || e.metaKey;
+            const currentValue = cell.textContent.trim();
+            const type = cell.dataset.type;
+
+            // Create input
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'van-input';
+            input.value = currentValue;
+            // Store batch mode flag on input element
+            input.dataset.batchMode = isCtrl ? 'true' : 'false';
+            input.dataset.originalValue = currentValue;
+            input.dataset.cellType = type;
+
+            // Replace cell content with input
+            cell.textContent = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+
+            // Remove click handler temporarily
+            cell.removeEventListener('click', handleCellClick);
+
+            // Handle input completion
+            function completeEdit() {
+                const newValue = input.value.trim();
+                const isBatchMode = input.dataset.batchMode === 'true';
+                const origValue = input.dataset.originalValue;
+                const cellType = input.dataset.cellType;
+
+                cell.textContent = newValue;
+
+                if (isBatchMode && origValue) {
+                    // Determine which cells to update based on type
+                    let selector;
+                    if (cellType === 'escort') {
+                        // Escort only affects escort column
+                        selector = '.editable-cell[data-type="escort"]';
+                    } else {
+                        // A-Van# and B-Van# affect each other
+                        selector = '.van-cell';
+                    }
+
+                    document.querySelectorAll(selector).forEach(otherCell => {
+                        if (otherCell !== cell && otherCell.textContent.trim() === origValue) {
+                            otherCell.textContent = newValue;
+                        }
+                    });
+                }
+
+                // Re-add click handler
+                cell.addEventListener('click', handleCellClick);
+            }
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    completeEdit();
+                } else if (e.key === 'Escape') {
+                    cell.textContent = currentValue;
+                    cell.addEventListener('click', handleCellClick);
+                }
+            });
+
+            input.addEventListener('blur', () => {
+                // Small delay to allow Enter key to process first
+                setTimeout(() => {
+                    if (cell.contains(input)) {
+                        completeEdit();
+                    }
+                }, 100);
+            });
+        }
+    </script>
+</body>
+</html>
