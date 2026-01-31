@@ -31,7 +31,7 @@
         }
         th, td {
             border: 1px solid #999;
-            padding: 10px 12px;
+            padding: 4px 5px;
             text-align: left;
         }
         th {
@@ -457,10 +457,11 @@
             });
 
             // 2. Adjust column widths
-            const sharedWidth = "18%";
-            theadRow.children[3].style.width = sharedWidth;
-            theadRow.children[4].style.width = sharedWidth;
-            theadRow.children[5].style.width = sharedWidth;
+            const addressWidth = "16%";
+            const noteWidth = "24%"; // 1.5x address
+            theadRow.children[3].style.width = addressWidth; // From Address
+            theadRow.children[4].style.width = addressWidth; // Appt Address
+            theadRow.children[5].style.width = noteWidth;    // Appt Note
 
             // 3. Double-click header to toggle editing mode (all except Escort, A-Van#, B-Van#)
             // Columns: 0=Escort, 1=Name, 2=Appt Time, 3=From Address, 4=Appt Address, 5=Appt Note, 6=A-Van#, 7=B-Van#
