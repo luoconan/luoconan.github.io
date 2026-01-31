@@ -27,9 +27,10 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            border: 2px solid #333;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #999;
             padding: 10px 12px;
             text-align: left;
         }
@@ -37,6 +38,7 @@
             background-color: #667eea;
             color: white;
             font-weight: 600;
+            border: 1px solid #555;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -91,6 +93,58 @@
             font-size: inherit;
             outline: none;
         }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            font-size: 14px;
+            pointer-events: none;
+        }
+        .date-info {
+            cursor: pointer;
+        }
+        .date-info:hover {
+            color: #667eea;
+        }
+        .note-cell {
+            text-align: left;
+            cursor: pointer;
+        }
+        .active-editing {
+            background-color: #fff9c4 !important;
+        }
+        .column-editing-active {
+            background-color: #ffeb3b !important;
+        }
+        .edit-textarea {
+            width: 95%;
+            min-height: 40px;
+            font-family: inherit;
+            font-size: inherit;
+            border: 2px solid #667eea;
+            border-radius: 3px;
+            resize: vertical;
+        }
+        .done-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .row-delete-btn {
+            color: red;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: #fff;
+        }
         @media print {
             body {
                 padding: 10px;
@@ -102,6 +156,9 @@
             }
             .van-cell {
                 cursor: default;
+            }
+            .toast {
+                display: none;
             }
         }
     </style>
@@ -328,6 +385,162 @@
                 }, 100);
             });
         }
+
+        // ========== Enhanced Features (from Tampermonkey) ==========
+
+        let isColumnAdded = false;
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Make cell editable with textarea (supports <br> for line breaks)
+        function makeCellEditableWithTextarea(cell) {
+            if (cell.querySelector('textarea')) return;
+
+            const currentHTML = cell.innerHTML.trim();
+            const editableValue = (currentHTML === '-' || currentHTML === '&nbsp;') ? '' : currentHTML;
+
+            const textarea = document.createElement('textarea');
+            textarea.className = 'edit-textarea';
+            textarea.value = editableValue;
+
+            cell.textContent = '';
+            cell.appendChild(textarea);
+            textarea.focus();
+
+            textarea.onclick = (e) => e.stopPropagation();
+
+            const finishEdit = () => {
+                const val = textarea.value.trim();
+                cell.innerHTML = val === '' ? '-' : val;
+            };
+
+            textarea.onkeydown = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    finishEdit();
+                }
+                if (e.key === 'Escape') {
+                    cell.innerHTML = currentHTML || '-';
+                }
+            };
+            textarea.onblur = finishEdit;
+        }
+
+        // Add Appt Note column and enable enhanced editing
+        function addNoteColumn() {
+            if (isColumnAdded) return;
+            const table = document.getElementById('appt-table');
+            if (!table) return;
+
+            const theadRow = table.querySelector('thead tr');
+            const tbodyRows = table.querySelectorAll('tbody tr');
+
+            // 1. Insert Appt Note column
+            const thNote = document.createElement('th');
+            thNote.textContent = 'Appt Note';
+            thNote.id = 'header-note';
+            thNote.style.cursor = 'help';
+            theadRow.insertBefore(thNote, theadRow.children[5]);
+
+            tbodyRows.forEach(row => {
+                const td = document.createElement('td');
+                td.className = 'note-cell custom-editable';
+                td.innerHTML = '';
+                row.insertBefore(td, row.children[5]);
+            });
+
+            // 2. Adjust column widths
+            const sharedWidth = "18%";
+            theadRow.children[3].style.width = sharedWidth;
+            theadRow.children[4].style.width = sharedWidth;
+            theadRow.children[5].style.width = sharedWidth;
+
+            // 3. Double-click header to toggle editing mode (all except Escort, A-Van#, B-Van#)
+            // Columns: 0=Escort, 1=Name, 2=Appt Time, 3=From Address, 4=Appt Address, 5=Appt Note, 6=A-Van#, 7=B-Van#
+            const editableColumns = [1, 2, 3, 4, 5]; // Name, Appt Time, From Address, Appt Address, Appt Note
+            editableColumns.forEach(colIndex => {
+                const th = theadRow.children[colIndex];
+                if (!th) return;
+                th.style.cursor = 'help';
+                th.addEventListener('dblclick', function(e) {
+                    e.preventDefault();
+                    const cells = table.querySelectorAll(`tbody tr td:nth-child(${colIndex + 1})`);
+                    const isActive = th.classList.toggle('column-editing-active');
+
+                    cells.forEach(c => {
+                        c.classList.add('custom-editable');
+                        c.classList.toggle('active-editing', isActive);
+                    });
+                    showToast(`${th.textContent} 编辑模式已${isActive ? '开启' : '关闭'}`);
+                });
+            });
+
+            // 5. Event delegation for custom editable cells
+            table.addEventListener('click', (e) => {
+                const cell = e.target.closest('.custom-editable');
+                if (cell && cell.classList.contains('active-editing')) {
+                    if (e.target.tagName !== 'TEXTAREA') {
+                        makeCellEditableWithTextarea(cell);
+                    }
+                }
+            });
+
+            // 6. Double-click Escort header to enter delete mode
+            const thEscort = theadRow.children[0];
+            thEscort.style.cursor = 'help';
+            thEscort.ondblclick = () => enterDeleteMode(table);
+
+            isColumnAdded = true;
+            showToast("增强模式已启动，双击表头开启编辑，输入<br>可换行");
+        }
+
+        // Delete mode - hide rows only
+        function enterDeleteMode(table) {
+            if (document.getElementById('done-btn')) return;
+            const thead = table.querySelector('thead');
+            const tbody = table.querySelector('tbody');
+            const headerRow = thead.querySelector('tr');
+
+            // Add Done button column header
+            const thDone = document.createElement('th');
+            thDone.className = 'del-col-item';
+            const doneBtn = document.createElement('button');
+            doneBtn.id = 'done-btn';
+            doneBtn.textContent = 'Done';
+            doneBtn.className = 'done-btn';
+            doneBtn.onclick = (e) => { e.stopPropagation(); exitDeleteMode(table); };
+            thDone.appendChild(doneBtn);
+            headerRow.appendChild(thDone);
+
+            // Add delete button for each row
+            tbody.querySelectorAll('tr').forEach(row => {
+                const td = document.createElement('td');
+                td.className = 'del-col-item';
+                const btn = document.createElement('button');
+                btn.textContent = 'X';
+                btn.className = 'row-delete-btn';
+                btn.onclick = (e) => { e.stopPropagation(); row.style.display = 'none'; };
+                td.appendChild(btn);
+                row.appendChild(td);
+            });
+
+            showToast("删除模式：点击 X 隐藏行");
+        }
+
+        function exitDeleteMode(table) {
+            table.querySelectorAll('.del-col-item').forEach(el => el.remove());
+            showToast("编辑完成");
+        }
+
+        // Initialize: click date to add note column
+        document.getElementById('date-info').addEventListener('click', addNoteColumn);
     </script>
 </body>
 </html>
